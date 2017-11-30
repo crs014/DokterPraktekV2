@@ -6,10 +6,9 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using DokterPraktek;
 using DokterPraktekV2;
 
-namespace DokterPraktek.Controllers
+namespace DokterPraktekV2.Controllers
 {
     public class doctorsController : Controller
     {
