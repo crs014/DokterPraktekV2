@@ -1,0 +1,55 @@
+﻿@model IEnumerable<DokterPraktekV2.medicineTransaction>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Data IN/OUT - Transaksi</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.statusTransaction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.quantity)
+        </th>
+        <th>
+            Nama Dokter
+        </th>
+        <th>
+            Nama Obat
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        
+        <td>
+            @if(item.statusTransaction == true)
+            {
+                <font color="green"><p>IN</p></font>
+            }else
+            {
+                <font color="red"><p>OUT</p></font>
+            }
+            @*@Html.DisplayFor(modelItem => item.statusTransaction)*@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.quantity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.doctor.name)
+        </td>
+        <td>
+           @Html.DisplayFor(modelItem => item.medicine.name)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>
