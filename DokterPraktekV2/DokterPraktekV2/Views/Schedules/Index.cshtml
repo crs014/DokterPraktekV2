@@ -1,0 +1,63 @@
+﻿@model IEnumerable<DokterPraktekV2.Models.VM_BookList>
+
+@{
+    ViewBag.Title = "Booking List";
+}
+
+<h2>Patient Booking List</h2>
+<table class="table table-striped">
+    <tr>
+        <th>
+            <label>Appointment Date</label>
+        </th>
+        <th>
+            <label>No Booking</label>
+        </th>
+        <th>
+            <label>Patient Name</label>
+        </th>
+        <th>
+            <label>Doctor Name</label>
+        </th>
+        <th>
+            Booking Status
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @item.BookDate.ToString("dd-MMM-yy")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NoBooking)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DoctorName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BookingStatus)
+        </td>
+        <td>
+            @if (item.BookingStatus == "Booking")
+            {
+                @Html.ActionLink("Complete", "Check", new { id = item.NoBooking }) <text> | </text>
+                @Html.ActionLink("Cancel", "Cancel", new { id = item.NoBooking })
+            }
+            else if (item.BookingStatus == "Completed")
+            {
+
+            }
+            else
+            {
+
+            }
+        </td>
+    </tr>
+}
+
+</table>
