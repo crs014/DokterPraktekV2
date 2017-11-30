@@ -1,0 +1,45 @@
+﻿@model  PagedList.IPagedList<DokterPraktekV2.Models.VM_history>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<h2>History Patient @ViewBag.detailPatient.name</h2>
+<a href="/Patients"><button class="btn btn-default">Back</button></a>
+<div style="margin-top:10px">
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>
+                date
+            </th>
+            <th>
+                sickness            
+            </th>
+            <th>Action</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.date.ToShortDateString()
+                </td>
+                <td>
+                   @item.sickness
+                </td>
+                <td>
+                    <a href="/patients/DetailsHistory/@item.id">History detail</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+    <br />
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Details",
+    new { page }))
+</div>
+

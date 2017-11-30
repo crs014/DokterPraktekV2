@@ -1,0 +1,52 @@
+﻿@model DokterPraktekV2.Models.VM_history
+
+@{
+    ViewBag.Title = "detailsHistory";
+}
+
+<div style="margin-top:45px">
+    <div class="row">
+        <div class="col-sm-4">
+            <p>Name : @Model.patientName </p>
+
+            @if (Model.gender == true)
+            {<p>Gender : Pria</p>}
+            else
+            {<p>Gender : Wanita</p>}
+
+
+            <p>Date : @Model.date.Date</p>
+            <p>Check Up Price: @Model.checkupPrice</p>
+            <p>Doctor Name : @Model.doctorName</p>
+        </div>
+        <div class="col-sm-8">
+            <h4>Describe : </h4>
+            <p>@Model.description</p>
+        </div>
+    </div>
+    <br />
+    <p>Total Medicine Price : @ViewBag.Total</p>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Medicine name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in ViewBag.Medicines)
+            {
+                <tr>
+                    <td>@item.medicineName</td>
+                    <td>@item.quantity</td>
+                    <td>@item.price</td>
+                    <td>@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a href="/Patients/Details/@Model.patientId"><button class="btn btn-default">Back</button></a>
+</div>
