@@ -7,13 +7,15 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2;
+using DokterPraktekV2.Services;
+using PagedList;
 
 namespace DokterPraktekV2.Controllers
 {
     public class doctorsController : Controller
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-
+        private DoctorService doctorService = new DoctorService(); 
         // GET: doctors
         public ActionResult Index()
         {
@@ -120,7 +122,20 @@ namespace DokterPraktekV2.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        
+        public ActionResult TodaySchedule(int id,string currentFilter, string searchString, int? page)
+        {
+            ViewBag.Doctor = doctorService.doctorDetail(id);
+            /*call all data from service*/
+            var data = doctorService.TodaySchedule(id);
+            /*search data from name patient*/
+            if (searchString != null) { page = 1; }
+            else { searchString = currentFilter; }
+            ViewBag.CurrentFilter = searchString;
+            int pageNumber = (page ?? 1);
+            int pageSize = 10;
+            return View(data.ToPagedList(pageNumber, pageSize));
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

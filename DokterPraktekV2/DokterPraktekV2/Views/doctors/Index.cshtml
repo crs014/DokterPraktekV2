@@ -65,6 +65,7 @@
             @Html.ActionLink("Status", "Details", "doctors", new { id = item.id }, new { @class = "btn btn-success" })
         </td>
         <td>
+            <a href="/Doctors/TodaySchedule/@item.id">Today Schedule</a> |
             @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.id })
         </td>
