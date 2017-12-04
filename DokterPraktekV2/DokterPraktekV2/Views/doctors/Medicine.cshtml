@@ -1,0 +1,54 @@
+﻿<!-- Modal -->
+<div id="medicineModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Medicine List</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-bordered" id="tableMedicine">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Expired</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in @ViewBag.MedicineList)
+                        {
+                            <tr>
+                                <td class="nameMedic">
+                                    @item.name
+                                </td>
+                                <td>
+                                    @item.price
+                                </td>
+                                <td>
+                                    @item.expired
+                                </td>
+                                <td>
+                                    <input type="button" class="addMedic btn btn-primary" value="Add item" data-dismiss="modal"/>
+                                    <input type="hidden" class="idMedic" value="@item.id"/>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+

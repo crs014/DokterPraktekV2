@@ -18,9 +18,26 @@ namespace DokterPraktekV2.Services
             return data;
         }
         
+
+        /* get medicine from column doctorId*/
+        public List<medicine> getDoctorMedicine(int id)
+        {
+            var data = db.medicines.Where(e => e.doctorId == id).ToList();
+            return data;
+        }
+        
+        
+        /* get doctor detail from column id*/               
         public doctor doctorDetail(int id)
         {
             var data = db.doctors.Where(e => e.id == id).First();
+            return data;
+        }
+        
+        /* get detail schedule from column id*/
+        public schedule scheduleDetail(int id)
+        {
+            var data = db.schedules.Where(e => e.id == id).First();
             return data;
         }  
     }

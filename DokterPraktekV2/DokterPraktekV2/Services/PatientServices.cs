@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using DokterPraktekV2.Models;
+using DokterPraktekV2.Controllers;
 
 namespace DokterPraktekV2.Services
 {

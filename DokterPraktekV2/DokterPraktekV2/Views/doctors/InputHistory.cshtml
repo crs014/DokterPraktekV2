@@ -1,0 +1,67 @@
+﻿@model DokterPraktekV2.schedule
+@{
+    ViewBag.Title = "InputHistory";
+}
+
+@Html.Partial("Medicine")
+
+<h2>Input History @Model.patient.name</h2>
+<br />
+<p>Doctor : @Model.doctor.name</p>
+<br />
+<form action="/doctors/InputHistory/@Model.id" method="post">
+    <div class="form-group">
+        <label>Checkup price :</label>
+        <input type="number" name="price" class="form-control" required/>
+    </div>
+    <div class="form-group">
+        <label>Sickness :</label>
+        <input type="text" name="sick" class="form-control" required/>
+    </div>
+    <div class="form-group">
+        <label>Description :</label>
+        <textarea name="descriptionSick" class="form-control" style="resize:none; height:150px" required>
+        </textarea>
+    </div>
+    <p>Total medicine price : <b id="total">0</b></p>
+    <input type="button" id="addMedicine" class="btn btn-primary" value="Add medicine" style="float:right;" data-toggle="modal" data-target="#medicineModal" />
+    <table class="table table-striped table-bordered" id="medicineCart">
+        <thead>
+            <tr>
+                <th>Medicine name</th>
+                <th>Quantity</th>
+                <th>Medicine describe</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+    </table>
+    <input class="btn btn-success" type="submit" name="submit"/>
+</form>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tableMedicine").DataTable();
+
+            $("#tableMedicine").on("click", ".addMedic", function () {
+                var tr = $(this).parent().parent();
+                var name = tr.find(".nameMedic").text();
+                var id = tr.find(".idMedic").val();
+
+                var dataId = "<tr><td>" + name + " <input type='hidden' name='medicineId[]' min='1' value='" + id + "' class='form-control' required/></td>";
+                var dataQty = "<td><input type='number' class='form-control' name='quantity[]' min='1' required/></td>";
+                var dataDes = "<td><input type='text' class='form-control' name='describeMedic[]' required/></td>";
+                var dataAct = "<td><input type='button' class='btn btn-danger removeItem' value='remove'></td></tr>";
+                $("#medicineCart").append(dataId + dataQty + dataDes + dataAct);
+            });
+
+            $("#medicineCart").on("click", ".removeItem", function () {
+                var tr = $(this).parent().parent();
+                tr.remove();
+            });
+        });
+    </script>
+}
+
+

@@ -28,9 +28,6 @@
         <th>
            gender
         </th>
-        <th>
-            register date
-        </th>
         <th>Action</th>
     </tr>
 
@@ -48,9 +45,6 @@
         <td>
            @if(item.gender == false){<p>wanita</p>}
            else{<p>pria</p>}
-        </td>
-        <td>
-            @DateTime.FromBinary(BitConverter.ToInt64(item.dateTime, 0))
         </td>
         <td>
            <a href="/patients/Details/@item.id"><button class="btn btn-info">History</button></a>
