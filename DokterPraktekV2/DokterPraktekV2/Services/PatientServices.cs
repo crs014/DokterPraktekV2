@@ -125,8 +125,16 @@ namespace DokterPraktekV2.Services
         /*find medicine price patient from history id*/
         public decimal totalMedicinePatient(int ? id)
         {
-            var data = db.patientMedicines.Where(a => a.historyId == id).Sum(e => e.medicinePrice * e.quantity);
-            return data;
+            var data = db.patientMedicines.Where(a => a.historyId == id);
+            var leng = data.Count();
+            if(leng == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return data.Sum(e => e.medicinePrice * e.quantity);
+            }
         }
 
         public patient CreatePatient(VM_schedules data)

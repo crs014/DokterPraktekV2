@@ -37,7 +37,7 @@ namespace DokterPraktekV2.Services
         /* get detail schedule from column id*/
         public schedule scheduleDetail(int id)
         {
-            var data = db.schedules.Where(e => e.id == id).First();
+            var data = db.schedules.FirstOrDefault(e => e.id == id);
             return data;
         }
 

@@ -164,12 +164,14 @@ namespace DokterPraktekV2.Controllers
             historys.checkupPrice = history.price;
             historys.checkupDate = DateTime.Now.Date;
             db.histories.Add(historys);
+            db.schedules.Find(id).bookingStatus = "Completed";
             db.SaveChanges();
             id_history = historys.id;
 
-            int leng = history.medicineId.Count();
-            if(leng != 0)
+          
+            if(history.medicineId != null)
             {
+                int leng = history.medicineId.Count();
                 for (var i = 0; i < leng; i++)
                 {
                     var patientMedic = new patientMedicine();
