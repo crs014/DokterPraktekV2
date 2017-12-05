@@ -17,7 +17,7 @@ namespace DokterPraktekV2.Controllers
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private DoctorService doctorService = new DoctorService();
-        private PatientServices patientService = new PatientServices(); 
+        private PatientServices patientService = new PatientServices();
         // GET: doctors
         public ActionResult Index()
         {
@@ -59,9 +59,10 @@ namespace DokterPraktekV2.Controllers
         public ActionResult Create([Bind(Include = "id,name,homeAddress,gender,phone,registerDatetime")] doctor doctor)
         {
             if (ModelState.IsValid)
-            {
+           { 
                 db.doctors.Add(doctor);
                 db.SaveChanges();
+                doctorService.createDays(doctor.id);
                 return RedirectToAction("Index");
             }
 

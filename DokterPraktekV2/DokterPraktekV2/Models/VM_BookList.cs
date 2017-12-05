@@ -6,7 +6,7 @@ using System.Web;
 
 namespace DokterPraktekV2.Models
 {
-    public class VM_BookList
+    public class VM_bookList
     {
         public int NoBooking { get; set; }
         public string PatientName { get; set; }

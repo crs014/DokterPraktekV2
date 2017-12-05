@@ -39,6 +39,24 @@ namespace DokterPraktekV2.Services
         {
             var data = db.schedules.Where(e => e.id == id).First();
             return data;
-        }  
+        }
+
+        // Create default working days in database
+        public void createDays(int id)
+        {
+            List<string> days = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+            foreach (var item in days)
+            {
+                var dayIn = new workDay()
+                {
+                    dayIn = item,
+                    doctorId = id,
+                    working = false
+                };
+                db.workDays.Add(dayIn);
+                db.SaveChanges();
+            }
+
+        }
     }
 }

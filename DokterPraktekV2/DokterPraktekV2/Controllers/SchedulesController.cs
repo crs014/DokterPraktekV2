@@ -8,11 +8,11 @@ using DokterPraktekV2.Services;
 namespace DokterPraktekV2.Controllers
 {
 
-    public class SchedulesController : Controller
+    public class schedulesController : Controller
     {
-        private WorkDaysServices DoctorWorkDay = new WorkDaysServices();
+        private dayInServices DoctorWorkDay = new dayInServices();
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-        private BookingListServices BookListService = new BookingListServices();
+        private bookingListServices BookListService = new bookingListServices();
 
         #region Get List Booking
         // GET: Schedules
@@ -23,17 +23,18 @@ namespace DokterPraktekV2.Controllers
         }
         #endregion
 
+        #region Get Today Booking List
         public ActionResult TodayBook()
         {
             var book = BookListService.TodayBookingList();
             return View(book);
         }
-
+        #endregion
 
         #region HttpGet Create Booking
         public ActionResult Create()
         {
-            VM_Schedules schedule = new VM_Schedules();
+            VM_schedules schedule = new VM_schedules();
             var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
             schedule.doctors = DoctorWorkDay.ListWorkDays(); // panggil service hari kerja dokter
             ViewBag.blockDate = blockDate;
@@ -43,7 +44,7 @@ namespace DokterPraktekV2.Controllers
 
         #region HttpPost Create Booking
         [HttpPost]
-        public ActionResult Create(VM_Schedules data)
+        public ActionResult Create(VM_schedules data)
         {
             if (!ModelState.IsValid)
             {
@@ -52,7 +53,7 @@ namespace DokterPraktekV2.Controllers
             var dayChoosen = data.dateSchedule.DayOfWeek.ToString(); // Hari yang dipilih
             int docId = data.doctors[0].doctorId; // Id dokter
             var checkSchedule = (from works in db.workDays
-                                 where works.doctorId == docId && works.dayIn == dayChoosen
+                                 where works.doctorId == docId && works.dayIn == dayChoosen && works.working == true
                                  select works).Count();
             if (checkSchedule > 0) // Check jika hari yang dipilih sesuai dengan jadwal dokter
             {

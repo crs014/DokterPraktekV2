@@ -1,0 +1,74 @@
+﻿@model DokterPraktekV2.Models.VM_dayIn
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Doctor Day In</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.Label("Doctor Name : ", new { htmlAttributes = new { @class = "label-control " } })
+                
+                @Html.Label(Model.docInfo.doctorName , new { htmlAttributes = new { @class = "label-control" } })
+
+                @Html.ValidationMessageFor(model => model.docId, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.docId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.Label("Day In", new { htmlAttributes = new { @class = "label-control " } })<br />
+                @{
+                    for(var i=0;i<Model.dayIn.Count();i++)
+                    {
+                        <p>
+                            @Html.HiddenFor(model => model.dayIn[i].dayId)
+                            @Html.CheckBoxFor(model => model.dayIn[i].IsSelected)
+                            @Html.Label(Model.dayIn[i].day)
+                        </p>
+                    }
+                }
+            </div>
+        </div>
+
+
+
+        @*<div class="form-group">
+            <div class="col-md-12">
+                    @Html.Label("Day In", new { htmlAttributes = new { @class = "label-control " } })<br />
+                    @for (var i = 0; i < 5; i++)
+                    {
+                        <p>
+                            @Html.CheckBoxFor(model => model.dayIn[i].IsSelected.Value)
+                            @Html.HiddenFor(model => model.dayIn[i].day)
+                            <label>@Model.dayIn[i].day</label>
+                        </p>
+                    }
+            </div>
+        </div>*@
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

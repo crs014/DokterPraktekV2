@@ -6,7 +6,7 @@ using System.Web;
 
 namespace DokterPraktekV2.Models
 {
-    public class VM_Schedules
+    public class VM_schedules
     {
         [Required]
         public string name { get; set; }
@@ -20,18 +20,6 @@ namespace DokterPraktekV2.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime dateSchedule { get; set; }
-        public List<doctorList> doctors { get; set; }
-    }
-
-    public class doctorList
-    {
-        public int doctorId { get; set; }
-        public string name { get; set; }
-        public List<workDays> dayIn { get; set; }
-    }
-
-    public class workDays
-    {
-        public string day { get; set; }
+        public List<VM_doctorList> doctors { get; set; }
     }
 }
