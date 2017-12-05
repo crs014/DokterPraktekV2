@@ -168,31 +168,33 @@ namespace DokterPraktekV2.Controllers
             id_history = historys.id;
 
             int leng = history.medicineId.Count();
-            for (var i = 0; i < leng; i++)
+            if(leng != 0)
             {
-                var patientMedic = new patientMedicine();
-                decimal price = history.medicineId[i];
+                for (var i = 0; i < leng; i++)
+                {
+                    var patientMedic = new patientMedicine();
+                    decimal price = history.medicineId[i];
 
-                patientMedic.historyId = id_history;
-                patientMedic.medicineId = history.medicineId[i];
-                patientMedic.quantity = history.quantity[i];
-                patientMedic.describe = history.describeMedic[i];
-                patientMedic.medicinePrice = db.medicines.Where(e => e.id == price).First().price;
-                db.patientMedicines.Add(patientMedic);
-                db.SaveChanges();
+                    patientMedic.historyId = id_history;
+                    patientMedic.medicineId = history.medicineId[i];
+                    patientMedic.quantity = history.quantity[i];
+                    patientMedic.describe = history.describeMedic[i];
+                    patientMedic.medicinePrice = db.medicines.Where(e => e.id == price).First().price;
+                    db.patientMedicines.Add(patientMedic);
+                    db.SaveChanges();
+                }
+
+                for (var j = 0; j < leng; j++)
+                {
+                    var medicTrans = new medicineTransaction();
+                    medicTrans.medicineId = history.medicineId[j];
+                    medicTrans.doctorId = data.doctorId;
+                    medicTrans.statusTransaction = false;
+                    medicTrans.quantity = history.quantity[j];
+                    db.medicineTransactions.Add(medicTrans);
+                    db.SaveChanges();
+                }
             }
-
-            for(var j = 0; j < leng; j++)
-            {
-                var medicTrans = new medicineTransaction();
-                medicTrans.medicineId = history.medicineId[j];
-                medicTrans.doctorId = data.doctorId;
-                medicTrans.statusTransaction = false;
-                medicTrans.quantity = history.quantity[j];
-                db.medicineTransactions.Add(medicTrans);
-                db.SaveChanges();
-            }
-
             return RedirectToAction("Index");
         }
 
