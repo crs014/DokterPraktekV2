@@ -8,7 +8,7 @@ namespace DokterPraktekV2.Services
     public class dayInServices
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-
+        //
         public docInfo DoctorNames(int id)
         {
             var docNames = (from doc in db.doctors
