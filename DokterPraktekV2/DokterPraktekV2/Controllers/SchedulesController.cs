@@ -13,6 +13,7 @@ namespace DokterPraktekV2.Controllers
         private dayInServices DoctorWorkDay = new dayInServices();
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private bookingListServices BookListService = new bookingListServices();
+        private PatientServices patientService = new PatientServices();
 
         #region Get List Booking
         // GET: Schedules
@@ -50,57 +51,25 @@ namespace DokterPraktekV2.Controllers
             {
                 return View(data);
             }
-            var dayChoosen = data.dateSchedule.DayOfWeek.ToString(); // Hari yang dipilih
-            int docId = data.doctors[0].doctorId; // Id dokter
-            var checkSchedule = (from works in db.workDays
-                                 where works.doctorId == docId && works.dayIn == dayChoosen && works.working == true
-                                 select works).Count();
-            if (checkSchedule > 0) // Check jika hari yang dipilih sesuai dengan jadwal dokter
+            int docId = data.doctors[0].doctorId; // Choosen doctor id
+            var checkSchedule = BookListService.CheckSchedule(data , docId); // Check schedule service
+            if (checkSchedule > 0)
             {
-                var checkPasien = db.patients.Where(s => s.name == data.name && s.phone == data.phone).Select(s => s.id);
-                var checkData = checkPasien.Count(); // cek data pasien sudah ada atau belum
-                if (checkData > 0) // Check jika ada maka masukkan data kedalam schedule
+                var checkPatient = BookListService.CheckPatient(data.name , data.phone); // check patient service
+                if (checkPatient != null) 
                 {
-                    var dataSchedule = new schedule()
-                    {
-                        patientId = (from person in db.patients
-                                     where person.name == data.name && person.phone == data.phone
-                                     select person.id).First(),
-                        doctorId = docId,
-                        dateSchedule = data.dateSchedule,
-                        bookingStatus = "Booking"
-                    };
-                    db.schedules.Add(dataSchedule);
-                    db.SaveChanges();
+                    BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
                     return RedirectToAction("Index");
-                } // End if
-                else // jika belum , buat data pasien dan buat data schedule
+                } 
+                else 
                 {
-                    var dataPatient = new patient()
-                    {
-                        name = data.name,
-                        homeAddress = data.homeAddress,
-                        phone = data.phone,
-                        gender = data.gender
-                    };
-
-                    db.patients.Add(dataPatient);
-                    db.SaveChanges();
-
-                    var dataSchedule = new schedule()
-                    {
-                        doctorId = docId,
-                        patientId = dataPatient.id,
-                        dateSchedule = data.dateSchedule,
-                        bookingStatus = "Booking"
-                    };
-                    db.schedules.Add(dataSchedule);
-                    db.SaveChanges();
-                } // End Else
-            } // End if checkschedule
+                    var dataPatient = patientService.CreatePatient(data); // Create patient service
+                    BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
+                } 
+            } 
             else
             {
-                data.doctors = DoctorWorkDay.ListWorkDays();
+                data.doctors = DoctorWorkDay.ListWorkDays(); // Get doctor working days service
                 ModelState.AddModelError("dateSchedule", "Doctor is not available on that day");
                 var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
                 ViewBag.blockDate = blockDate;

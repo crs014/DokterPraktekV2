@@ -128,6 +128,21 @@ namespace DokterPraktekV2.Services
             var data = db.patientMedicines.Where(a => a.historyId == id).Sum(e => e.medicinePrice * e.quantity);
             return data;
         }
+
+        public patient CreatePatient(VM_schedules data)
+        {
+            var dataPatient = new patient()
+            {
+                name = data.name,
+                homeAddress = data.homeAddress,
+                phone = data.phone,
+                gender = data.gender
+            };
+
+            db.patients.Add(dataPatient);
+            db.SaveChanges();
+            return dataPatient;
+        }
         
     }
 }
