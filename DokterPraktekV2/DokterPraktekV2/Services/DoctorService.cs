@@ -9,6 +9,13 @@ namespace DokterPraktekV2.Services
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
 
+        /* get doctor data from userID*/
+        public doctor DoctorAuth(string userId)
+        {
+            doctor data = db.doctors.FirstOrDefault(e => e.userId == userId);
+            return data;
+        }
+
         /* check today schedule from column doctorId*/
         public List<schedule> TodaySchedule(int id)
         {

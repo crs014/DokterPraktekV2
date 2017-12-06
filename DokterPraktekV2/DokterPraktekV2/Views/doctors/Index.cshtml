@@ -1,81 +1,51 @@
-﻿@model IEnumerable<DokterPraktekV2.doctor>
-
+﻿@model  PagedList.IPagedList<DokterPraktekV2.schedule>
+@using PagedList.Mvc;
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "TodayPatient";
 }
 
-<h2>Index</h2>
+<h2>Today Schedule Doctor @ViewBag.Doctor.name</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
+<table class="table table-bordered table-striped">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.name)
+            patient name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.homeAddress)
+            booking status
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.gender)
+            gender
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.phone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.registerDatetime)
-        </th>
-        <th>
-            Day In
-        </th>
-        <th>
-            Input Obat
-        </th>
-        <th>
-            Status Obat
-        </th>
-        <th></th>
+        <th>Action</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.homeAddress)
-        </td>
-        <td>
-            @if(item.gender == true)
-            {
-                <p>Pria</p>
-            }else
-            {
-                <p>Wanita</p>
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.phone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.registerDatetime)
-        </td>
-        <td>
-            @Html.ActionLink("Change", "Create", "dayIn", new { id = item.id }, new { @class = "btn btn-danger" })
-        </td>
-        <td>
-            @Html.ActionLink("Input", "Create","medicines", new { id = item.id }, new { @class = "btn btn-primary" })
-        </td>
-        <td>
-            @Html.ActionLink("Status", "Details", "doctors", new { id = item.id }, new { @class = "btn btn-success" })
-        </td>
-        <td>
-            <a href="/Doctors/TodaySchedule/@item.id">Today Schedule</a> |
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
-
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.patient.name
+            </td>
+            <td>
+                @item.bookingStatus
+            </td>
+            <td>
+                @if (item.patient.gender == false)
+                {<p>wanita</p>}
+                else
+                {<p>pria</p>}
+            </td>
+            <td>
+                <a href="/Doctors/InputHistory/@item.id">Input History</a>
+            </td>
+        </tr>
+    }
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, currentFilter = ViewBag.CurrentFilter }))
+
+
+
+
