@@ -1,0 +1,61 @@
+﻿@model DokterPraktekV2.Models.VM_schedules
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2 class="text-center">My Clinic</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal col-md-offset-3">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+        <div class="form-group">
+            <div class="col-md-8">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Specialist</th>
+                        <th>Doctor Schedule</th>
+                        <th>Choose</th>
+                    </tr>
+                    @{
+                        foreach (var item in Model.doctors)
+                        {
+                            <tr>
+                                <td>@item.name</td>
+                                <td>
+                                    @{
+                                        foreach (var data in item.doctorSpecialties)
+                                        {
+                                            <li>@data.specialty</li><br />
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        foreach (var work in item.dayIn)
+                                        {
+                                            <li>@work.day </li><br />
+                                        }
+                                    }
+                                </td>
+                                <td>@Html.ActionLink("Choose", "Create", "schedule", new { id = item.doctorId }, new { @class = "btn btn-success" })</td>
+                            </tr>
+                         }
+                    }
+                </table>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+                                        }
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
