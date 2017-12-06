@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 
 namespace DokterPraktekV2.ControllerApi
 {
@@ -14,10 +15,9 @@ namespace DokterPraktekV2.ControllerApi
 
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
 
-        public IEnumerable<VM_history> Get(int id)
+        public IEnumerable<VM_history> Get(int ? id,int doctorID)
         {
-
-            var data = db.histories.Where(a => a.patientId == id).Select(e => new VM_history
+            var data = db.histories.Where(a => a.patientId == id && a.doctorId == doctorID).Select(e => new VM_history
             {
                 id = e.id,
                 doctorId = e.doctorId,

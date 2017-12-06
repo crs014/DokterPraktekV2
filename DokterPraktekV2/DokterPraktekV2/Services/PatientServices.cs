@@ -10,6 +10,8 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using DokterPraktekV2.Models;
 using DokterPraktekV2.Controllers;
+using Microsoft.AspNet.Identity;
+using DokterPraktekV2;
 
 namespace DokterPraktekV2.Services
 {
@@ -18,8 +20,7 @@ namespace DokterPraktekV2.Services
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private string baseUrl = "http://localhost:7188/";
 
-
-        /* get all patient index default page 1*/
+        /* get all patient index */
         public List<VM_patient> allPatient()
         {
             List<VM_patient> dataPatient = new List<VM_patient>();
@@ -35,7 +36,6 @@ namespace DokterPraktekV2.Services
             }
             return dataPatient;
         }
-
 
         /* get patient detail from table patient column id*/
         public VM_patient patientDetail(int ? id)
@@ -54,15 +54,15 @@ namespace DokterPraktekV2.Services
             return dataPatient;
         }
 
-        /* get all patient history from patient id and default page is 1*/
-        public List<VM_history> allPatientHistory(int? id)
+        /* get all patient history from patient id */
+        public List<VM_history> allPatientHistory(int ? id, int ? doctorID)
         {
             List<VM_history> dataHistory = new List<VM_history>();
             var client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage Res = client.GetAsync("api/HistoryPatient/" + id).Result;
+            HttpResponseMessage Res = client.GetAsync("/api/HistoryPatient/" + id +"?doctorID=" + doctorID).Result;
             if (Res.IsSuccessStatusCode)
             {
                 var historyResponse = Res.Content.ReadAsStringAsync().Result;
@@ -73,14 +73,14 @@ namespace DokterPraktekV2.Services
 
 
         /*get detail history from history id*/
-        public VM_history detailHistory(int ? id)
+        public VM_history detailHistory(int ? id, int ? doctorID)
         {
             VM_history dataHistory = new VM_history();
             var client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage Res = client.GetAsync("api/History/" + id).Result;
+            HttpResponseMessage Res = client.GetAsync("api/History/" + id + "?doctorID=" + doctorID).Result;
             if (Res.IsSuccessStatusCode)
             {
                 var historyResponse = Res.Content.ReadAsStringAsync().Result;
@@ -106,6 +106,8 @@ namespace DokterPraktekV2.Services
             return dataPatientMedicine;
         }
 
+
+        /*get doctor patient*/
         public List<VM_patient> searchPatientFromName(string name)
         {
             var data = db.patients.Select(e => new VM_patient
