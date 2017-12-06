@@ -48,7 +48,12 @@ namespace DokterPraktekV2.Services
                                         select new workDays()
                                         {
                                             day = work.dayIn
-                                        }).ToList()
+                                        }).ToList(),
+                               doctorSpecialties = (from s in db.specialists
+                                                    where s.doctors.Any(c => c.id == doc.id)
+                                                    select new docSpecialist {
+                                                        specialty = s.specialty
+                                                    }).ToList()
                            }).ToList();
             return doctors;
         }

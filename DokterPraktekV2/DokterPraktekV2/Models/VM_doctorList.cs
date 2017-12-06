@@ -10,7 +10,14 @@ namespace DokterPraktekV2.Models
             public int doctorId { get; set; }
             public string name { get; set; }
             public List<workDays> dayIn { get; set; }
+            public List<docSpecialist> doctorSpecialties { get; set; }
     }
+
+    public class docSpecialist
+    {
+        public string specialty { get; set; }
+    }
+
     public class workDays
     {
         public string day { get; set; }

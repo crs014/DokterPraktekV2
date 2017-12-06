@@ -32,6 +32,13 @@ namespace DokterPraktekV2.Controllers
         }
         #endregion
 
+        public ActionResult Select()
+        {
+            VM_schedules schedule = new VM_schedules();
+            schedule.doctors = DoctorWorkDay.ListWorkDays(); // panggil service hari kerja dokter
+            return View(schedule);
+        }
+
         #region HttpGet Create Booking
         public ActionResult Create()
         {
@@ -66,7 +73,7 @@ namespace DokterPraktekV2.Controllers
                     var dataPatient = patientService.CreatePatient(data); // Create patient service
                     BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
                 } 
-            } 
+            }
             else
             {
                 data.doctors = DoctorWorkDay.ListWorkDays(); // Get doctor working days service
