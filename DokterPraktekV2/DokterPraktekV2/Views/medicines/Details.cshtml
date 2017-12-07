@@ -19,11 +19,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.harga)
+            @Html.DisplayNameFor(model => model.price)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.harga)
+            @Html.DisplayFor(model => model.price)
         </dd>
 
         <dt>
@@ -64,3 +64,56 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Nama Obat
+        </th>
+        <th>
+            Nama Dokter
+        </th>
+        <th>
+            Tanggal Masuk
+        </th>
+        <th>
+            Stock In
+        </th>
+        <th>
+            Stock Out
+        </th>
+        <th>
+            Stock
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in @ViewBag.med)
+    {
+        <tr>
+            <td>
+                @item.name
+            </td>
+            <td>
+                @ViewBag.nameMed
+            </td>
+            <td>
+               @item.dateIn
+            </td>
+            <td>
+                @item.quantity
+            </td>
+            <td>
+                @foreach (var ab in ViewBag.Data)
+                {
+                    @ab.outStock
+                }
+            </td>
+            <td>
+
+            </td>
+
+    </tr>
+    }
+</table>

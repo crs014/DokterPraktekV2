@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Stock";
+}
+
+<h2>Stock</h2>
+@Html.ActionLink("BACK", "Index")
+<table class="table">
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Nama Obat
+        </th>
+        <th>
+            Stock IN
+        </th>
+        <th>
+            Stock OUT
+        </th>
+        <th>
+            Sisa Stock
+        </th>
+    </tr>
+
+
+    @foreach (var item in ViewBag.Data)
+    {
+        <tr>
+            <td>
+                @item.id
+            </td>
+            <td>
+                @item.name
+            </td>
+            <td>
+                @item.inStock
+            </td>
+            <td>
+                @item.outStock
+            </td>
+            <td>
+                @item.remainStock
+            </td>
+        </tr>
+    }
+</table>
