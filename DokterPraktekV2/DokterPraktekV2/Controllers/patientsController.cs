@@ -22,15 +22,18 @@ namespace DokterPraktekV2.Controllers
         [Authorize(Roles = "doctor")]
         public  ActionResult Index(string currentFilter, string searchString, int? page)
         {
+            var userID = User.Identity.GetUserId();
+            doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
+
             /*call all data from service*/
-            var data = patientService.allPatient();
+            var data = patientService.allDoctorPatient(dataDoctor.id);
             /*search data from name patient*/
             if (searchString != null){page = 1;}
             else{searchString = currentFilter;}
             ViewBag.CurrentFilter = searchString;
             if (!String.IsNullOrEmpty(searchString))
             {
-                data = patientService.searchPatientFromName(searchString);
+                data = patientService.searchPatientFromNameAndIdDoctor(searchString,dataDoctor.id);
             }
 
             int pageNumber = (page ?? 1);
