@@ -7,16 +7,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2;
+using System.Web.Security;
+using Microsoft.AspNet.Identity;
 
 namespace DokterPraktekV2.Controllers
 {
     public class medicinesController : Controller
     { 
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-
+        
         // GET: medicines
         public ActionResult Index()
         {
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog);
+            foreach (var item in ids)
+            {
+                    ViewBag.id = item.id;
+            }
             var medicine = db.medicines.Include(m => m.doctor);
             return View(medicine.ToList());
         }
@@ -43,7 +51,6 @@ namespace DokterPraktekV2.Controllers
             var idx = db.doctors.Find(id).id;
             ViewBag.idx = idx;
             ViewBag.ID = namaid;
-            ViewBag.doctorId = new SelectList(db.doctors, "id", "name");
             return View();
         }
 
