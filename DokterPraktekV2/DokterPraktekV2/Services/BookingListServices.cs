@@ -29,7 +29,7 @@ namespace DokterPraktekV2.Services
                             where data.id == id
                             select new VM_bookList()
                             {
-                                id = data.id,
+                                id = data.patientId,
                                 NoBooking = data.bookingNumber,
                                 PatientName = data.patient.name,
                                 DoctorName = data.doctor.name,
