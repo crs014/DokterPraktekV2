@@ -32,19 +32,24 @@ namespace DokterPraktekV2.Controllers
         }
         #endregion
 
+        #region Select Doctor
         public ActionResult Select()
         {
             VM_schedules schedule = new VM_schedules();
             schedule.doctors = DoctorWorkDay.ListWorkDays(); // panggil service hari kerja dokter
             return View(schedule);
         }
+        #endregion
 
         #region HttpGet Create Booking
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
             VM_schedules schedule = new VM_schedules();
+            schedule.doctors = new List<VM_doctorList>()
+            {
+                new VM_doctorList { doctorId = id }
+            };
             var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
-            schedule.doctors = DoctorWorkDay.ListWorkDays(); // panggil service hari kerja dokter
             ViewBag.blockDate = blockDate;
             return View(schedule);
         }
@@ -65,13 +70,16 @@ namespace DokterPraktekV2.Controllers
                 var checkPatient = BookListService.CheckPatient(data.name , data.phone); // check patient service
                 if (checkPatient != null) 
                 {
-                    BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
-                    return RedirectToAction("Index");
+                    var dataBooking = BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
+                    TempData["id"] = dataBooking;
+                    return RedirectToAction("formResult");
                 } 
                 else 
                 {
                     var dataPatient = patientService.CreatePatient(data); // Create patient service
-                    BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
+                    var dataBooking = BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
+                    TempData["id"] = dataBooking;
+                    return RedirectToAction("formResult");
                 } 
             }
             else
@@ -82,7 +90,6 @@ namespace DokterPraktekV2.Controllers
                 ViewBag.blockDate = blockDate;
                 return View(data);
             }
-            return RedirectToAction("Index");
         }
         #endregion
 
@@ -104,6 +111,64 @@ namespace DokterPraktekV2.Controllers
             bookingInfo.bookingStatus = "Completed";
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        #region Sign get
+        public ActionResult Sign(int id)
+        {
+            var model = id;
+            return View(model);
+        }
+
+
+        #endregion
+
+        #region SignIn HttpGet
+
+        public ActionResult SignIn(int id)
+        {
+            VM_SignIn sign = new VM_SignIn();
+            sign.doctorId = id;
+            var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.blockDate = blockDate;
+            return View(sign);
+        }
+
+        #endregion
+
+        #region SignIn HttpPost
+        [HttpPost]
+        public ActionResult SignIn(VM_SignIn sign)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(sign);
+            }
+            var checkPatient = BookListService.CheckPatientById(sign.PatientNumber); // check patient service
+            if(checkPatient != null)
+            {
+                var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId, sign.dateSchedule); // Create booking service
+                TempData["id"] = dataBooking;
+                return RedirectToAction("formResult");
+            }
+            else
+            {
+                ModelState.AddModelError("PatientNumber", "Your Patient Number is wrong");
+                return View(sign);
+            }
+        }
+
+        #endregion
+
+        #region FormResult HttpGet
+
+        public ActionResult formResult()
+        {
+            int id = (int)TempData["id"];
+            var bookingResult = BookListService.BookingListById(id);
+            return View(bookingResult); 
         }
 
         #endregion

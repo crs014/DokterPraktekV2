@@ -12,6 +12,7 @@ using DokterPraktekV2.Models;
 using DokterPraktekV2.Controllers;
 using Microsoft.AspNet.Identity;
 using DokterPraktekV2;
+using Microsoft.Ajax.Utilities;
 
 namespace DokterPraktekV2.Services
 {
@@ -20,6 +21,43 @@ namespace DokterPraktekV2.Services
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private string baseUrl = "http://localhost:7188/";
 
+
+        /*get all patient from doctorId*/
+        public List<VM_patient> allDoctorPatient(int id)
+        {
+            List<VM_patient> dataPatient = new List<VM_patient>();
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(baseUrl);
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage Res = client.GetAsync("api/DoctorPatient?doctorId=" + id).Result;
+            if (Res.IsSuccessStatusCode)
+            {
+                var patientResponse = Res.Content.ReadAsStringAsync().Result;
+                dataPatient = JsonConvert.DeserializeObject<List<VM_patient>>(patientResponse);
+            }
+            return dataPatient;
+        }
+
+        /*seacrh patient from name and doctor Id*/
+        public List<VM_patient> searchPatientFromNameAndIdDoctor(string name, int doctorId)
+        {
+            var data = db.histories.DistinctBy(a => a.patientId)
+                .Where(z => z.doctorId == doctorId && z.patient.name.Contains(name) 
+                || z.doctorId == doctorId && z.patient.name == name)
+                .Select(e => new VM_patient
+            {
+                id = e.id,
+                name = e.patient.name,
+                address = e.patient.homeAddress,
+                phone = e.patient.phone,
+                gender = e.patient.gender,
+                photo = e.patient.photo,
+                dateTime = e.patient.registerDatetime
+            }).ToList();
+            return data;
+        }
+              
         /* get all patient index */
         public List<VM_patient> allPatient()
         {
