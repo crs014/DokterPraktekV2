@@ -11,15 +11,31 @@ namespace DokterPraktekV2.Services
         public List<VM_bookList> BookingList()
         {
             var bookList = (from data in db.schedules
-                            orderby data.dateSchedule
+                            orderby data.dateSchedule , data.doctorId , data.bookingNumber
                             select new VM_bookList()
                             {
-                                NoBooking = data.id,
+                                NoBooking = data.bookingNumber,
                                 PatientName = data.patient.name,
                                 DoctorName = data.doctor.name,
                                 BookDate = data.dateSchedule,
                                 BookingStatus = data.bookingStatus,
                             }).ToList();
+            return bookList;
+        }
+
+        public VM_bookList BookingListById(int id)
+        {
+            var bookList = (from data in db.schedules
+                            where data.id == id
+                            select new VM_bookList()
+                            {
+                                id = data.id,
+                                NoBooking = data.bookingNumber,
+                                PatientName = data.patient.name,
+                                DoctorName = data.doctor.name,
+                                BookDate = data.dateSchedule,
+                                BookingStatus = data.bookingStatus,
+                            }).FirstOrDefault();
             return bookList;
         }
 
@@ -57,19 +73,50 @@ namespace DokterPraktekV2.Services
             //var checkPatient = db.patients.Where(s => s.name == name && s.phone == phoneNumber).Select(s => s.id);
             return checkPatient;
         }
-        
 
-        public void CreateBooking(int id , int docId , DateTime dateSchedule)
+        public VM_patient CheckPatientById(int id)
         {
+            var checkPatient = (from data in db.patients
+                                where data.id == id
+                                select new VM_patient()
+                                {
+                                    id = data.id,
+                                    name = data.name,
+                                    address = data.homeAddress,
+                                    phone = data.phone,
+                                    gender = data.gender,
+                                    photo = data.photo,
+                                    dateTime = data.registerDatetime
+                                }).FirstOrDefault(); ;
+            return checkPatient;
+        }
+
+
+        public int CreateBooking(int id , int docId , DateTime dateSchedule)
+        {
+            var checkLastNumber = (from book in db.schedules
+                                   where book.doctorId == docId && book.dateSchedule == dateSchedule
+                                   orderby book.id descending
+                                   select book.bookingNumber).FirstOrDefault();
+            if(checkLastNumber == null)
+            {
+                checkLastNumber = 101;
+            }
+            else
+            {
+                checkLastNumber += 1;
+            }
             var dataSchedule = new schedule()
             {
                 patientId = id,
                 doctorId = docId,
                 dateSchedule = dateSchedule,
-                bookingStatus = "Booking"
+                bookingStatus = "Booking",
+                bookingNumber = checkLastNumber
             };
             db.schedules.Add(dataSchedule);
             db.SaveChanges();
+            return dataSchedule.id;
         }
 
         public int CheckSchedule(VM_schedules data , int docId)

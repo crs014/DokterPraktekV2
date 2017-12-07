@@ -7,6 +7,7 @@
 <h2>Booking Form</h2>
 
 
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -14,6 +15,7 @@
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.doctors[0].doctorId)
         <div class="form-group col-md-12">
             @Html.Label("Patient Name", htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
@@ -22,7 +24,7 @@
 
         <div class="form-group col-md-12">
             @Html.Label("Home Address", htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.homeAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.homeAddress ,new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.homeAddress, "", new { @class = "text-danger" })
         </div>
 
@@ -34,7 +36,7 @@
 
         <div class="form-group col-md-12">
             @Html.Label("Patient Gender", htmlAttributes: new { @class = "control-label" })<br />
-                @Html.RadioButton("gender", true ) Male &nbsp;
+                @Html.RadioButton("gender", true) Male &nbsp;
                 @Html.RadioButton("gender", false) Female
         </div>
 
@@ -53,7 +55,7 @@
         </div>*@
         <div class="form-group col-md-12">
             @Html.Label("Booking Date", htmlAttributes: new { @class = "control-label" })<br /> 
-                @Html.TextBoxFor(model => model.dateSchedule, htmlAttributes: new { @type = "date", @min = ViewBag.blockDate, htmlAttributes = new { @class = "form-control"  } })
+                @Html.TextBoxFor(model => model.dateSchedule, htmlAttributes: new { @type = "date", @min = ViewBag.blockDate, htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.dateSchedule, "", new { @class = "text-danger" })
         </div>
 
@@ -65,39 +67,10 @@
             </div>
         </div>*@
 
-        <div class="form-group">
-            <div class="col-md-8">
-                <table class="table table-bordered table-hover">
-                    <tr>
-                        <th>Choose</th>
-                        <th>Doctor</th>
-                        <th>Doctor Schedule</th>
-                    </tr>
-                    @{
-                        foreach (var item in Model.doctors)
-                        {
-                            <tr>
-                                <td>@Html.RadioButtonFor(m => m.doctors[0].doctorId, item.doctorId)</td>
-                                <td>@item.name</td>
-                                <td>
-                                    @{ 
-                                        foreach (var work in item.dayIn)
-                                        {
-                                            @work.day <text> &nbsp; </text>
-                                        }
-                                    }
-                                </td>
-                            </tr>
-                         }
-                     }
-                </table>
-            </div>
-            <div class="col-md-4"></div>
-        </div>
-
+       
         
         <div class="form-group">
-            <div class="col-md-offset-7">
+            <div class="col-md-offset-4">
                 <input type="submit" value="Submit" class="btn btn-default" />
             </div>
         </div>

@@ -8,7 +8,8 @@ namespace DokterPraktekV2.Models
 {
     public class VM_bookList
     {
-        public int NoBooking { get; set; }
+        public int id { get; set; }
+        public int? NoBooking { get; set; }
         public string PatientName { get; set; }
         public string DoctorName { get; set; }
         public DateTime BookDate { get; set; }
