@@ -35,7 +35,8 @@ namespace DokterPraktekV2.Controllers
                 book = BookListService.SearchBookingList(searchString);
             }
             int pageNumber = (page ?? 1);
-            int pageSize = 10;
+            int pageSize = 15;
+            ViewBag.TotalBook = book.Count();
             return View(book.ToPagedList(pageNumber, pageSize));
         }
         #endregion
@@ -57,6 +58,7 @@ namespace DokterPraktekV2.Controllers
             {
                 book = BookListService.SearchTodayBookingList(searchString);
             }
+            ViewBag.TotalBook = book.Count();
             int pageNumber = (page ?? 1);
             int pageSize = 10;
             return View(book.ToPagedList(pageNumber, pageSize));

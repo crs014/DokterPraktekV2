@@ -10,60 +10,54 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    <div id="doctorTable">
+        <hr />
+        @foreach (var item in Model.doctors)
+        {
+        <div class="form-horizontal col-md-8 col-md-offset-2">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="panel panel-success">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading"><h4>@item.name</h4></div>
+                    <div class="panel-body">
+                        <p>
+                            Specialize in :
+                            @foreach (var data in item.doctorSpecialties)
+                            {
+                                <li>@data.specialty</li>
+                            }
+                        </p>
 
-    <hr />
-    <div class="form-horizontal col-md-offset-3">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        
-        <div class="form-group">
-            <div class="col-md-8">
-                <table id="doctorTable" class="table table-bordered table-hover">
-                    <tr>
-                        <th>Doctor</th>
-                        <th>Specialist</th>
-                        <th>Doctor Schedule</th>
-                        <th>Choose</th>
-                    </tr>
-                    @{
-                        foreach (var item in Model.doctors)
-                        {
-                            <tr>
-                                <td>@item.name</td>
-                                <td>
-                                    @{
-                                        foreach (var data in item.doctorSpecialties)
-                                        {
-                                            <li>@data.specialty</li><br />
-                                        }
-                                    }
-                                </td>
-                                <td>
-                                    @{
-                                        foreach (var work in item.dayIn)
-                                        {
-                                            <li>@work.day </li><br />
-                                        }
-                                    }
-                                </td>
-                                <td>
-                                <input type="hidden" class="doctorId" value="@item.doctorId" />
-                                <input type="button" class="selectDoctor btn btn-primary" value="Choose" data-toggle="modal" data-target="#myModal" data-p/></td>
-                            </tr>
-                         }
-                    }
-                </table>
+
+                        <!-- Table -->
+                        <table class="table table-striped text-center">
+                            @foreach (var work in item.dayIn)
+                            {
+                                <tr><td>@work.day</td></tr>
+                            }
+                        </table>
+                        <div class="col-md-offset-10">
+                            <input type="hidden" class="doctorId" value="@item.doctorId" />
+                            <input type="button" class="selectDoctor btn btn-primary" value="Choose" data-toggle="modal" data-target="#myModal" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4"></div>
         </div>
+        <div class="clearfix"></div>
+        }
     </div>
+
 }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+
         $("#doctorTable").on("click", ".selectDoctor", function () {
-            var tr = $(this).parent().parent();
-            var idDoctor = tr.find(".doctorId").val();
+            var par = $(this).parent();
+            var idDoctor = par.find(".doctorId").val();
             $("#newPatient").attr("href", "/schedules/Create/" + idDoctor);
             $("#registeredPatient").attr("href", "/schedules/SignIn/" + idDoctor);
         });

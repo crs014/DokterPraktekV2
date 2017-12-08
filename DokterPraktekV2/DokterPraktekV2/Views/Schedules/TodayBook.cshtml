@@ -3,13 +3,19 @@
 @{
     ViewBag.Title = "Today Booking List";
 }
-
-<h2>Today's Patient Booking List</h2>
+    <h4>
+        <span class="btn btn-primary">
+            Today's Patient Booking List <span class="badge">@ViewBag.TotalBook</span>
+        </span>
+    </h4>
+<div class="clearfix"></div>
 @using (Html.BeginForm("TodayBook", "schedules", FormMethod.Get))
 {
     <p>
-        <input id="searchString" name="searchString" type="text">
-        <input type="submit" value="Search" />
+        Find by patient name: <input id="searchString" name="searchString" type="text">
+        <button type="submit" class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-search"></span> Search
+        </button>
     </p>
 }
 <table class="table table-striped">
@@ -59,7 +65,7 @@
             <td>
                 @if (item.BookingStatus == "Booking")
                 {
-                    @Html.ActionLink("Complete", "CheckToday", new { id = item.id}) <text> | </text>
+                    @*@Html.ActionLink("Complete", "CheckToday", new { id = item.id}) <text> | </text>*@
                     @Html.ActionLink("Cancel", "CancelToday", new { id = item.id})
                 }
                 else if (item.BookingStatus == "Completed")
