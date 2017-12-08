@@ -8,12 +8,30 @@ namespace DokterPraktekV2.Services
     public class bookingListServices
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-        public List<VM_bookList> BookingList()
+        public List<VM_bookList> SearchBookingList(string searchString)
         {
             var bookList = (from data in db.schedules
+                            where data.patient.name.Contains(searchString)
                             orderby data.dateSchedule , data.doctorId , data.bookingNumber
                             select new VM_bookList()
                             {
+                                id = data.id,
+                                NoBooking = data.bookingNumber,
+                                PatientName = data.patient.name,
+                                DoctorName = data.doctor.name,
+                                BookDate = data.dateSchedule,
+                                BookingStatus = data.bookingStatus,
+                            }).ToList();
+            return bookList;
+        }
+
+        public List<VM_bookList> BookingList()
+        {
+            var bookList = (from data in db.schedules
+                            orderby data.dateSchedule descending, data.doctorId, data.bookingNumber
+                            select new VM_bookList()
+                            {
+                                id = data.id,
                                 NoBooking = data.bookingNumber,
                                 PatientName = data.patient.name,
                                 DoctorName = data.doctor.name,
@@ -44,10 +62,29 @@ namespace DokterPraktekV2.Services
             var todayDate = DateTime.Today;
             var bookList = (from data in db.schedules
                             where data.dateSchedule == todayDate
-                            orderby data.id
+                            orderby data.dateSchedule, data.doctorId, data.bookingNumber
                             select new VM_bookList()
                             {
-                                NoBooking = data.id,
+                                id = data.id,
+                                NoBooking = data.bookingNumber,
+                                PatientName = data.patient.name,
+                                DoctorName = data.doctor.name,
+                                BookDate = data.dateSchedule,
+                                BookingStatus = data.bookingStatus,
+                            }).ToList();
+            return bookList;
+        }
+
+        public List<VM_bookList> SearchTodayBookingList(string searchString)
+        {
+            var todayDate = DateTime.Today;
+            var bookList = (from data in db.schedules
+                            where data.patient.name.Contains(searchString) && data.dateSchedule == todayDate
+                            orderby data.dateSchedule, data.doctorId, data.bookingNumber
+                            select new VM_bookList()
+                            {
+                                id = data.id,
+                                NoBooking = data.bookingNumber,
                                 PatientName = data.patient.name,
                                 DoctorName = data.doctor.name,
                                 BookDate = data.dateSchedule,

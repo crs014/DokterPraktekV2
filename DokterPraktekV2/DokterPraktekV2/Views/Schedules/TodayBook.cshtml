@@ -1,12 +1,22 @@
-﻿@model IEnumerable<DokterPraktekV2.Models.VM_bookList>
-
+﻿@model PagedList.IPagedList<DokterPraktekV2.Models.VM_bookList>
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Today Booking List";
 }
 
 <h2>Today's Patient Booking List</h2>
+@using (Html.BeginForm("TodayBook", "schedules", FormMethod.Get))
+{
+    <p>
+        <input id="searchString" name="searchString" type="text">
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table table-striped">
     <tr>
+        <th>
+            <label>Doctor Name</label>
+        </th>
         <th>
             <label>No Booking</label>
         </th>
@@ -14,7 +24,7 @@
             <label>Patient Name</label>
         </th>
         <th>
-            <label>Doctor Name</label>
+            <label>Patient ID</label>
         </th>
         <th>
             <label>Appointment Date</label>
@@ -29,14 +39,17 @@
     {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.DoctorName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.NoBooking)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PatientName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DoctorName)
-            </td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>   
             <td>
                 @item.BookDate.ToString("dd-MMM-yy")
             </td>
@@ -46,8 +59,8 @@
             <td>
                 @if (item.BookingStatus == "Booking")
                 {
-                    @Html.ActionLink("Complete", "Check", new { id = item.NoBooking }) <text> | </text>
-                    @Html.ActionLink("Cancel", "Cancel", new { id = item.NoBooking })
+                    @Html.ActionLink("Complete", "CheckToday", new { id = item.id}) <text> | </text>
+                    @Html.ActionLink("Cancel", "CancelToday", new { id = item.id})
                 }
                 else if (item.BookingStatus == "Completed")
                 {
@@ -62,3 +75,7 @@
     }
 
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))
