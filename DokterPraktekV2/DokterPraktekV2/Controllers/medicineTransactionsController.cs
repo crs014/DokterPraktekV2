@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2;
+using Microsoft.AspNet.Identity;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -17,11 +18,15 @@ namespace DokterPraktekV2.Controllers
         // GET: medicineTransactions
         public ActionResult Index()
         {
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
+            var op = db.medicineTransactions.Where(a => a.doctorId == ids.id).ToList();
+
             var b = db.medicineTransactions.Include(m => m.medicineId);
             ViewBag.a = b;
             var getMed = db.medicines.Include(a => a.doctor).Include(a => a.medicineTransactions);
             var medicineTransaction = db.medicineTransactions.Include(m => m.doctor).Include(m => m.medicine);
-            return View(medicineTransaction.ToList());
+            return View(op);
         }
 
         // GET: medicineTransactions/Details/5
