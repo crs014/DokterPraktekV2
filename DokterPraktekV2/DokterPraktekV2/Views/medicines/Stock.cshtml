@@ -38,10 +38,24 @@
                 @item.inStock
             </td>
             <td>
-                @item.outStock
+                @if(item.outStock == null)
+                {
+                    <p>0</p>
+                }
+                else
+                {
+                    @item.outStock
+                }
             </td>
             <td>
+               @if (item.remainStock == null)
+                {
+                <p>0</p>
+               }
+               else
+               {
                 @item.remainStock
+               }
             </td>
         </tr>
     }

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2;
 using System.Web.Security;
+using DokterPraktekV2.Models;
 using Microsoft.AspNet.Identity;
 
 namespace DokterPraktekV2.Controllers
@@ -20,13 +21,33 @@ namespace DokterPraktekV2.Controllers
         public ActionResult Index()
         {
             var idLog = User.Identity.GetUserId();
-            var ids = db.doctors.Where(m => m.userId == idLog);
-            foreach (var item in ids)
-            {
-                    ViewBag.id = item.id;
-            }
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
+            var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
+            var ap = db.medicines.Where(b => b.doctorId == ids.id);
+            
             var medicine = db.medicines.Include(m => m.doctor);
-            return View(medicine.ToList());
+
+            var data = db.medicines.Select(e => new VM_Stock
+            {
+                id = e.id,
+                name = e.name,
+                inStock = e.quantity,
+                outStock = e.patientMedicines.Sum(a => a.quantity),
+                remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
+            }).ToList();
+
+            
+
+            List<int> abc = new List<int>();
+            foreach (var item in op)
+            {
+                var ax = data.Where(x => x.id == item.id);
+                var po  = ax.Count();
+                abc.Add(po);
+                ViewBag.ax = ax.ToList();
+            }
+            ViewBag.Data = data;
+            return View(op);
         }
 
         // GET: medicines/Details/5
@@ -45,12 +66,8 @@ namespace DokterPraktekV2.Controllers
         }
 
         // GET: medicines/Create
-        public ActionResult Create(int id)
+        public ActionResult Create()
         {
-            var namaid = db.doctors.Find(id).name;
-            var idx = db.doctors.Find(id).id;
-            ViewBag.idx = idx;
-            ViewBag.ID = namaid;
             return View();
         }
 
@@ -59,21 +76,18 @@ namespace DokterPraktekV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "doctorId,name,price,quantity,dateIn,expired")] medicine medicine,[Bind(Include ="id,medicineId,doctorId,statusTransaction,quantity")] medicineTransaction medtrans)
+        public ActionResult Create([Bind(Include = "name,price,quantity,dateIn,expired")] medicine medicine,[Bind(Include ="id,medicineId,statusTransaction,quantity")] medicineTransaction medtrans)
         {
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
             medicine.dateIn = DateTime.Today;
             ViewBag.getData = db.medicineTransactions;
-            //if(medtrans.statusTransaction == true)
-            //{
-            //    medtrans.statusTransaction = true;
-            //}else
-            //{
-            //    medtrans.statusTransaction = true;
-            //}
             if (ModelState.IsValid)
             {
+                medtrans.doctorId = ids.id;
                 medtrans.statusTransaction = true;
                 db.medicineTransactions.Add(medtrans);
+                medicine.doctorId = ids.id;
                 db.medicines.Add(medicine);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -140,6 +154,25 @@ namespace DokterPraktekV2.Controllers
             db.medicines.Remove(medicine);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        public ActionResult Stock()
+        {
+           
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
+            var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
+
+            var data = db.medicines.Select(e => new VM_Stock
+            {
+                id = e.id,
+                name = e.name,
+                inStock = e.quantity,
+                outStock = e.patientMedicines.Sum(a => a.quantity),
+                remainStock = e.quantity - e.patientMedicines.Sum(a=>a.quantity)
+            }).ToList();
+            ViewBag.Data = data;
+            
+            return View(data);
         }
 
         protected override void Dispose(bool disposing)

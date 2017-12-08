@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DokterPraktekV2.Models;
+using DokterPraktekV2;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -17,9 +18,12 @@ namespace DokterPraktekV2.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        ApplicationDbContext context;
+        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
 
         public AccountController()
         {
+            context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -136,35 +140,51 @@ namespace DokterPraktekV2.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "superuser")]
         public ActionResult Register()
         {
+            ViewBag.userRole = new SelectList(context.Roles.Where(u => !u.Name.Contains("superuser"))
+                                    .ToList(), "Name", "Name");
             return View();
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "superuser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Name , Email = model.Email, PhoneNumber = model.Phone };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                    await UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+                    if(model.UserRoles == "doctor")
+                    {
+                        doctor doctors = new doctor();
+                        doctors.name = model.Name;
+                        doctors.homeAddress = model.Address;
+                        doctors.userId = user.Id;
+                        doctors.phone = model.Phone;
+                        doctors.gender = model.Gender;
+                        db.doctors.Add(doctors);
+                        db.SaveChanges();
+                        
+                    }
                     return RedirectToAction("Index", "Home");
                 }
+                ViewBag.userRole = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
+                                  .ToList(), "Name", "Name");
                 AddErrors(result);
             }
 

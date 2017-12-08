@@ -31,6 +31,9 @@
         <th>
             @Html.DisplayNameFor(model => model.doctor.name)
         </th>
+        <th>
+            Stock Sisa
+        </th>
         <th></th>
     </tr>
 
@@ -54,9 +57,21 @@
         <td>
             @Html.DisplayFor(modelItem => item.doctor.name)
         </td>
+        @*<td>
+            @foreach (var stk in ViewBag.Data)
+            {
+                if (stk.remainStock == null)
+                {
+                    <p>0</p>
+                }
+                else
+                {
+                    <p>@stk.remainStock</p>
+                }
+            }
+        </td>*@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.id })
         </td>
     </tr>
