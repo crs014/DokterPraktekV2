@@ -16,6 +16,7 @@ namespace DokterPraktekV2.Controllers
 {
     public class doctorsController : Controller
     {
+        private dayInServices dys = new dayInServices();
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private DoctorService doctorService = new DoctorService();
         private PatientServices patientService = new PatientServices();
@@ -99,7 +100,6 @@ namespace DokterPraktekV2.Controllers
             }
             return RedirectToAction("Index");
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

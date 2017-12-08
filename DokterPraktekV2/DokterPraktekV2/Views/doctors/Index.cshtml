@@ -9,6 +9,9 @@
 <table class="table table-bordered table-striped">
     <tr>
         <th>
+            No booking
+        </th>
+        <th>
             patient name
         </th>
         <th>
@@ -23,6 +26,9 @@
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @item.bookingNumber
+            </td>
             <td>
                 @item.patient.name
             </td>
