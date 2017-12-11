@@ -9,7 +9,7 @@
                 <h4 class="modal-title">Medicine List</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered table-bordered" id="tableMedicine">
+                <table class="table table-striped table-bordered table-bordered" id="tableMedicine">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -19,24 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in @ViewBag.MedicineList)
-                        {
-                            <tr>
-                                <td class="nameMedic">
-                                    @item.name
-                                </td>
-                                <td>
-                                    @item.price
-                                </td>
-                                <td>
-                                    @item.expired
-                                </td>
-                                <td>
-                                    <input type="button" class="addMedic btn btn-primary" value="Add item" data-dismiss="modal"/>
-                                    <input type="hidden" class="idMedic" value="@item.id"/>
-                                </td>
-                            </tr>
-                        }
+                    
                     </tbody>
                 </table>
             </div>
