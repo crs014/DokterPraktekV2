@@ -1,11 +1,13 @@
-﻿@model  PagedList.IPagedList<DokterPraktekV2.doctor>
+﻿@model  PagedList.IPagedList<DokterPraktekV2.patient>
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "Doctor";
+    ViewBag.Title = "allPatient";
 }
 
-<h2>List Doctor</h2>
-<form action="/SuperUser/Doctor" method="get">
+
+<h2>Patient List</h2>
+<br />
+<form action="/Patients/allPatient" method="get">
     <p>
         Find by name: <input id="SearchString" name="SearchString" type="text">
         <input type="submit" value="Search">
@@ -26,7 +28,6 @@
             <th>
                 gender
             </th>
-            <th>Action</th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -47,13 +48,14 @@
                 else
                 {<p>pria</p>}
             </td>
-            <td>
-                <a href="/SuperUser/DoctorDetail/@item.id"><button class="btn btn-info">Detail</button></a>
-            </td>
         </tr>
     }
 </table>
 <br />
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Doctor",
+@Html.PagedListPager(Model, page => Url.Action("allPatient",
     new { page, currentFilter = ViewBag.CurrentFilter }))
+
+
+
+

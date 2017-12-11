@@ -7,22 +7,23 @@
 <h2>Today Schedule Doctor @ViewBag.Doctor.name</h2>
 
 <table class="table table-bordered table-striped">
-    <tr>
-        <th>
-            No booking
-        </th>
-        <th>
-            patient name
-        </th>
-        <th>
-            booking status
-        </th>
-        <th>
-            gender
-        </th>
-        <th>Action</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>
+                No booking
+            </th>
+            <th>
+                patient name
+            </th>
+            <th>
+                booking status
+            </th>
+            <th>
+                gender
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
     @foreach (var item in Model)
     {
         <tr>
@@ -42,7 +43,7 @@
                 {<p>pria</p>}
             </td>
             <td>
-                <a href="/Doctors/InputHistory/@item.id">Input History</a>
+                <a href="/Doctors/InputHistory/@item.id"><button class="btn btn-primary">Input history</button></a>
             </td>
         </tr>
     }

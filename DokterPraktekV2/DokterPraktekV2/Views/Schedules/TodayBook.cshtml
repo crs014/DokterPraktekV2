@@ -18,29 +18,30 @@
         </button>
     </p>
 }
-<table class="table table-striped">
-    <tr>
-        <th>
-            <label>Doctor Name</label>
-        </th>
-        <th>
-            <label>No Booking</label>
-        </th>
-        <th>
-            <label>Patient Name</label>
-        </th>
-        <th>
-            <label>Patient ID</label>
-        </th>
-        <th>
-            <label>Appointment Date</label>
-        </th>
-        <th>
-            Booking Status
-        </th>
-        <th></th>
-    </tr>
-
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Doctor Name
+            </th>
+            <th>
+                No Booking
+            </th>
+            <th>
+                Patient Name
+            </th>
+            <th>
+                Patient ID
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Booking Status
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
     @foreach (var item in Model)
     {
         <tr>
