@@ -6,9 +6,18 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .table {
+            background-color : white;
+        }
 
+        .table thead {
+            background-color : black;
+            color : white;
+        }
+    </style>
 </head>
-<body>
+<body style="background-color:#f0e9ee">
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -17,29 +26,31 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Clinic", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (User.IsInRole("doctor"))
                     {
-                        <li>@Html.ActionLink("Doctors", "Index", "doctors")</li>
+                        <li>@Html.ActionLink("Today Schedule", "Index", "doctors")</li>
                         <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
                         <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
+                        <li>@Html.ActionLink("Patients","Index", "patients")</li>
                     }
                     else if (User.IsInRole("admin"))
                     {
                         <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
-                        <li>@Html.ActionLink("Booking Index", "Index", "schedules")</li>
+                        <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
+                        <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
                     }
                     else if (User.IsInRole("superuser"))
                     {
-                        <li>@Html.ActionLink("Doctors", "Index", "doctors")</li>
-                        <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
-                        <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
+                        <li>@Html.ActionLink("List doctors", "Doctor", "SuperUser")</li>
+                        <li>@Html.ActionLink("List admins", "Admin", "SuperUser")</li>
+                        <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
                         <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
-                        <li>@Html.ActionLink("Patients", "Index", "patients")</li>
-                        <li>@Html.ActionLink("Booking Index", "Index", "schedules")</li>
+                        <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
+                        
                     }
                     else
                     {
