@@ -7,22 +7,23 @@
 <h2>Data IN/OUT - Transaksi</h2>
 
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.statusTransaction)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.quantity)
-        </th>
-        <th>
-            Nama Dokter
-        </th>
-        <th>
-            Nama Obat
-        </th>
-        <th></th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.statusTransaction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.quantity)
+            </th>
+            <th>
+                Nama Dokter
+            </th>
+            <th>
+                Nama Obat
+            </th>
+            <th></th>
+        </tr>
+    </thead>
 @foreach (var item in Model) {
     <tr>
         

@@ -10,32 +10,34 @@
    @*@Html.ActionLink("STOCK","Stock","medicines",new { @class = "btn btn-primary" })*@
 </p>
 <table class="table">
-    <tr>
-        <th>
-            Nama Obat
-        </th>
-        <th>
-            Harga
-        </th>
-        <th>
-            Stock Masuk
-        </th>
-        <th>
-            Tanggal Masuk
-        </th>
-        <th>
-            Tanggal Kadaluarsa
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Stock Sisa
-        </th>
-        <th>
-            Delete
-        </th>
-    </tr>
+    <thead>
+        <tr>
+            <th>
+                Nama Obat
+            </th>
+            <th>
+                Harga
+            </th>
+            <th>
+                Stock Masuk
+            </th>
+            <th>
+                Tanggal Masuk
+            </th>
+            <th>
+                Tanggal Kadaluarsa
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Stock Sisa
+            </th>
+            <th>
+                Delete
+            </th>
+        </tr>
+    </thead>
 @{
     int i = 0;
     foreach (var item in ViewBag.Data)
