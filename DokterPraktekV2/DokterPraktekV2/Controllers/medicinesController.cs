@@ -22,30 +22,23 @@ namespace DokterPraktekV2.Controllers
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
+            ViewBag.ids = ids.id;
             var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
             var ap = db.medicines.Where(b => b.doctorId == ids.id);
-            
             var medicine = db.medicines.Include(m => m.doctor);
 
             var data = db.medicines.Select(e => new VM_Stock
             {
                 id = e.id,
-                name = e.name,
+                doctorId = e.doctorId,
+                nameMedicine = e.name,
+                price = e.price,
+                dateIn = e.dateIn,
+                expired = e.expired,
                 inStock = e.quantity,
                 outStock = e.patientMedicines.Sum(a => a.quantity),
                 remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
-            }).ToList();
-
-            
-
-            List<int> abc = new List<int>();
-            foreach (var item in op)
-            {
-                var ax = data.Where(x => x.id == item.id);
-                var po  = ax.Count();
-                abc.Add(po);
-                ViewBag.ax = ax.ToList();
-            }
+            }).ToList().Where(a=>a.doctorId == ids.id);
             ViewBag.Data = data;
             return View(op);
         }
@@ -165,7 +158,11 @@ namespace DokterPraktekV2.Controllers
             var data = db.medicines.Select(e => new VM_Stock
             {
                 id = e.id,
-                name = e.name,
+                doctorId = e.doctorId,
+                nameMedicine = e.name,
+                price = e.price,
+                dateIn = e.dateIn,
+                expired = e.expired,
                 inStock = e.quantity,
                 outStock = e.patientMedicines.Sum(a => a.quantity),
                 remainStock = e.quantity - e.patientMedicines.Sum(a=>a.quantity)

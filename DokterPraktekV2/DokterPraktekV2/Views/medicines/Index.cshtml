@@ -1,77 +1,67 @@
 ﻿@model IEnumerable<DokterPraktekV2.medicine>
 
 @{
-    ViewBag.Title = "ObatDB";
+    ViewBag.Title = "Obat";
 }
 
 <h2>Data Obat Dokter</h2>
 
-<p>@Html.ActionLink("Insert Obat", "Create")
-   @Html.ActionLink("STOCK","Stock","medicines",new { @class = "btn btn-primary" }) 
-   @*@Html.ActionLink("Insert Obat", "Create","medicineTransactions", new { @class = "btn btn-success" })<br />
-   @Html.ActionLink("Data In/Out","Index","medicineTransactions", new { @class = "btn btn-primary" })<br />*@
+<p>@Html.ActionLink("Insert Obat", "Create","medicines", new { @class = "btn btn-primary" })
+   @*@Html.ActionLink("STOCK","Stock","medicines",new { @class = "btn btn-primary" })*@
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.name)
+            Nama Obat
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.price)
+            Harga
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.quantity)
+            Stock Masuk
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.dateIn)
+            Tanggal Masuk
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.expired)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.doctor.name)
+            Tanggal Kadaluarsa
         </th>
         <th>
             Stock Sisa
         </th>
-        <th></th>
+        <th>
+            Delete
+        </th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in ViewBag.Data) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.name)
+            @item.nameMedicine
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.price)
+            @item.price
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.quantity)
+            @item.inStock
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.dateIn)
+            @item.dateIn
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.expired)
+            @item.expired
+        </td>
+        <td>@if(item.remainStock == null)
+        {
+            <p>0</p>
+        }
+        else
+        {
+            @item.remainStock
+        }
+            
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.doctor.name)
-        </td>
-        @*<td>
-            @foreach (var stk in ViewBag.Data)
-            {
-                if (stk.remainStock == null)
-                {
-                    <p>0</p>
-                }
-                else
-                {
-                    <p>@stk.remainStock</p>
-                }
-            }
-        </td>*@
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.id })
         </td>
     </tr>
