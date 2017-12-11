@@ -22,9 +22,7 @@ namespace DokterPraktekV2.Controllers
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            ViewBag.ids = ids.id;
             var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
-            var ap = db.medicines.Where(b => b.doctorId == ids.id);
             var medicine = db.medicines.Include(m => m.doctor);
 
             var data = db.medicines.Select(e => new VM_Stock
@@ -40,6 +38,31 @@ namespace DokterPraktekV2.Controllers
                 remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
             }).ToList().Where(a=>a.doctorId == ids.id);
             ViewBag.Data = data;
+
+            DateTime estimatedDate;
+            estimatedDate = DateTime.Now.Date.AddDays(30);
+            List<string> listWarna = new List<string>();
+            List<string> listStatus = new List<string>();
+            foreach (var item in data)
+            {
+                if (estimatedDate >= item.expired)
+                {
+                    var warna = "red";
+                    var status = "Expired in 1 Month";
+                    listWarna.Add(warna);
+                    listStatus.Add(status);
+                }
+                else
+                {
+                    var warna = "green";
+                    var status = "Secure";
+                    listWarna.Add(warna);
+                    listStatus.Add(status);
+                    
+                }
+            }
+            ViewBag.warna = listWarna;
+            ViewBag.status = listStatus;
             return View(op);
         }
 

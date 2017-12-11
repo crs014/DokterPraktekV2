@@ -6,7 +6,7 @@
 
 <h2>Data Obat Dokter</h2>
 
-<p>@Html.ActionLink("Insert Obat", "Create","medicines", new { @class = "btn btn-primary" })
+<p>@Html.ActionLink("Insert Obat", "Create", "medicines", new { @class = "btn btn-primary" })
    @*@Html.ActionLink("STOCK","Stock","medicines",new { @class = "btn btn-primary" })*@
 </p>
 <table class="table">
@@ -27,44 +27,54 @@
             Tanggal Kadaluarsa
         </th>
         <th>
+            Status
+        </th>
+        <th>
             Stock Sisa
         </th>
         <th>
             Delete
         </th>
     </tr>
-
-@foreach (var item in ViewBag.Data) {
+@{
+    int i = 0;
+    foreach (var item in ViewBag.Data)
+    {
     <tr>
+        
+            <td>
+                <font color="@ViewBag.warna[i]">@item.nameMedicine</font>
+            </td>
+            <td>
+                @item.price
+            </td>
+            <td>
+                @item.inStock
+            </td>
+            <td>
+                @item.dateIn
+            </td>
+            <td>
+                <font color="@ViewBag.warna[i]">@item.expired</font>
+            </td>
         <td>
-            @item.nameMedicine
+            <font color="@ViewBag.warna[i]">@ViewBag.status[i]</font>
         </td>
-        <td>
-            @item.price
-        </td>
-        <td>
-            @item.inStock
-        </td>
-        <td>
-            @item.dateIn
-        </td>
-        <td>
-            @item.expired
-        </td>
-        <td>@if(item.remainStock == null)
-        {
-            <p>0</p>
-        }
-        else
-        {
-            @item.remainStock
-        }
-            
-        </td>
-        <td>
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
+            <td>
+                @if (item.remainStock == null)
+            {
+                @item.inStock
+                }
+                else
+                {
+                @item.remainStock
+                }
+            </td>
+            <td>
+            @Html.ActionLink("Delete", "Delete", new { id = item.id })
+            </td>
     </tr>
-}
-
+            i++;
+        }
+    }
 </table>
