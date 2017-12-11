@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2.Models;
 using DokterPraktekV2.Services;
+using PagedList;
 namespace DokterPraktekV2.Controllers
 {
 
@@ -17,18 +18,50 @@ namespace DokterPraktekV2.Controllers
 
         #region Get List Booking
         // GET: Schedules
-        public ActionResult Index()
+        public ActionResult Index(string searchString , string currentFilter , int? page)
         {
             var book = BookListService.BookingList();
-            return View(book);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+            if(!String.IsNullOrEmpty(searchString))
+            {
+                book = BookListService.SearchBookingList(searchString);
+            }
+            int pageNumber = (page ?? 1);
+            int pageSize = 15;
+            ViewBag.TotalBook = book.Count();
+            return View(book.ToPagedList(pageNumber, pageSize));
         }
         #endregion
 
         #region Get Today Booking List
-        public ActionResult TodayBook()
+        public ActionResult TodayBook(string searchString, string currentFilter, int? page)
         {
             var book = BookListService.TodayBookingList();
-            return View(book);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                book = BookListService.SearchTodayBookingList(searchString);
+            }
+            ViewBag.TotalBook = book.Count();
+            int pageNumber = (page ?? 1);
+            int pageSize = 10;
+            return View(book.ToPagedList(pageNumber, pageSize));
         }
         #endregion
 
@@ -93,24 +126,45 @@ namespace DokterPraktekV2.Controllers
         }
         #endregion
 
+        #region Cancel Today Status Booking
+        public ActionResult CancelToday(int id)
+        {
+            var bookingInfo = db.schedules.First(s => s.id == id);
+            bookingInfo.bookingStatus = "Cancelled";
+            db.SaveChanges();
+            return RedirectToAction("TodayBook");
+        }
+
+        #endregion
+
         #region Cancel Status Booking
-        public ActionResult Cancel(int id)
+        public ActionResult CancelIndex(int id)
         {
             var bookingInfo = db.schedules.First(s => s.id == id);
             bookingInfo.bookingStatus = "Cancelled";
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
         #endregion
 
         #region Check Status Booking
-        public ActionResult Check(int id)
+        public ActionResult CheckIndex(int id)
         {
             var bookingInfo = db.schedules.First(s => s.id == id);
             bookingInfo.bookingStatus = "Completed";
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        #region Check Today Status Booking
+        public ActionResult CheckToday(int id)
+        {
+            var bookingInfo = db.schedules.First(s => s.id == id);
+            bookingInfo.bookingStatus = "Completed";
+            db.SaveChanges();
+            return RedirectToAction("TodayBook");
         }
 
         #endregion

@@ -1,57 +1,54 @@
-﻿@model  PagedList.IPagedList<DokterPraktekV2.schedule>
+﻿@model  PagedList.IPagedList<DokterPraktekV2.admin>
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "TodayPatient";
+    ViewBag.Title = "Doctor";
 }
 
-<h2>Today Schedule Doctor @ViewBag.Doctor.name</h2>
-
+<h2>List Admin</h2>
+<form action="/SuperUser/Doctor" method="get">
+    <p>
+        Find by name: <input id="SearchString" name="SearchString" type="text">
+        <input type="submit" value="Search">
+    </p>
+</form>
 <table class="table table-bordered table-striped">
     <tr>
         <th>
-            No booking
+            name
         </th>
         <th>
-            patient name
+            address
         </th>
         <th>
-            booking status
+            phone
         </th>
         <th>
             gender
         </th>
-        <th>Action</th>
     </tr>
 
     @foreach (var item in Model)
     {
         <tr>
             <td>
-                @item.bookingNumber
+                @item.name
             </td>
             <td>
-                @item.patient.name
+                @item.address
             </td>
             <td>
-                @item.bookingStatus
+                @item.phone
             </td>
             <td>
-                @if (item.patient.gender == false)
+                @if (item.gender == false)
                 {<p>wanita</p>}
                 else
                 {<p>pria</p>}
-            </td>
-            <td>
-                <a href="/Doctors/InputHistory/@item.id">Input History</a>
             </td>
         </tr>
     }
 </table>
 <br />
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Index",
+@Html.PagedListPager(Model, page => Url.Action("Admin",
     new { page, currentFilter = ViewBag.CurrentFilter }))
-
-
-
-

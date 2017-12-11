@@ -42,7 +42,45 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#tableMedicine").DataTable();
+            $("#tableMedicine").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                info: false,
+                ajax: {
+                    url: "/Doctors/GetMedicine",
+                    type: "POST"
+                },
+                columns: [
+                    {
+                        data: 'name',
+                        render: function (name) {
+                            return "<div class='nameMedic'>" + name + "</div>";
+                        }
+                    },
+                    {
+                        data: 'price',
+                        render: function (price) {
+                            return price;
+                        }
+                    },
+                    {
+                        data: 'expired',
+                        render: function (expired) {
+                            return expired;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: function (id) {
+                            var btn = "<input type='button' class='addMedic btn btn-primary' value='Add item' data-dismiss='modal'/>";
+                            var hdn = "<input type='hidden' class='idMedic' value="+id+"/>";
+                            return btn + hdn;
+                        }
+                    }
+                ],
+                ordering: false
+            });
 
             $("#tableMedicine").on("click", ".addMedic", function () {
                 var tr = $(this).parent().parent();

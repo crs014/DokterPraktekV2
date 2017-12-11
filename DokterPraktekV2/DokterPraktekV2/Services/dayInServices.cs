@@ -8,7 +8,7 @@ namespace DokterPraktekV2.Services
     public class dayInServices
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-        //
+        
         public docInfo DoctorNames(int id)
         {
             var docNames = (from doc in db.doctors
@@ -38,6 +38,7 @@ namespace DokterPraktekV2.Services
 
         public List<VM_doctorList>ListWorkDays()
         {
+            
             var doctors = (from doc in db.doctors
                            select new VM_doctorList()
                            {

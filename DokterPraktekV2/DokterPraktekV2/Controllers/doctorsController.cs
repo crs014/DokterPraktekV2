@@ -16,6 +16,7 @@ namespace DokterPraktekV2.Controllers
 {
     public class doctorsController : Controller
     {
+        private dayInServices dys = new dayInServices();
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private DoctorService doctorService = new DoctorService();
         private PatientServices patientService = new PatientServices();
@@ -45,9 +46,53 @@ namespace DokterPraktekV2.Controllers
         public ActionResult InputHistory(int id)
         {  
             var data = doctorService.scheduleDetail(id);
-            ViewBag.MedicineList = doctorService.getDoctorMedicine(data.doctorId);
             return View(data);
         }
+
+      
+
+        public ActionResult GetMedicine()
+        {
+            var authId = User.Identity.GetUserId();
+            doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == authId);
+
+            //request dari clientside datatables
+            int start = Convert.ToInt32(Request["start"]);
+            int length = Convert.ToInt32(Request["length"]);
+            string searchValue = Request["search[value]"];
+            string sortColumnName = Request["columns[" + Request["order[0][column]"] + "][name]"];
+            string sortDirection = Request["order[0][dir]"];
+
+            //ambil data awal
+            List<medicine> medicines = new List<medicine>();
+            medicines = doctorService.getDoctorMedicine(dataDoctor.id);
+            int total = medicines.Count();
+
+            //jika searchbox tidak kosong ekseskusi dibawah
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                medicines = medicines.Where(x =>
+                    x.name.ToLower().Contains(searchValue)
+                ).ToList<medicine>();
+            }
+            int totalFilter = medicines.Count();
+
+            //sorting
+            //customers = customers.OrderBy(e => sortColumnName).ToList<Customer>();
+
+            //paging 
+            medicines = medicines.Skip(start).Take(length).ToList<medicine>();
+
+            return Json(new
+            {
+                recordsTotal = total,
+                recordsFiltered = totalFilter,
+                data = medicines,
+                draw = Request["draw"]
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+
 
         [ActionName("InputHistory"), HttpPost, Authorize(Roles = "doctor")]
         public ActionResult PostInputHistory(int id, VM_inputHistory history)
@@ -99,7 +144,6 @@ namespace DokterPraktekV2.Controllers
             }
             return RedirectToAction("Index");
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

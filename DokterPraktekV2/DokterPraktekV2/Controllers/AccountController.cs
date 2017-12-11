@@ -181,6 +181,18 @@ namespace DokterPraktekV2.Controllers
                         db.SaveChanges();
                         
                     }
+                    if (model.UserRoles == "admin")
+                    {
+                        admin admins = new admin();
+                        admins.name = model.Name;
+                        admins.address = model.Address;
+                        admins.userId = user.Id;
+                        admins.phone = model.Phone;
+                        admins.gender = model.Gender;
+                        db.admins.Add(admins);
+                        db.SaveChanges();
+
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 ViewBag.userRole = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))

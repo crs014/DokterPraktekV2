@@ -21,12 +21,32 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Create Booking", "Create", "schedules")</li>
-                    <li>@Html.ActionLink("Booking List", "Index", "schedules")</li>
-                    <li>@Html.ActionLink("Doctors", "Index", "doctors")</li>
-                    <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
-                    <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
-                    <li>@Html.ActionLink("Patients", "Index", "patients")</li>
+                    @if (User.IsInRole("doctor"))
+                    {
+                        <li>@Html.ActionLink("Doctors", "Index", "doctors")</li>
+                        <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
+                        <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
+                    }
+                    else if (User.IsInRole("admin"))
+                    {
+                        <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
+                        <li>@Html.ActionLink("Booking Index", "Index", "schedules")</li>
+                    }
+                    else if (User.IsInRole("superuser"))
+                    {
+                        <li>@Html.ActionLink("Doctors", "Index", "doctors")</li>
+                        <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
+                        <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
+                        <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
+                        <li>@Html.ActionLink("Patients", "Index", "patients")</li>
+                        <li>@Html.ActionLink("Booking Index", "Index", "schedules")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Book Now !", "Select", "schedules")</li>
+                    }
+
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
