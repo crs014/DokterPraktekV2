@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using DokterPraktekV2;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -16,17 +17,25 @@ namespace DokterPraktekV2.Controllers
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
 
         // GET: medicineTransactions
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
             var op = db.medicineTransactions.Where(a => a.doctorId == ids.id).ToList();
-
             var b = db.medicineTransactions.Include(m => m.medicineId);
             ViewBag.a = b;
+
+            //paged list
+            int pageSize = 5;
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            IPagedList<medicineTransaction> listTrans = null;
+
             var getMed = db.medicines.Include(a => a.doctor).Include(a => a.medicineTransactions);
             var medicineTransaction = db.medicineTransactions.Include(m => m.doctor).Include(m => m.medicine);
-            return View(op);
+            listTrans = op.ToPagedList(pageIndex, pageSize); //goto pagedlist and return it
+
+            return View(listTrans);
         }
 
         // GET: medicineTransactions/Details/5

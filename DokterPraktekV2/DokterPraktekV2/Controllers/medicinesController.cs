@@ -10,6 +10,7 @@ using DokterPraktekV2;
 using System.Web.Security;
 using DokterPraktekV2.Models;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -18,7 +19,7 @@ namespace DokterPraktekV2.Controllers
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         
         // GET: medicines
-        public ActionResult Index()
+        public ActionResult Index(int? page,string search,string option)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
@@ -37,7 +38,7 @@ namespace DokterPraktekV2.Controllers
                 outStock = e.patientMedicines.Sum(a => a.quantity),
                 remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
             }).ToList().Where(a=>a.doctorId == ids.id);
-            ViewBag.Data = data;
+
 
             DateTime estimatedDate;
             estimatedDate = DateTime.Now.Date.AddDays(30);
@@ -63,7 +64,21 @@ namespace DokterPraktekV2.Controllers
             }
             ViewBag.warna = listWarna;
             ViewBag.status = listStatus;
-            return View(op);
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                data = data.Where(s => s.nameMedicine.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            //paged List
+            int pageSize = 5;
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            IPagedList<VM_Stock> listTrans = null;
+            listTrans = data.ToPagedList(pageIndex, pageSize);
+
+           
+            return View(listTrans);
         }
 
         // GET: medicines/Details/5
@@ -195,6 +210,56 @@ namespace DokterPraktekV2.Controllers
             return View(data);
         }
 
+        public ActionResult DataTable()
+        {
+            var authId = User.Identity.GetUserId();
+            doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == authId);
+
+            //request dari clientside datatables
+            int start = Convert.ToInt32(Request["start"]);
+            int length = Convert.ToInt32(Request["length"]);
+            string searchValue = Request["search[value]"];
+            string sortColumnName = Request["columns[" + Request["order[0][column]"] + "][name]"];
+            string sortDirection = Request["order[0][dir]"];
+
+            //ambil data awal
+            List<VM_Stock> medicines = new List<VM_Stock>();
+            DateTime estimatedDate = DateTime.Now.Date.AddDays(7);
+            medicines = db.medicines
+                .Where(e => e.doctorId == dataDoctor.id && estimatedDate <= e.expired)
+                .Select(e => new VM_Stock
+                {
+                    id = e.id,
+                    doctorId = e.doctorId,
+                    nameMedicine = e.name,
+                    price = e.price,
+                    dateIn = e.dateIn,
+                    expired = e.expired,
+                    inStock = e.quantity,
+                    outStock = e.patientMedicines.Sum(a => a.quantity),
+                    remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
+                }).Where(a => a.remainStock > 0 || a.remainStock == null).ToList();
+            int total = medicines.Count();
+
+            //jika searchbox tidak kosong ekseskusi dibawah
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                medicines = medicines
+                    .Where(x => x.nameMedicine.ToLower().Contains(searchValue) && x.doctorId == dataDoctor.id)
+                    .ToList();
+            }
+            int totalFilter = medicines.Count();
+
+            medicines = medicines.Skip(start).Take(length).ToList();
+
+            return Json(new
+            {
+                recordsTotal = total,
+                recordsFiltered = totalFilter,
+                data = medicines,
+                draw = Request["draw"]
+            }, JsonRequestBehavior.AllowGet);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
