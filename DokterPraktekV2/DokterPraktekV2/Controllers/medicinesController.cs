@@ -195,6 +195,56 @@ namespace DokterPraktekV2.Controllers
             return View(data);
         }
 
+        public ActionResult DataTable()
+        {
+            var authId = User.Identity.GetUserId();
+            doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == authId);
+
+            //request dari clientside datatables
+            int start = Convert.ToInt32(Request["start"]);
+            int length = Convert.ToInt32(Request["length"]);
+            string searchValue = Request["search[value]"];
+            string sortColumnName = Request["columns[" + Request["order[0][column]"] + "][name]"];
+            string sortDirection = Request["order[0][dir]"];
+
+            //ambil data awal
+            List<VM_Stock> medicines = new List<VM_Stock>();
+            DateTime estimatedDate = DateTime.Now.Date.AddDays(7);
+            medicines = db.medicines
+                .Where(e => e.doctorId == dataDoctor.id && estimatedDate <= e.expired)
+                .Select(e => new VM_Stock
+                {
+                    id = e.id,
+                    doctorId = e.doctorId,
+                    nameMedicine = e.name,
+                    price = e.price,
+                    dateIn = e.dateIn,
+                    expired = e.expired,
+                    inStock = e.quantity,
+                    outStock = e.patientMedicines.Sum(a => a.quantity),
+                    remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
+                }).Where(a => a.remainStock > 0 || a.remainStock == null).ToList();
+            int total = medicines.Count();
+
+            //jika searchbox tidak kosong ekseskusi dibawah
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                medicines = medicines
+                    .Where(x => x.nameMedicine.ToLower().Contains(searchValue) && x.doctorId == dataDoctor.id)
+                    .ToList();
+            }
+            int totalFilter = medicines.Count();
+
+            medicines = medicines.Skip(start).Take(length).ToList();
+
+            return Json(new
+            {
+                recordsTotal = total,
+                recordsFiltered = totalFilter,
+                data = medicines,
+                draw = Request["draw"]
+            }, JsonRequestBehavior.AllowGet);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

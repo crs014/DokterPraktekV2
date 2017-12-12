@@ -30,7 +30,7 @@
             <tr>
                 <th>Medicine name</th>
                 <th>Quantity</th>
-                <th>Medicine describe</th>
+                <th>dosis</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -42,32 +42,44 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#tableMedicine").DataTable({
+           var table = $("#tableMedicine").DataTable({
                 processing: true,
                 serverSide: true,
+                columnDefs : [{                    
+                    "targets": 0
+                }],
                 paging: true,
                 info: false,
                 ajax: {
-                    url: "/Doctors/GetMedicine",
+                    url: "/medicines/DataTable",
                     type: "POST"
                 },
                 columns: [
                     {
-                        data: 'name',
+                        data: 'nameMedicine',
                         render: function (name) {
                             return "<div class='nameMedic'>" + name + "</div>";
                         }
                     },
                     {
-                        data: 'price',
-                        render: function (price) {
-                            return price;
-                        }
+                        data: 'price'
                     },
                     {
-                        data: 'expired',
-                        render: function (expired) {
-                            return expired;
+                        data: 'inStock',
+                        name: 'quantity',
+                        visible: false
+                    },
+                    {
+                        data: "remainStock",
+                        render: function (stock) {
+                            var leng = table.data().length - 1;
+                            var dataReturn;
+                            if (stock == null) {
+                                dataReturn = table.data()[leng].inStock;
+                            } else {
+                                dataReturn = stock;
+                            }
+                            return "<div class='maxQty'>"+dataReturn+"</div>";
                         }
                     },
                     {
@@ -86,9 +98,9 @@
                 var tr = $(this).parent().parent();
                 var name = tr.find(".nameMedic").text();
                 var id = tr.find(".idMedic").val();
-
+                var maxQty = tr.find(".maxQty").text();
                 var dataId = "<tr><td>" + name + " <input type='hidden' name='medicineId[]' min='1' value='" + id + "' class='form-control' required/></td>";
-                var dataQty = "<td><input type='number' class='form-control' name='quantity[]' min='1' required/></td>";
+                var dataQty = "<td><input type='number' class='form-control' name='quantity[]' min='1' max='" + maxQty + "' required/></td>";
                 var dataDes = "<td><input type='text' class='form-control' name='describeMedic[]' required/></td>";
                 var dataAct = "<td><input type='button' class='btn btn-danger removeItem' value='remove'></td></tr>";
                 $("#medicineCart").append(dataId + dataQty + dataDes + dataAct);
