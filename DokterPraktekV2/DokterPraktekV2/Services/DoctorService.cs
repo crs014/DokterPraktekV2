@@ -20,7 +20,7 @@ namespace DokterPraktekV2.Services
         public List<schedule> TodaySchedule(int id)
         {
             var data = db.schedules.Where(
-                e => e.doctorId == id && e.dateSchedule == DateTime.Today.Date
+                e => e.doctorId == id && e.dateSchedule == DateTime.Today.Date && e.bookingStatus != "Completed"
                 ).ToList();
             return data;
         }

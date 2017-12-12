@@ -113,8 +113,7 @@ namespace DokterPraktekV2.Controllers
             db.SaveChanges();
             id_history = historys.id;
 
-          
-            if(history.medicineId != null)
+            try
             {
                 int leng = history.medicineId.Count();
                 for (var i = 0; i < leng; i++)
@@ -142,6 +141,10 @@ namespace DokterPraktekV2.Controllers
                     db.SaveChanges();
                 }
             }
+            catch(Exception e)
+            {
+                return RedirectToAction("Index");
+            }   
             return RedirectToAction("Index");
         }
         protected override void Dispose(bool disposing)
