@@ -1,4 +1,6 @@
-﻿@model IEnumerable<DokterPraktekV2.medicineTransaction>
+﻿@*@model IEnumerable<DokterPraktekV2.medicineTransaction>*@
+@using PagedList.Mvc
+@model  PagedList.IPagedList<DokterPraktekV2.medicineTransaction>
 
 @{
     ViewBag.Title = "Index";
@@ -10,10 +12,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.statusTransaction)
+                Status Transaksi
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.quantity)
+                QTY
             </th>
             <th>
                 Nama Obat
@@ -32,7 +34,6 @@
             {
                 <font color="red"><p>OUT</p></font>
             }
-            @*@Html.DisplayFor(modelItem => item.statusTransaction)*@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.quantity)
@@ -44,6 +45,13 @@
             @Html.ActionLink("Delete", "Delete", new { id=item.id })
         </td>
     </tr>
-}
-
+} 
 </table>
+<div id="container" style="margin-left: 20px">
+    <p></p>
+    <p></p>
+    <div class="pagination" style="margin-left: 400px">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+        of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    </div>
+</div> 
