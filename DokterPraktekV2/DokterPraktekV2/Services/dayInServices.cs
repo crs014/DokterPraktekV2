@@ -51,8 +51,9 @@ namespace DokterPraktekV2.Services
                                             day = work.dayIn
                                         }).ToList(),
                                doctorSpecialties = (from s in db.specialists
-                                                    where s.doctors.Any(c => c.id == doc.id)
-                                                    select new docSpecialist {
+                                                    where s.doctorSpecialists.Any(x=>x.doctorId == doc.id)
+                                                    select new docSpecialist
+                                                    {
                                                         specialty = s.specialty
                                                     }).ToList()
                            }).ToList();

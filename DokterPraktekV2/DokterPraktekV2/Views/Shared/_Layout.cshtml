@@ -36,6 +36,8 @@
                         <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
                         <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
                         <li>@Html.ActionLink("Patients","Index", "patients")</li>
+                        <li>@Html.ActionLink("My Specialties", "Add", "specialties")</li>
+                        <li>@Html.ActionLink("Work Schedule", "Create", "dayIn")</li>
                     }
                     else if (User.IsInRole("admin"))
                     {
