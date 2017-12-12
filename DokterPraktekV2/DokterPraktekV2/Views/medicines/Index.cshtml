@@ -1,5 +1,6 @@
-﻿@model IEnumerable<DokterPraktekV2.medicine>
-
+﻿@*@model IEnumerable<DokterPraktekV2.medicine>*@
+@using PagedList.Mvc
+@model  PagedList.IPagedList<DokterPraktekV2.Models.VM_Stock>
 @{
     ViewBag.Title = "Obat";
 }
@@ -9,6 +10,9 @@
 <p>@Html.ActionLink("Insert Obat", "Create", "medicines", new { @class = "btn btn-primary" })
    @*@Html.ActionLink("STOCK","Stock","medicines",new { @class = "btn btn-primary" })*@
 </p>
+<form method="get" action="/medicines">
+    @Html.TextBox("search") <input type="submit" name="submit" value="Search" />
+</form>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -40,7 +44,7 @@
     </thead>
 @{
     int i = 0;
-    foreach (var item in ViewBag.Data)
+    foreach (var item in Model)
     {
     <tr>
         
@@ -80,3 +84,11 @@
         }
     }
 </table>
+<div id="container" style="margin-left: 20px">
+    <p></p>
+    <p></p>
+    <div class="pagination" style="margin-left: 400px">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+        of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    </div>
+</div> 

@@ -10,6 +10,7 @@ using DokterPraktekV2;
 using System.Web.Security;
 using DokterPraktekV2.Models;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -18,7 +19,7 @@ namespace DokterPraktekV2.Controllers
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         
         // GET: medicines
-        public ActionResult Index()
+        public ActionResult Index(int? page,string search,string option)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
@@ -37,7 +38,7 @@ namespace DokterPraktekV2.Controllers
                 outStock = e.patientMedicines.Sum(a => a.quantity),
                 remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
             }).ToList().Where(a=>a.doctorId == ids.id);
-            ViewBag.Data = data;
+
 
             DateTime estimatedDate;
             estimatedDate = DateTime.Now.Date.AddDays(30);
@@ -63,7 +64,21 @@ namespace DokterPraktekV2.Controllers
             }
             ViewBag.warna = listWarna;
             ViewBag.status = listStatus;
-            return View(op);
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                data = data.Where(s => s.nameMedicine.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            //paged List
+            int pageSize = 5;
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            IPagedList<VM_Stock> listTrans = null;
+            listTrans = data.ToPagedList(pageIndex, pageSize);
+
+           
+            return View(listTrans);
         }
 
         // GET: medicines/Details/5
