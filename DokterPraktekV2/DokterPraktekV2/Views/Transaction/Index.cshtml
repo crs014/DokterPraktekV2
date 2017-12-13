@@ -1,0 +1,90 @@
+﻿@model  PagedList.IPagedList<DokterPraktekV2.Models.VM_transaction>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+}
+@Html.Partial("Create")
+<h2>Payment</h2>
+<form method="get" action="/Transaction">
+    Find by History id or Patient Name: <input id="SearchString" name="SearchString" type="text">
+    <input type="submit" value="Search">
+</form>
+<table class="table table-bordered table-striped" id="tablePaid">
+    <thead>
+        <tr>
+            <th>History id</th>
+            <th>Patient Id</th>
+            <th>Patient Name</th>
+            <th>amount</th>
+            <th>already Paid</th>
+            <th>Need to paid</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td class="historyId">@item.historyId</td>
+            <td>@item.patientId</td>
+            <td>@item.patientName</td>
+            <td>@item.amount</td>
+            <td>@item.alreadyPay</td>
+            <td>
+            @{
+                var a = item.amount;
+                var b = item.alreadyPay;
+                var c = a - b;
+            }
+                <p class="needPaid">@c</p>
+            </td>
+            <td>@item.dateHistory</td>
+            <td>
+                @if(item.alreadyPay >= item.amount)
+                {
+                    <p style="color:green">paid off</p>
+                }
+                else if (item.alreadyPay == 0)
+                {
+                    <p style="color:red">not paid</p>
+                }
+                else
+                {
+                    <p style="color:yellow">not paid full</p>
+                }
+            </td>
+            <td>
+                <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal">Paid</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<br/>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, currentFilter = ViewBag.CurrentFilter }))
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $("#tablePaid").on("click", ".paidBtn", function () {
+                var tr = $(this).parent().parent();
+                var historyId = tr.find(".historyId").text();
+                var act = "/Transaction/Create/" + historyId;
+                var needPaid = tr.find(".needPaid").text();
+                $("#formPaid").attr("action",act);
+                $("#inputPaid").attr("max", needPaid);
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
