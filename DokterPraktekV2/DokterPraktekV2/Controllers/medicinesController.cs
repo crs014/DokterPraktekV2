@@ -49,7 +49,7 @@ namespace DokterPraktekV2.Controllers
                 if (estimatedDate >= item.expired)
                 {
                     var warna = "red";
-                    var status = "Expired in 1 Month";
+                    var status = "EXPIRED";
                     listWarna.Add(warna);
                     listStatus.Add(status);
                 }
@@ -59,7 +59,6 @@ namespace DokterPraktekV2.Controllers
                     var status = "Secure";
                     listWarna.Add(warna);
                     listStatus.Add(status);
-                    
                 }
             }
             ViewBag.warna = listWarna;
@@ -71,7 +70,7 @@ namespace DokterPraktekV2.Controllers
             }
 
             //paged List
-            int pageSize = 5;
+            int pageSize = 10;
             int pageIndex = 1;
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IPagedList<VM_Stock> listTrans = null;
@@ -224,7 +223,7 @@ namespace DokterPraktekV2.Controllers
 
             //ambil data awal
             List<VM_Stock> medicines = new List<VM_Stock>();
-            DateTime estimatedDate = DateTime.Now.Date.AddDays(7);
+            DateTime estimatedDate = DateTime.Now.Date.AddDays(30);
             medicines = db.medicines
                 .Where(e => e.doctorId == dataDoctor.id && estimatedDate <= e.expired)
                 .Select(e => new VM_Stock
