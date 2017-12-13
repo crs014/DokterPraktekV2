@@ -10,6 +10,7 @@ using PagedList;
 
 namespace DokterPraktekV2.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class TransactionController : Controller
     {
         DokterPraktekEntities1 db = new DokterPraktekEntities1();
