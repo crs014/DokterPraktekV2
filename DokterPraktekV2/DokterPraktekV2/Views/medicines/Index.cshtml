@@ -44,6 +44,7 @@
     </thead>
 @{
     int i = 0;
+    var a = "";
     foreach (var item in Model)
     {
     <tr>
@@ -58,11 +59,17 @@
                 @item.inStock
             </td>
             <td>
-                @item.dateIn
+                @foreach (var va in item.dateIn.GetDateTimeFormats('D'))
+                {
+                    @va
+                } 
             </td>
             <td>
-                <font color="@ViewBag.warna[i]">@item.expired</font>
-            </td>
+                @foreach (var va in item.expired.GetDateTimeFormats('D'))
+                {
+                    <font color="@ViewBag.warna[i]">@va</font>
+                }
+        </td>
         <td>
             <font color="@ViewBag.warna[i]">@ViewBag.status[i]</font>
         </td>
@@ -84,11 +91,10 @@
         }
     }
 </table>
-<div id="container" style="margin-left: 20px">
-    <p></p>
-    <p></p>
-    <div class="pagination" style="margin-left: 400px">
         Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
         of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-    </div>
-</div> 
+@foreach (var date in @ViewBag.date)
+{
+    @date
+}
+  

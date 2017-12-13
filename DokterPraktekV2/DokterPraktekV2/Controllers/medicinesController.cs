@@ -76,7 +76,10 @@ namespace DokterPraktekV2.Controllers
             IPagedList<VM_Stock> listTrans = null;
             listTrans = data.ToPagedList(pageIndex, pageSize);
 
-           
+            
+            var da = DateTime.Now;
+            var date = da.GetDateTimeFormats('D');
+            ViewBag.date = date;
             return View(listTrans);
         }
 
