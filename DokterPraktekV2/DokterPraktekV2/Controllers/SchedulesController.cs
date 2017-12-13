@@ -18,6 +18,7 @@ namespace DokterPraktekV2.Controllers
 
         #region Get List Booking
         // GET: Schedules
+        [Authorize(Roles = "admin")]
         public ActionResult Index(string searchString , string currentFilter , int? page)
         {
             var book = BookListService.BookingList();
@@ -42,6 +43,7 @@ namespace DokterPraktekV2.Controllers
         #endregion
 
         #region Get Today Booking List
+        [Authorize(Roles = "admin")]
         public ActionResult TodayBook(string searchString, string currentFilter, int? page)
         {
             var book = BookListService.TodayBookingList();
@@ -97,7 +99,7 @@ namespace DokterPraktekV2.Controllers
                 return View(data);
             }
             int docId = data.doctors[0].doctorId; // Choosen doctor id
-            var checkSchedule = BookListService.CheckSchedule(data , docId); // Check schedule service
+            var checkSchedule = BookListService.CheckSchedule(data.dateSchedule , docId); // Check schedule service
             if (checkSchedule > 0)
             {
                 var checkPatient = BookListService.CheckPatient(data.name , data.phone); // check patient service
@@ -117,7 +119,6 @@ namespace DokterPraktekV2.Controllers
             }
             else
             {
-                data.doctors = DoctorWorkDay.ListWorkDays(); // Get doctor working days service
                 ModelState.AddModelError("dateSchedule", "Doctor is not available on that day");
                 var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
                 ViewBag.blockDate = blockDate;
@@ -145,28 +146,6 @@ namespace DokterPraktekV2.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        #endregion
-
-        #region Check Status Booking
-        public ActionResult CheckIndex(int id)
-        {
-            var bookingInfo = db.schedules.First(s => s.id == id);
-            bookingInfo.bookingStatus = "Completed";
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        #endregion
-
-        #region Check Today Status Booking
-        public ActionResult CheckToday(int id)
-        {
-            var bookingInfo = db.schedules.First(s => s.id == id);
-            bookingInfo.bookingStatus = "Completed";
-            db.SaveChanges();
-            return RedirectToAction("TodayBook");
-        }
-
         #endregion
 
         #region Sign get
@@ -200,16 +179,28 @@ namespace DokterPraktekV2.Controllers
             {
                 return View(sign);
             }
-            var checkPatient = BookListService.CheckPatientById(sign.PatientNumber); // check patient service
-            if(checkPatient != null)
+            var checkSchedule = BookListService.CheckSchedule(sign.dateSchedule, sign.doctorId); // Check schedule service
+            if(checkSchedule > 0)
             {
-                var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId, sign.dateSchedule); // Create booking service
-                TempData["id"] = dataBooking;
-                return RedirectToAction("formResult");
+                var checkPatient = BookListService.CheckPatientById(sign.PatientNumber); // check patient service
+                if (checkPatient != null)
+                {
+                    var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId, sign.dateSchedule); // Create booking service
+                    TempData["id"] = dataBooking;
+                    TempData.Keep();
+                    return RedirectToAction("formResult");
+                }
+                else
+                {
+                    ModelState.AddModelError("PatientNumber", "Your Patient Number is wrong");
+                    return View(sign);
+                }
             }
             else
             {
-                ModelState.AddModelError("PatientNumber", "Your Patient Number is wrong");
+                ModelState.AddModelError("dateSchedule", "Doctor is not available on that day");
+                var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
+                ViewBag.blockDate = blockDate;
                 return View(sign);
             }
         }
@@ -221,6 +212,7 @@ namespace DokterPraktekV2.Controllers
         public ActionResult formResult()
         {
             int id = (int)TempData["id"];
+            TempData.Keep();
             var bookingResult = BookListService.BookingListById(id);
             return View(bookingResult); 
         }

@@ -156,9 +156,9 @@ namespace DokterPraktekV2.Services
             return dataSchedule.id;
         }
 
-        public int CheckSchedule(VM_schedules data , int docId)
+        public int CheckSchedule(DateTime data , int docId)
         {
-            var dayChoosen = data.dateSchedule.DayOfWeek.ToString(); // Hari yang dipilih
+            var dayChoosen = data.DayOfWeek.ToString(); // Hari yang dipilih
 
             var checkSchedule = (from works in db.workDays
                                  where works.doctorId == docId && works.dayIn == dayChoosen && works.working == true

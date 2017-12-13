@@ -46,6 +46,7 @@
                     else if (User.IsInRole("admin"))
                     {
                         <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
+                        <li>@Html.ActionLink("Payment", "Index", "Transaction")</li>
                         <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
                         <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
                     }

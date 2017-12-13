@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create Doctor Day In</h2>
+<h2>My Work Schedule</h2>
 
 @using (Html.BeginForm()) 
 {
@@ -29,17 +29,33 @@
 
         <div class="form-group">
             <div class="col-md-12">
-                @Html.Label("Day In", new { htmlAttributes = new { @class = "label-control " } })<br />
-                @{
-                    for(var i=0;i<Model.dayIn.Count();i++)
-                    {
-                        <p>
-                            @Html.HiddenFor(model => model.dayIn[i].dayId)
-                            @Html.CheckBoxFor(model => model.dayIn[i].IsSelected)
-                            @Html.Label(Model.dayIn[i].day)
-                        </p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Day
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    @{
+                        for (var i = 0; i < Model.dayIn.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Label(Model.dayIn[i].day)
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(model => model.dayIn[i].dayId)
+                                    @Html.CheckBoxFor(model => model.dayIn[i].IsSelected)
+                                </td>
+                            </tr>
+                        }
                     }
-                }
+
+                </table>
             </div>
         </div>
 
@@ -62,13 +78,9 @@
 
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="col-md-offset-11">
+                <input type="submit" value="Apply" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
