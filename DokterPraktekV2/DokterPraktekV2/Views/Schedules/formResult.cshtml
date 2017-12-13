@@ -3,57 +3,58 @@
 
 
 <div>
-    <h4><span class="label label-success">Booking Success </span></h4>
     <hr />
-    <dl class="dl-horizontal">
+    <div class="panel panel-primary">
 
-        <dt>
-            <label>Booking Number</label>
-        </dt>
+        <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-success">Booking Success </span></h4>
+        <dl class="dl-horizontal">
 
-        <dd>
-            @Html.DisplayFor(model => model.NoBooking)
-        </dd>
+            <dt>
+                <label>Booking Number</label>
+            </dt>
 
-        <dt>
-            <label>Patient ID</label>
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.NoBooking)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.id)
-        </dd>
+            <dt>
+                <label>Patient ID</label>
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.id) &nbsp; <strong class="alert-danger">Use this Patient ID for your next booking</strong>
+            </dd>
+            <dt>
+                <label>Patient Name</label>
+            </dt>
 
-        <dt>
-            <label>Patient Name</label>
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.PatientName)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.PatientName)
-        </dd>
+            <dt>
+                <label>Doctor Name</label>
+            </dt>
 
-        <dt>
-            <label>Doctor Name</label>
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DoctorName)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.DoctorName)
-        </dd>
+            <dt>
+                <label>Appointment Date</label>
+            </dt>
 
-        <dt>
-            <label>Appointment Date</label>
-        </dt>
+            <dd>
+                @Model.BookDate.ToString("dddd, dd/MM/yyyy")
+            </dd>
 
-        <dd>
-            @Model.BookDate.ToString("dddd, dd/MM/yyyy")
-        </dd>
+            <dt>
+                <label>Booking Status</label>
+            </dt>
 
-        <dt>
-            <label>Booking Status</label>
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.BookingStatus)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.BookingStatus)
-        </dd>
-
-    </dl>
+        </dl>
+    </div>
 </div>
