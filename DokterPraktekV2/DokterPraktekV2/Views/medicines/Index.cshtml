@@ -84,7 +84,7 @@
                 }
             </td>
             <td>
-            @Html.ActionLink("Delete", "Delete", new { id = item.id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.id })
             </td>
     </tr>
             i++;
@@ -93,8 +93,4 @@
 </table>
         Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
         of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-@foreach (var date in @ViewBag.date)
-{
-    @date
-}
   
