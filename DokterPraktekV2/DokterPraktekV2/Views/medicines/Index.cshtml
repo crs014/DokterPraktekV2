@@ -59,20 +59,15 @@
                 @item.inStock
             </td>
             <td>
-                @foreach (var va in item.dateIn.GetDateTimeFormats('D'))
-                {
-                    @va
-                } 
+                @item.dateIn.ToString("dd MMMM yyyy")
+                 
             </td>
             <td>
-                @foreach (var va in item.expired.GetDateTimeFormats('D'))
-                {
-                    <font color="@ViewBag.warna[i]">@va</font>
-                }
-        </td>
-        <td>
-            <font color="@ViewBag.warna[i]">@ViewBag.status[i]</font>
-        </td>
+                <font color="@ViewBag.warna[i]">@item.expired.ToString("dd MMMM yyyy")</font>
+            </td>
+            <td>
+                <font color="@ViewBag.warna[i]">@ViewBag.status[i]</font>
+            </td>
             <td>
                 @if (item.remainStock == null)
             {
