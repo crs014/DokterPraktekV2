@@ -15,8 +15,8 @@
             <th>History id</th>
             <th>Patient Id</th>
             <th>Patient Name</th>
-            <th>amount</th>
-            <th>already Paid</th>
+            <th>Amount</th>
+            <th>Paid</th>
             <th>Need to paid</th>
             <th>Date</th>
             <th>Status</th>
@@ -40,7 +40,7 @@
             }
                 <p class="needPaid">@c</p>
             </td>
-            <td>@item.dateHistory</td>
+            <td>@item.dateHistory.ToString("dd/MM/yyy")</td>
             <td>
                 @if(item.alreadyPay >= item.amount)
                 {
@@ -52,11 +52,11 @@
                 }
                 else
                 {
-                    <p style="color:yellow">not paid full</p>
+                    <p style="color:yellow">not fully paid </p>
                 }
             </td>
             <td>
-                <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal">Paid</button>
+                <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal">Pay</button>
             </td>
         </tr>
         }
