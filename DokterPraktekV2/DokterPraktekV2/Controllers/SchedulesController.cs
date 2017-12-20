@@ -15,6 +15,7 @@ namespace DokterPraktekV2.Controllers
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private bookingListServices BookListService = new bookingListServices();
         private PatientServices patientService = new PatientServices();
+        private PhotoService photoService = new PhotoService();
 
         #region Get List Booking
         // GET: Schedules
@@ -94,6 +95,7 @@ namespace DokterPraktekV2.Controllers
         [HttpPost]
         public ActionResult Create(VM_schedules data)
         {
+            var checkUpload = Request.Files.Count;
             if (!ModelState.IsValid)
             {
                 return View(data);
@@ -111,7 +113,13 @@ namespace DokterPraktekV2.Controllers
                 } 
                 else 
                 {
+                    var type = "";
                     var dataPatient = patientService.CreatePatient(data); // Create patient service
+                    if (checkUpload == 1)
+                    {
+                        type = data.photo.ContentType; // Check image type
+                        photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
+                    }
                     var dataBooking = BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
                     TempData["id"] = dataBooking;
                     return RedirectToAction("formResult");

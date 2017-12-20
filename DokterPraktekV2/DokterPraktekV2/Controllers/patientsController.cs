@@ -18,7 +18,7 @@ namespace DokterPraktekV2.Controllers
 
         private PatientServices patientService = new PatientServices();
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-
+        private PhotoService photoService = new PhotoService();
         [Authorize(Roles = "doctor")]
         public  ActionResult Index(string currentFilter, string searchString, int? page)
         {
@@ -64,7 +64,8 @@ namespace DokterPraktekV2.Controllers
         {
             var userID = User.Identity.GetUserId();
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
-
+            string mime;
+            string convertedImage = photoService.LoadImage(id, out mime);
             var data = patientService.allPatientHistory(id, dataDoctor.id);
             int pageNumber = (page ?? 1);
             int pageSize = 7;
@@ -77,6 +78,8 @@ namespace DokterPraktekV2.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.tipeImage = mime;
+            ViewBag.stringUrl = convertedImage;
             ViewBag.detailPatient = patientService.patientDetail(id);
             return View(data.ToPagedList(pageNumber, pageSize));
         }
@@ -100,5 +103,6 @@ namespace DokterPraktekV2.Controllers
             ViewBag.Medicines = patientService.getAllMedicinePatient(id);
             return View(data);
         }
+
     }
 }
