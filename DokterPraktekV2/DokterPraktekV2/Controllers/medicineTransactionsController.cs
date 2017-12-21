@@ -26,10 +26,15 @@ namespace DokterPraktekV2.Controllers
             ViewBag.a = b;
 
             //paged list
-            int pageSize = 5;
+            int pageSize = 10;
             int pageIndex = 1;
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IPagedList<medicineTransaction> listTrans = null;
+            
+            var query = from s in op
+                        orderby s.statusTransaction == true
+                        select op;
+            ViewBag.query = query.ToList();
 
             var getMed = db.medicines.Include(a => a.doctor).Include(a => a.medicineTransactions);
             var medicineTransaction = db.medicineTransactions.Include(m => m.doctor).Include(m => m.medicine);

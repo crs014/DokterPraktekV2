@@ -68,7 +68,7 @@ namespace DokterPraktekV2.Controllers
             {
                 data = data.Where(s => s.nameMedicine.ToLower().Contains(search.ToLower())).ToList();
             }
-
+            
             //paged List
             int pageSize = 10;
             int pageIndex = 1;
@@ -76,7 +76,6 @@ namespace DokterPraktekV2.Controllers
             IPagedList<VM_Stock> listTrans = null;
             listTrans = data.ToPagedList(pageIndex, pageSize);
 
-            
             var da = DateTime.Now;
             var date = da.GetDateTimeFormats('D');
             ViewBag.date = date;
