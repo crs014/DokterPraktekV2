@@ -49,6 +49,25 @@ namespace DokterPraktekV2.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
 
+
+        public ActionResult Nota(int id)
+        {
+            VM_transaction data = db.histories.DistinctBy(z => z.id).Select(e => new VM_transaction
+            {
+                alreadyPay = e.payments.Sum(a => a.amount),
+                patientId = e.patientId,
+                patientName = e.patient.name,
+                amount = e.checkupPrice + e.patientMedicines.Sum(b => b.medicine.price * b.quantity),
+                dateHistory = e.checkupDate,
+                historyId = e.id
+            }).FirstOrDefault(a => a.historyId == id);
+            ViewBag.dataMedicine = db.histories.FirstOrDefault(e => e.id == id).patientMedicines.ToList();
+            ViewBag.data = data;
+            return View();
+
+        }
+
+
         [NonAction]
         public Nullable<decimal> totalAll(int id)
         {
