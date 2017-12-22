@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "View";
+}
+
+<h2>View</h2>
+<body>
+    <button id="capture" class="btn btn-primary">CAPTURE</button>
+    <video id="player" controls autoplay></video>
+    <canvas id="canvas" width=320 height=240></canvas>
+    <form method="post" action="/schedules/Create">
+        <button id="save" class="btn btn-success">SAVE</button>
+    </form>
+    <a download="foto.txt" id="downloadlink" style="display: block;">Download</a>
+    <div id="demo"></div>
+    <script>
+  const player = document.getElementById('player');
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const captureButton = document.getElementById('capture');
+
+  const constraints = {
+    video: true,
+  };
+  captureButton.addEventListener('click', () => {
+    // Draw the video frame to the canvas.
+      var image = context.drawImage(player, 0, 0, canvas.width, canvas.height);
+      link.href = makeTextFile(image.innerHTML);
+      //link.href = makeImageFile(image.innerHTML);
+      
+  });
+  
+   
+
+  
+  var link = document.getElementById('downloadlink');
+    
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then((stream) => {
+      player.srcObject = stream;
+    });
+    </script>
+</body>

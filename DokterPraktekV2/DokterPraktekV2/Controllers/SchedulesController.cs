@@ -156,6 +156,17 @@ namespace DokterPraktekV2.Controllers
         }
         #endregion
 
+        [HttpGet]
+        public ActionResult LivePhoto()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        //public ActionResult LivePhoto()
+        //{
+        //    return View();
+        //}
         #region Sign get
         public ActionResult Sign(int id)
         {
