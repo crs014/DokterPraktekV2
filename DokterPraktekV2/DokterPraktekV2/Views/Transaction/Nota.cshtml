@@ -1,0 +1,47 @@
+﻿@model DokterPraktekV2.Models.VM_transaction
+@{
+    Layout = null;
+}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/Content/Nota.css"/>
+    </head>
+    <body>
+        <h2>No Nota : @ViewBag.data.historyId</h2>
+        <p>Date Checkup: @ViewBag.data.dateHistory</p>
+        <p>Patien Name : @ViewBag.data.patientName</p>
+        <p>Amount : @ViewBag.data.amount</p>
+        <p>Already Paid : @ViewBag.data.alreadyPay</p>
+        @{
+            var a = ViewBag.data.amount;
+            var b = ViewBag.data.alreadyPay;
+            var c = a - b;
+        }
+        <p>Need to Paid : @c</p>
+        
+        <table style="width:100%">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Medicine Name</th>
+                    <th style="text-align: left;">Quantity</th>
+                    <th style="text-align: left;">Expired</th>
+                    <th style="text-align: left;">Dosis</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in ViewBag.dataMedicine)
+                {
+                <tr>
+                    <td>@i.medicine.name</td>
+                    <td>@i.medicine.quantity</td>
+                    <td>@i.medicine.expired</td>
+                    <td>@i.describe</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </body>
+</html>
+
+
+

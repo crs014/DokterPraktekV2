@@ -57,6 +57,7 @@
             </td>
             <td>
                 <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal">Pay</button>
+                <button type="button" class="btn btn-warning" onclick="printExternal(@item.historyId)">Print Nota</button> 
             </td>
         </tr>
         }
@@ -80,6 +81,15 @@ Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.Page
                 $("#inputPaid").attr("max", needPaid);
             });
         });
+
+        function printExternal(id) {
+            var url = "http://localhost:7188/Transaction/Nota/"+id;
+            var printWindow = window.open(url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+            printWindow.addEventListener('load', function () {
+                printWindow.print();
+                printWindow.close();
+            }, true);
+        }
     </script>
 }
 
