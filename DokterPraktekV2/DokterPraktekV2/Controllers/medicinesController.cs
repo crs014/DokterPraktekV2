@@ -38,7 +38,19 @@ namespace DokterPraktekV2.Controllers
                 outStock = e.patientMedicines.Sum(a => a.quantity),
                 remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
             }).ToList().Where(a=>a.doctorId == ids.id);
+            
 
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                data = data.Where(s => s.nameMedicine.ToLower().Contains(search.ToLower())).ToList();
+            }
+            //paged List
+            int pageSize = 10;
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            IPagedList<VM_Stock> listTrans = null;
+            
 
             DateTime estimatedDate;
             estimatedDate = DateTime.Now.Date.AddDays(30);
@@ -64,21 +76,7 @@ namespace DokterPraktekV2.Controllers
             ViewBag.warna = listWarna;
             ViewBag.status = listStatus;
 
-            if (!String.IsNullOrEmpty(search))
-            {
-                data = data.Where(s => s.nameMedicine.ToLower().Contains(search.ToLower())).ToList();
-            }
-            
-            //paged List
-            int pageSize = 10;
-            int pageIndex = 1;
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            IPagedList<VM_Stock> listTrans = null;
             listTrans = data.ToPagedList(pageIndex, pageSize);
-
-            var da = DateTime.Now;
-            var date = da.GetDateTimeFormats('D');
-            ViewBag.date = date;
             return View(listTrans);
         }
 
@@ -132,11 +130,15 @@ namespace DokterPraktekV2.Controllers
         // GET: medicines/Edit/5
         public ActionResult Edit(int? id)
         {
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             medicine medicine = db.medicines.Find(id);
+            var getID = db.medicines.Find(id).doctorId;
+            ViewBag.getID = getID;
             if (medicine == null)
             {
                 return HttpNotFound();
@@ -150,10 +152,17 @@ namespace DokterPraktekV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,doctorId,name,harga,quantity,dateIn,expired")] medicine medicine)
+        public ActionResult Edit([Bind(Include = "id,name,price,quantity,dateIn,expired")] medicine medicine)
         {
+            var idLog = User.Identity.GetUserId();
+            var ids = db.doctors.Where(m => m.userId == idLog).First();
+            var dateIn = db.medicines.Where(m => m.dateIn == m.dateIn).First();
+
             if (ModelState.IsValid)
             {
+                medicine.doctorId = ids.id;
+                medicine.dateIn = dateIn.dateIn;
+                db.medicines.Add(medicine);
                 db.Entry(medicine).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
