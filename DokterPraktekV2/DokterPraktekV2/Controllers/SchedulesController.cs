@@ -86,6 +86,7 @@ namespace DokterPraktekV2.Controllers
                 new VM_doctorList { doctorId = id }
             };
             var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.doctorId = id;
             ViewBag.blockDate = blockDate;
             return View(schedule);
         }
@@ -157,16 +158,13 @@ namespace DokterPraktekV2.Controllers
         #endregion
 
         [HttpGet]
-        public ActionResult LivePhoto()
+        public ActionResult LivePhoto(int id)
         {
+            ViewBag.doctorId = id;
             return View();
         }
 
-        [HttpPost]
-        //public ActionResult LivePhoto()
-        //{
-        //    return View();
-        //}
+      
         #region Sign get
         public ActionResult Sign(int id)
         {

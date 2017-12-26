@@ -1,43 +1,56 @@
-﻿
-@{
-    ViewBag.Title = "View";
-}
+﻿<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
 
-<h2>View</h2>
-<body>
-    <button id="capture" class="btn btn-primary">CAPTURE</button>
-    <video id="player" controls autoplay></video>
-    <canvas id="canvas" width=320 height=240></canvas>
-    <form method="post" action="/schedules/Create">
-        <button id="save" class="btn btn-success">SAVE</button>
-    </form>
-    <a download="foto.txt" id="downloadlink" style="display: block;">Download</a>
-    <div id="demo"></div>
-    <script>
-  const player = document.getElementById('player');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const captureButton = document.getElementById('capture');
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Live Photo</h4>
+            </div>
+            <div class="modal-body">
+                <body>
 
-  const constraints = {
-    video: true,
-  };
-  captureButton.addEventListener('click', () => {
-    // Draw the video frame to the canvas.
-      var image = context.drawImage(player, 0, 0, canvas.width, canvas.height);
-      link.href = makeTextFile(image.innerHTML);
-      //link.href = makeImageFile(image.innerHTML);
-      
-  });
-  
-   
+                    <button id="capture" class="btn btn-primary">CAPTURE</button>
+                    <video id="player" width="550" height="400" controls autoplay></video>
+                    <canvas id="canvas" width=320 height=240></canvas>
+                    <a href="#" class="btn btn-success" id="btn-download" download="bookingphoto.png">Download</a>
+                    @*<a href="/Schedules/Create/@ViewBag.doctorId" class="btn btn-success">BACK</a>*@
 
-  
-  var link = document.getElementById('downloadlink');
-    
-  navigator.mediaDevices.getUserMedia(constraints)
-    .then((stream) => {
-      player.srcObject = stream;
-    });
-    </script>
-</body>
+
+                    <div id="demo"></div>
+                    <script>
+                                          const player = document.getElementById('player');
+                                          const canvas = document.getElementById('canvas');
+                                          const context = canvas.getContext('2d');
+                                          const captureButton = document.getElementById('capture');
+
+                                          var button = document.getElementById('btn-download');
+                                          button.addEventListener('click', function (e) {
+                                              var dataURL = canvas.toDataURL('image/png');
+                                              button.href = dataURL;
+                                          });
+
+                                          const constraints = {
+                                            video: true,
+                                          };
+                                          captureButton.addEventListener('click', () => {
+                                            // Draw the video frame to the canvas.
+                                              var image = context.drawImage(player, 0, 0, canvas.width, canvas.height);
+
+                                          });
+
+                                          navigator.mediaDevices.getUserMedia(constraints)
+                                            .then((stream) => {
+                                              player.srcObject = stream;
+                                            });
+                    </script>
+                </body>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
