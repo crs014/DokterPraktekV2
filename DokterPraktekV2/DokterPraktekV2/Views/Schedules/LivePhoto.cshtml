@@ -14,6 +14,7 @@
                     <button id="capture" class="btn btn-primary">CAPTURE</button>
                     <video id="player" width="550" height="400" controls autoplay></video>
                     <canvas id="canvas" width=320 height=240></canvas>
+                    
                     <a href="#" class="btn btn-success" id="btn-download" download="bookingphoto.png">Download</a>
                     @*<a href="/Schedules/Create/@ViewBag.doctorId" class="btn btn-success">BACK</a>*@
 
@@ -37,6 +38,7 @@
                                           captureButton.addEventListener('click', () => {
                                             // Draw the video frame to the canvas.
                                               var image = context.drawImage(player, 0, 0, canvas.width, canvas.height);
+                                              image.href = context.drawImage(player, 0, 0, canvas.width, canvas.height);
 
                                           });
 
@@ -47,6 +49,7 @@
                     </script>
                 </body>
             </div>
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
