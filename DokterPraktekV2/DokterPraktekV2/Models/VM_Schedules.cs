@@ -21,7 +21,8 @@ namespace DokterPraktekV2.Models
         [DisplayName("Gender")]
         [Required]
         public bool gender { get; set; }
-        public HttpPostedFileBase photo { get; set; }
+        public string photo { get; set; }
+        public HttpPostedFileBase photos { get; set; }
         [DisplayName("Booking Date")]
         [Required]
         [DataType(DataType.Date)]

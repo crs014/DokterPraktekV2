@@ -10,14 +10,15 @@ namespace DokterPraktekV2.Services
     public class PhotoService
     {
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-        public bool UploadPatientPicture(Stream fileStream, string type, int patientId)
+        public bool UploadPatientPicture(byte[] name, string type, int patientId)
         {
             bool handled = false;
-            byte[] documentBytes = new byte[fileStream.Length];
-            fileStream.Read(documentBytes, 0, documentBytes.Length);
+            //byte[] documentBytes = new byte[fileStream.Length];
+            //fileStream.Read(documentBytes, 0, documentBytes.Length);
             patientPicture pic = new patientPicture
             {
-                imageContent = documentBytes,
+                imageContent = name,
+                //images = name,
                 imageType = type,
                 patientId = patientId
             };

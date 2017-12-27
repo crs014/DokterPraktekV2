@@ -81,6 +81,7 @@ namespace DokterPraktekV2.Controllers
         public ActionResult Create(int id)
         {
             VM_schedules schedule = new VM_schedules();
+            ViewBag.photo = schedule.photo;
             schedule.doctors = new List<VM_doctorList>()
             {
                 new VM_doctorList { doctorId = id }
@@ -96,7 +97,8 @@ namespace DokterPraktekV2.Controllers
         [HttpPost]
         public ActionResult Create(VM_schedules data)
         {
-            var checkUpload = Request.Files.Count;
+            
+            //var checkUpload = Request.Files.Count;
             if (!ModelState.IsValid)
             {
                 return View(data);
@@ -111,20 +113,30 @@ namespace DokterPraktekV2.Controllers
                     var dataBooking = BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
                     TempData["id"] = dataBooking;
                     return RedirectToAction("formResult");
-                } 
-                else 
+                }
+                else
                 {
                     var type = "";
                     var dataPatient = patientService.CreatePatient(data); // Create patient service
-                    if (checkUpload == 1)
+                    if (data.photo != null)
                     {
-                        type = data.photo.ContentType; // Check image type
-                        photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
+                        data.photo = data.photo.Replace("data:image/png;base64,", "");
+                        string base64 = data.photo.Substring(data.photo.IndexOf(',') + 1);
+                        base64 = base64.Trim('\0');
+
+                        byte[] chartData = Convert.FromBase64String(base64);
+                        data.photo = data.name.ToString() + ".png";
+                        type = "image/png";
+                        photoService.UploadPatientPicture(chartData, type, dataPatient.id);
+
+                        //type = data.photo.ContentType; // Check image type ryan logic
+                        //photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
+                        
                     }
                     var dataBooking = BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
                     TempData["id"] = dataBooking;
                     return RedirectToAction("formResult");
-                } 
+                }
             }
             else
             {
@@ -133,6 +145,11 @@ namespace DokterPraktekV2.Controllers
                 ViewBag.blockDate = blockDate;
                 return View(data);
             }
+        }
+
+        private void CreateImage(byte[] chartData, string v)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

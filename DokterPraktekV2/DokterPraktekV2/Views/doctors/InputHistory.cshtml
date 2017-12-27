@@ -9,6 +9,7 @@
 <br />
 <p>Doctor : @Model.doctor.name</p>
 <br />
+<img src="data:@ViewBag.tipeImage;base64,@ViewBag.stringUrl" style="width: 150px; height: 150px;" />
 <form action="/doctors/InputHistory/@Model.id" method="post">
     <div class="form-group">
         <label>Checkup price :</label>

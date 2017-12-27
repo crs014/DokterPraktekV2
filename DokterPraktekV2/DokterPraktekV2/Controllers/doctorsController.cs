@@ -20,7 +20,8 @@ namespace DokterPraktekV2.Controllers
         private DokterPraktekEntities1 db = new DokterPraktekEntities1();
         private DoctorService doctorService = new DoctorService();
         private PatientServices patientService = new PatientServices();
-        
+        private PhotoService photoService = new PhotoService();
+
 
         [Authorize(Roles = "doctor")]
         public ActionResult Index(string currentFilter, string searchString, int? page)
@@ -44,8 +45,13 @@ namespace DokterPraktekV2.Controllers
         
         [Authorize(Roles = "doctor")]
         public ActionResult InputHistory(int id)
-        {  
+        {
             var data = doctorService.scheduleDetail(id);
+            string mime;
+            string convertedImage = photoService.LoadImage(data.patientId, out mime);
+            ViewBag.tipeImage = mime;
+            ViewBag.stringUrl = convertedImage;
+           
             return View(data);
         }
 
