@@ -44,15 +44,24 @@ namespace DokterPraktekV2.Controllers
         }
         
         [Authorize(Roles = "doctor")]
-        public ActionResult InputHistory(int id)
+        public ActionResult InputHistory(int id, string currentFilter, int? page)
         {
+            //get patient data and picture patient
             var data = doctorService.scheduleDetail(id);
             string mime;
             string convertedImage = photoService.LoadImage(data.patientId, out mime);
             ViewBag.tipeImage = mime;
             ViewBag.stringUrl = convertedImage;
-           
-            return View(data);
+            ViewBag.dataPatient = data;
+
+            //list data patient history by patient id
+            var userID = User.Identity.GetUserId();
+            doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
+            var dataList = patientService.allPatientHistory(data.patientId, dataDoctor.id);
+            int pageNumber = (page ?? 1);
+            int pageSize = 7;
+
+            return View(dataList.ToPagedList(pageNumber, pageSize));
         }
 
       
@@ -153,6 +162,22 @@ namespace DokterPraktekV2.Controllers
             }   
             return RedirectToAction("Index");
         }
+
+        [Authorize(Roles = "doctor")]
+        public ActionResult JsonMedicinePatient(int id)
+        {
+            var authId = User.Identity.GetUserId();
+            var medicineList = db.patientMedicines.Where(e => e.historyId == id).Select(a => new VM_patientMedicine {
+                id = a.medicineId,
+                medicineName = a.medicine.name,
+                description = a.describe,
+                historyId = a.id,
+                price = a.medicinePrice,
+                quantity = a.quantity
+            }).ToList<VM_patientMedicine>();
+            return Json(new { medicine = medicineList},JsonRequestBehavior.AllowGet);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
