@@ -27,6 +27,23 @@ namespace DokterPraktekV2.Services
             return handled;
         }
 
+        public bool UploadPatientPictureFILE(Stream fileStream, string type, int patientId)
+        {
+            bool handled = false;
+            byte[] documentBytes = new byte[fileStream.Length];
+            fileStream.Read(documentBytes, 0, documentBytes.Length);
+            patientPicture pic = new patientPicture
+            {
+                imageContent = documentBytes,
+                //images = name,
+                imageType = type,
+                patientId = patientId
+            };
+            db.patientPictures.Add(pic);
+            handled = (db.SaveChanges() > 0);
+            return handled;
+        }
+
         public string LoadImage(int? id, out string type)
         {
             byte[] fileBytes = null;

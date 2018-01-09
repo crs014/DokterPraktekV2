@@ -131,7 +131,13 @@ namespace DokterPraktekV2.Controllers
 
                         //type = data.photo.ContentType; // Check image type ryan logic
                         //photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
-                        
+
+                    }
+                    else if (data.photo == null)
+                    {
+                        type = data.photos.ContentType; // Check image type ryan logic
+                        photoService.UploadPatientPictureFILE(data.photos.InputStream, type, dataPatient.id); // Upload patient pictures to database
+
                     }
                     var dataBooking = BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
                     TempData["id"] = dataBooking;

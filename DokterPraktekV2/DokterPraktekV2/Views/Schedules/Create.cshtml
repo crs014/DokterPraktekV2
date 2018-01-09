@@ -61,58 +61,82 @@
                         @Html.TextBoxFor(model => model.dateSchedule, htmlAttributes: new { @type = "date", @min = ViewBag.blockDate, htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.dateSchedule, "", new { @class = "text-danger" })
                     </div>
-                </div>
-                  <div class="modal-body">
-                        <a href="#" id="capture" class="btn btn-primary"><i class=" fa fa-camera"></i> CAPTURE</a>
+                    <div id="par">
+                        @*<input type="button" id="stop" name="stop" value="STOP"/>*@
+                        @*--------------------------------*@
+                        <input type="hidden" name="photos" id="filephoto">
+                        @*---------------------------------*@
                         <video id="player" width="550" height="400" controls autoplay></video>
                         <canvas id="canvas" width=320 height=240></canvas>
+                        <hr />
+                        <a href="#" id="capture" class="btn btn-primary"><i class="fa fa-camera"></i> CAPTURE</a>
                         <a href="#" class="btn btn-success" id="btn-download" download="bookingphoto.png"><i class="fa fa-cloud-download"></i> DOWNLOAD</a>
-
-
                         <input type="hidden" name="photo" id="photos" />
-                        <script>
-                            const player = document.getElementById('player');
-                            const canvas = document.getElementById('canvas');
-                            const context = canvas.getContext('2d');
-                            const captureButton = document.getElementById('capture');
-
-                            var button = document.getElementById('btn-download');
-                            button.addEventListener('click', function (e) {
-                                var dataURL = canvas.toDataURL('image/png');
-                                button.href = dataURL;
-                            });
-
-                            const constraints = {
-                                video: true,
-                            };
-
-                            var image = document.getElementById('photo');
-                            captureButton.addEventListener('click', () => {
-                                var images = context.drawImage(player, 0, 0, canvas.width, canvas.height);
-                                var ba = document.getElementById('canvas').toDataURL('image/png');
-                                document.getElementById('photos').src = ba;
-                                document.getElementById('photos').value = ba.toString();
-
-
-                                console.log(ba);
-                            });
-
-                            navigator.mediaDevices.getUserMedia(constraints)
-                              .then((stream) => {
-                                  player.srcObject = stream;
-                              });
-                        </script>
-
                     </div>
+                    @* ---------------------------- *@
+                    <script>
+                                          const player = document.getElementById('player');
+                                          const canvas = document.getElementById('canvas');
+                                          const context = canvas.getContext('2d');
+                                          const captureButton = document.getElementById('capture');
+                                          var localstream;
+                                          var button = document.getElementById('btn-download');
+                                          button.addEventListener('click', function (e) {
+                                              var dataURL = canvas.toDataURL('image/png');
+                                              button.href = dataURL;
+                                          });
+
+                                          const constraints = {
+                                            video: true,
+                                          };
+
+                                          var image = document.getElementById('photo');
+                                          captureButton.addEventListener('click', () => {
+                                              var images = context.drawImage(player, 0, 0, canvas.width, canvas.height);
+                                                  var ba = document.getElementById('canvas').toDataURL('image/png');
+                                                 document.getElementById('photos').src = ba;
+                                                    document.getElementById('photos').value = ba.toString();
 
 
-                    @*<div class="form-group">
-                            @Html.LabelFor(model => model.dateSchedule, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.dateSchedule, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.dateSchedule, "", new { @class = "text-danger" })
-                            </div>
-                        </div>*@
+                                                  console.log(ba);
+                                          });
+
+                                          navigator.mediaDevices.getUserMedia(constraints)
+                                            .then((stream) => {
+                                                player.srcObject = stream;
+                                                localstream = player.srcObject;
+                                            });
+                    //-------------------------DELETE HIDDEN-------------------------------------------
+                                          var getStr = window.location.search.substr(1);
+                                          var getArray = getStr.split("&");
+                                          var get = {};
+
+                                          for (var i = 0; i < getArray.length; i++) {
+                                              var tmpArray = getArray[i].split("=");
+                                              get[tmpArray[0]] = tmpArray[1];
+                                          }
+                                          if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
+
+                                              var hidden = document.createAttribute("hidden");
+
+                                              var par = document.getElementById("par");
+                                              var filephoto = document.getElementById('filephoto');
+                                              var players = document.getElementById("player");
+                                              var capture = document.getElementById("capture");
+                                              var btndown = document.getElementById("btn-download");
+                                              var can = document.getElementById("canvas");
+
+                                              document.getElementById('filephoto').setAttribute("type", "file");
+                                              //document.getElementsByTagName('video')[0].removeAttribute('video');
+                                              //document.getElementsByTagName('video')[0].removeAttribute('controls');
+                                              par.removeChild(players);
+                                              par.removeChild(can);
+                                              par.removeChild(capture);
+                                              par.removeChild(btndown);
+                                          }
+                    //--------------------
+                    </script>
+                </div>
 
                 <div class="panel-footer">
                     <div class="form-group">
