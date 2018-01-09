@@ -3,84 +3,93 @@
 @{
     ViewBag.Title = "Create";
 }
-
-<h2>My Work Schedule</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        
-        <hr />
-
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="form-group">
-            <div class="col-md-12">
-                @Html.Label("Doctor Name : ", new { htmlAttributes = new { @class = "label-control " } })
-                
-                @Html.Label(Model.docInfo.doctorName , new { htmlAttributes = new { @class = "label-control" } })
-
-                @Html.ValidationMessageFor(model => model.docId, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.docId)
-            </div>
+<section class="content-header">
+    <h1>My Work Schedule</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
         </div>
+        <div class="box-body">
+           @using (Html.BeginForm())
+           {
+            @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            <div class="col-md-12">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>
-                                Day
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    @{
-                        for (var i = 0; i < Model.dayIn.Count(); i++)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.Label(Model.dayIn[i].day)
-                                </td>
-                                <td>
-                                    @Html.HiddenFor(model => model.dayIn[i].dayId)
-                                    @Html.CheckBoxFor(model => model.dayIn[i].IsSelected)
-                                </td>
-                            </tr>
-                        }
-                    }
+            <div class="form-horizontal">
 
-                </table>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.Label("Doctor Name : ", new { htmlAttributes = new { @class = "label-control " } })
+
+                        @Html.Label(Model.docInfo.doctorName, new { htmlAttributes = new { @class = "label-control" } })
+
+                        @Html.ValidationMessageFor(model => model.docId, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.docId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Day
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            @{
+                                for (var i = 0; i < Model.dayIn.Count(); i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.Label(Model.dayIn[i].day)
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(model => model.dayIn[i].dayId)
+                                            @Html.CheckBoxFor(model => model.dayIn[i].IsSelected)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </table>
+                    </div>
+                </div>
+
+
+
+                @*<div class="form-group">
+                        <div class="col-md-12">
+                                @Html.Label("Day In", new { htmlAttributes = new { @class = "label-control " } })<br />
+                                @for (var i = 0; i < 5; i++)
+                                {
+                                    <p>
+                                        @Html.CheckBoxFor(model => model.dayIn[i].IsSelected.Value)
+                                        @Html.HiddenFor(model => model.dayIn[i].day)
+                                        <label>@Model.dayIn[i].day</label>
+                                    </p>
+                                }
+                        </div>
+                    </div>*@
+
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-11">
+                        <input type="submit" value="Apply" class="btn btn-default" />
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-
-        @*<div class="form-group">
-            <div class="col-md-12">
-                    @Html.Label("Day In", new { htmlAttributes = new { @class = "label-control " } })<br />
-                    @for (var i = 0; i < 5; i++)
-                    {
-                        <p>
-                            @Html.CheckBoxFor(model => model.dayIn[i].IsSelected.Value)
-                            @Html.HiddenFor(model => model.dayIn[i].day)
-                            <label>@Model.dayIn[i].day</label>
-                        </p>
-                    }
-            </div>
-        </div>*@
-
-
-
-        <div class="form-group">
-            <div class="col-md-offset-11">
-                <input type="submit" value="Apply" class="btn btn-default" />
-            </div>
+                                }
         </div>
     </div>
-}
+</section>
+

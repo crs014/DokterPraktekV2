@@ -4,9 +4,14 @@
     ViewBag.Title = "Create";
 }
 @Html.Partial("Sign")
-<h2 class="text-center">RI9 Clinic</h2>
 
-
+<section class="content-header">
+    <center>
+        <h1>RI9 Clinic</h1>
+    </center>
+</section>
+<!-- Main content -->
+<section class="content">
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -14,42 +19,44 @@
         <hr />
         @foreach (var item in Model.doctors)
         {
-        <div class="form-horizontal col-md-8 col-md-offset-2">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                <div class="panel panel-primary">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading"><h4>@item.name</h4></div>
-                    <div class="panel-body">
-                        <p>
-                            Specialize in :
-                            @foreach (var data in item.doctorSpecialties)
-                            {
-                                <li>@data.specialty</li>
-                            }
-                        </p>
+            <div class="form-horizontal col-md-8 col-md-offset-2">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="panel panel-primary">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading"><h4>@item.name</h4></div>
+                        <div class="panel-body">
+                            <p>
+                                Specialize in :
+                                @foreach (var data in item.doctorSpecialties)
+                                {
+                                    <li>@data.specialty</li>
+                                }
+                            </p>
 
 
-                        <!-- Table -->
-                        <table class="table table-striped text-center">
-                            @foreach (var work in item.dayIn)
-                            {
-                                <tr><td>@work.day</td></tr>
-                            }
-                        </table>
-                        <div class="col-md-offset-10">
-                            <input type="hidden" class="doctorId" value="@item.doctorId" />
-                            <input type="button" class="selectDoctor btn btn-primary" value="Choose" data-toggle="modal" data-target="#myModal" />
+                            <!-- Table -->
+                            <table class="table table-striped text-center">
+                                @foreach (var work in item.dayIn)
+                                {
+                                    <tr><td>@work.day</td></tr>
+                                }
+                            </table>
+                            <div class="col-md-offset-10">
+                                <input type="hidden" class="doctorId" value="@item.doctorId" />
+                                <input type="button" class="selectDoctor btn btn-primary" value="Choose" data-toggle="modal" data-target="#myModal" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="clearfix"></div>
+            <div class="clearfix"></div>
         }
     </div>
+}   
+</section>
 
-}
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 

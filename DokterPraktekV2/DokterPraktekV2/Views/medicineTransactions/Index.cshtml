@@ -6,42 +6,55 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Data IN/OUT - Transaksi</h2>
+<section class="content-header">
+    <h1>Data IN/OUT - Transaksi</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Status Transaksi
+                        </th>
+                        <th>
+                            QTY
+                        </th>
+                        <th>
+                            Nama Obat
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                Status Transaksi
-            </th>
-            <th>
-                QTY
-            </th>
-            <th>
-                Nama Obat
-            </th>
-        </tr>
-    </thead>
-@foreach (var item in Model) {
-    <tr>
-        
-        <td>
-            @if(item.statusTransaction == true)
-            {
-                <font color="green"><p>IN</p></font>
-            }else
-            {
-                <font color="red"><p>OUT</p></font>
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.quantity)
-        </td>
-        <td>
-           @Html.DisplayFor(modelItem => item.medicine.name)
-        </td>
-    </tr>
-}
-</table>
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
-        of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                        <td>
+                            @if (item.statusTransaction == true)
+                            {
+                                <font color="green"><p>IN</p></font>
+                            }
+                            else
+                            {
+                                <font color="red"><p>OUT</p></font>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.medicine.name)
+                        </td>
+                    </tr>
+                }
+            </table>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+            of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
+    </div>
+</section>

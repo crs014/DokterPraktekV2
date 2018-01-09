@@ -57,7 +57,7 @@ namespace DokterPraktekV2.Controllers
             //list data patient history by patient id
             var userID = User.Identity.GetUserId();
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
-            var dataList = patientService.allPatientHistory(data.patientId, dataDoctor.id);
+            var dataList = patientService.allPatientHistory(data.patientId, dataDoctor.id).OrderByDescending(e => e.date);
             int pageNumber = (page ?? 1);
             int pageSize = 7;
 

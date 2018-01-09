@@ -4,45 +4,56 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <style>
         .table {
-            background-color : white;
+            background-color: white;
         }
 
-        .table thead {
-            background-color : black;
-            color : white;
-        }
-        .panel-default .panel-heading{
-            color:white;
-            background-color:#333;
+            .table thead {
+                background-color: black;
+                color: white;
+            }
+
+        .panel-default .panel-heading {
+            color: white;
+            background-color: #333;
         }
     </style>
 </head>
-<body style="background-color:#f0e9ee">
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Clinic", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+<body class="hold-transition skin-red sidebar-mini">
+    <div class="wrapper">
+        <!-- open navbar -->
+        <header class="main-header">
+            <a href="index2.html" class="logo">
+                <span class="logo-mini"><b>D</b>OC</span>
+                <span class="logo-lg"><b>Dokter Praktek</b></span>
+            </a>
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        @Html.Partial("_LoginPartial")
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">MAIN NAVIGATION</li>
                     @if (User.IsInRole("doctor"))
                     {
-                        <li>@Html.ActionLink("Today Schedule", "Index", "doctors")</li>
-                        <li>@Html.ActionLink("Medicines", "Index", "medicines")</li>
-                        <li>@Html.ActionLink("Medicines Trans", "Index", "medicineTransactions")</li>
-                        <li>@Html.ActionLink("Patients","Index", "patients")</li>
-                        <li>@Html.ActionLink("My Specialties", "Add", "specialties")</li>
-                        <li>@Html.ActionLink("Work Schedule", "Create", "dayIn")</li>
+                        <li><a href="/doctors/Index"><i class="fa fa-calendar"></i> <span>Today Schedule</span></a></li>
+                        <li><a href="/medicines/Index"><i class="fa fa-medkit"></i> <span>Medicines</span></a></li>
+                        <li><a href="/medicineTransactions/Index"><i class="fa fa-download"></i> <span>Medicines Trans</span></a></li>
+                        <li><a href="/patients/Index"><i class="fa fa-user"></i> <span>Patients</span></a></li>
+                        <li><a href="/specialties/Add"><i class="fa fa-stethoscope"></i> <span>My Specialties</span></a></li>
+                        <li><a href="/dayIn/Create"><i class="fa fa-calendar-check-o"></i> <span>Work Schedule</span></a></li>
                     }
                     else if (User.IsInRole("admin"))
                     {
@@ -58,26 +69,19 @@
                         <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
                         <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
                         <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
-                        
+
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Book Now !", "Select", "schedules")</li>
+                        <li><a href="/schedules/Select"><i class="fa fa-book"></i> <span>Book Now!</span></a></li>
                     }
-
-
                 </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+            </section>
+        </aside>
+        <div class="content-wrapper">
+            @RenderBody()
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <footer>
-           
-        </footer>
-    </div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

@@ -4,56 +4,61 @@
     ViewBag.Title = "Create";
 }
 @Html.Partial("CreateNew")
-<h2>Create</h2>
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group col-md-12">
-            @Html.Label("Specialty", htmlAttributes: new { @class="control-label"})    
-            @Html.DropDownListFor(x => x.SelectedId , new SelectList(Model.ListSpecialties, "id", "specialty"), "-- Select Specialty --", new { @class="form-control"})
-            @Html.ValidationMessageFor(model => model.SelectedId, "", new { @class = "text-danger" })
+<section class="content-header">
+    <h1>Add Specility</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
         </div>
+        <div class="box-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group col-md-12">
+                        @Html.Label("Specialty", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(x => x.SelectedId, new SelectList(Model.ListSpecialties, "id", "specialty"), "-- Select Specialty --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SelectedId, "", new { @class = "text-danger" })
+                    </div>
 
 
-        <div class="form-group">
-            <div class="col-md-offset-1">
-                &nbsp;&nbsp;
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <input type="submit" value="Add" class="btn btn-default" />
-                <input type="button" class="btn btn-default" value="Create New" data-toggle="modal" data-target="#createNew" />
-            </div>
+                    <div class="form-group col-md-12">
+                            <input type="submit" value="Add" class="btn btn-default" />
+                            <input type="button" class="btn btn-default" value="Create New" data-toggle="modal" data-target="#createNew" />
+                    </div>
+                </div>
+            }
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Specialty
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.ListDoctorSpecialties)
+                {
+                    <tr>
+                        <td>
+                            @item.specialty
+                        </td>
+                        <td>
+                            @Html.ActionLink("Remove", "Delete", new { id = item.id })
+                        </td>
+                    </tr>
+                }
+            </table>
+
         </div>
     </div>
-}
-
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>
-                Specialty
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
-    </thead>
-    @foreach (var item in Model.ListDoctorSpecialties)
-    {
-        <tr>
-            <td>
-                @item.specialty
-            </td>
-            <td>
-                @Html.ActionLink("Remove", "Delete", new { id = item.id })
-            </td>
-        </tr>
-    }
-</table>
+</section>

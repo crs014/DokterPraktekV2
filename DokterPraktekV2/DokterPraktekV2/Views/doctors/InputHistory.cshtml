@@ -35,79 +35,90 @@
 
     </div>
 </div>
-
-@Html.Partial("Medicine")
-<h3>Input History @ViewBag.dataPatient.patient.name</h3>
-<br />
-<p>Doctor : @ViewBag.dataPatient.doctor.name</p>
-<br />
-<img src="data:@ViewBag.tipeImage;base64,@ViewBag.stringUrl" style="width: 150px; height: 150px;" />
-<form action="/doctors/InputHistory/@ViewBag.dataPatient.id" method="post">
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="form-group">
-                <label>Checkup price :</label>
-                <input type="number" name="price" class="form-control" required />
-            </div>
-            <div class="form-group">
-                <label>Sickness :</label>
-                <input type="text" name="sick" class="form-control" required />
-            </div>
-            <div class="form-group">
-                <label>Description :</label>
-                <textarea name="descriptionSick" class="form-control" style="resize:none; height:150px" required></textarea>
-            </div>
-            <input type="button" id="addMedicine" class="btn btn-primary" value="Add medicine" style="margin-bottom:10px;" data-toggle="modal" data-target="#medicineModal" />
+<section class="content-header">
+    <h1>Input History @ViewBag.dataPatient.patient.name</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
         </div>
-        <div class="col-sm-4">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>
-                            date
-                        </th>
-                        <th>
-                            sickness
-                        </th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @item.date.ToShortDateString()
-                        </td>
-                        <td>
-                            @item.sickness
-                        </td>
-                        <td>
-                            <button type="button" class="historyBtn" data-toggle="modal" data-target="#historyDetail">Open Modal</button>
-                            <input type="hidden" value="@item.id" class="historyId" />
-                        </td>
-                    </tr>
-                }
+        <div class="box-body">
+            <p>Doctor : @ViewBag.dataPatient.doctor.name</p>
+            <br />
+            <img src="data:@ViewBag.tipeImage;base64,@ViewBag.stringUrl" style="width: 150px; height: 150px;" />
+            <form action="/doctors/InputHistory/@ViewBag.dataPatient.id" method="post">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label>Checkup price :</label>
+                            <input type="number" name="price" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Sickness :</label>
+                            <input type="text" name="sick" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Description :</label>
+                            <textarea name="descriptionSick" class="form-control" style="resize:none; height:150px" required></textarea>
+                        </div>
+                        <input type="button" id="addMedicine" class="btn btn-primary" value="Add medicine" style="margin-bottom:10px;" data-toggle="modal" data-target="#medicineModal" />
+                    </div>
+                    <div class="col-sm-4">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        date
+                                    </th>
+                                    <th>
+                                        sickness
+                                    </th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.date.ToShortDateString()
+                                    </td>
+                                    <td>
+                                        @item.sickness
+                                    </td>
+                                    <td>
+                                        <button type="button" class="historyBtn" data-toggle="modal" data-target="#historyDetail">Detail</button>
+                                        <input type="hidden" value="@item.id" class="historyId" />
+                                    </td>
+                                </tr>
+                            }
+
+                        </table>
+                        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                        @Html.PagedListPager(Model, page => Url.Action("Details",
+                new { page }))
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered" id="medicineCart">
+                    <thead>
+                        <tr>
+                            <th>Medicine name</th>
+                            <th>Quantity</th>
+                            <th>dosis</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
                 </table>
-                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                @Html.PagedListPager(Model, page => Url.Action("Details",
-                new { page }))
-            </div>
-        </div>
-        <table class="table table-striped table-bordered" id="medicineCart">
-            <thead>
-                <tr>
-                    <th>Medicine name</th>
-                    <th>Quantity</th>
-                    <th>dosis</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+                <input class="btn btn-success" type="submit" name="submit" />
 
-        </table>
-        <input class="btn btn-success" type="submit" name="submit" />
-    
-</form>
+            </form>
+        </div>
+    </div>
+</section>
+@Html.Partial("Medicine")
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
@@ -187,7 +198,6 @@
                 $.get("/Doctors/JsonMedicinePatient/" + histId, function (data, status) {
                     $("#medicinePatientList").empty();
                     for (var i in data.medicine) {
-                        console.log(i);
                         var name = "<tr><td>" + data.medicine[i].medicineName + "</td>";
                         var qty = "<td>" + data.medicine[i].quantity + "</td>";
                         var price = "<td>" + data.medicine[i].price + "</td>";

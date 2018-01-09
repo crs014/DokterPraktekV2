@@ -4,55 +4,66 @@
     ViewBag.Title = "TodayPatient";
 }
 
-<h2>Today Schedule Doctor @ViewBag.Doctor.name</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                No booking
-            </th>
-            <th>
-                Patient Name
-            </th>
-            <th>
-                Booking Status
-            </th>
-            <th>
-                Gender
-            </th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @item.bookingNumber
-            </td>
-            <td>
-                @item.patient.name
-            </td>
-            <td>
-                @item.bookingStatus
-            </td>
-            <td>
-                @if (item.patient.gender == false)
+<section class="content-header">
+    <h1>Today Schedule Doctor @ViewBag.Doctor.name</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            No booking
+                        </th>
+                        <th>
+                            Patient Name
+                        </th>
+                        <th>
+                            Booking Status
+                        </th>
+                        <th>
+                            Gender
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.bookingNumber
+                        </td>
+                        <td>
+                            @item.patient.name
+                        </td>
+                        <td>
+                            @item.bookingStatus
+                        </td>
+                        <td>
+                            @if (item.patient.gender == false)
                 {<p>wanita</p>}
                 else
                 {<p>pria</p>}
-            </td>
-            <td>
-                <a href="/Doctors/InputHistory/@item.id"><button class="btn btn-primary">Input history</button></a>
-            </td>
-        </tr>
-    }
-</table>
-<br />
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Index",
+                        </td>
+                        <td>
+                            <a href="/Doctors/InputHistory/@item.id"><button class="btn btn-primary">Input history</button></a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index",
     new { page, currentFilter = ViewBag.CurrentFilter }))
-
+        </div>
+    </div>
+</section>
 
 
 
