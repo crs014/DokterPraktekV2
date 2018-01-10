@@ -3,50 +3,62 @@
     ViewBag.Title = "DoctorDetail";
 }
 
-<h2>DoctorDetail</h2>
-<h4>Name : @Model.name</h4>
-<h4>Address : @Model.homeAddress</h4>
-<h4>Phone : @Model.phone</h4>
-<a href="/SuperUser/Doctor">back to list</a>
-<div class="row">
-    <div class="col-sm-6">
-        <h3>Shift Day:</h3>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Day</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var i in ViewBag.work)
-                {
-                <tr>
-                    <td>
-                        @i.dayIn
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+<section class="content-header">
+    <h1>DoctorDetail</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <h4>Name : @Model.name</h4>
+            <h4>Address : @Model.homeAddress</h4>
+            <h4>Phone : @Model.phone</h4>
+            <a href="/SuperUser/Doctor">back to list</a>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3>Shift Day:</h3>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in ViewBag.work)
+                            {
+                                <tr>
+                                    <td>
+                                        @i.dayIn
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-6">
+                    <h3>Spesialist Doctor:</h3>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Spesiality</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in Model.doctorSpecialists)
+                            {
+                                <tr>
+                                    <td>
+                                        @i.specialist.specialty
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-sm-6">
-        <h3>Spesialist Doctor:</h3>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Spesiality</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var i in Model.specialists)
-                {
-                    <tr>
-                        <td>
-                            @i.specialty
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+</section>

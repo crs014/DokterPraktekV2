@@ -4,69 +4,82 @@
     ViewBag.Title = "Index";
 }
 @Html.Partial("Create")
-<h2>Payment</h2>
-<form method="get" action="/Transaction">
-    Find by History id or Patient Name: <input id="SearchString" name="SearchString" type="text">
-    <input type="submit" value="Search">
-</form>
-<table class="table table-bordered table-striped" id="tablePaid">
-    <thead>
-        <tr>
-            <th>History id</th>
-            <th>Patient Id</th>
-            <th>Patient Name</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Need to paid</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td class="historyId">@item.historyId</td>
-            <td>@item.patientId</td>
-            <td>@item.patientName</td>
-            <td>@item.amount</td>
-            <td>@item.alreadyPay</td>
-            <td>
-            @{
-                var a = item.amount;
-                var b = item.alreadyPay;
-                var c = a - b;
-            }
-                <p class="needPaid">@c</p>
-            </td>
-            <td>@item.dateHistory.ToString("dd/MM/yyy")</td>
-            <td>
-                @if(item.alreadyPay >= item.amount)
-                {
-                    <p style="color:green">paid off</p>
-                }
-                else if (item.alreadyPay == 0)
-                {
-                    <p style="color:red">not paid</p>
-                }
-                else
-                {
-                    <p style="color:yellow">not fully paid </p>
-                }
-            </td>
-            <td>
-                <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal">Pay</button>
-                <button type="button" class="btn btn-warning" onclick="printExternal(@item.historyId)">Print Nota</button> 
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
-<br/>
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Index",
+<section class="content-header">
+    <h1>Payment</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <form method="get" action="/Transaction">
+                Find by History id or Patient Name: <input id="SearchString" name="SearchString" type="text">
+                <input type="submit" value="Search">
+            </form>
+            <br />
+            <table class="table table-bordered table-striped" id="tablePaid">
+                <thead>
+                    <tr>
+                        <th>History id</th>
+                        <th>Patient Id</th>
+                        <th>Patient Name</th>
+                        <th>Amount</th>
+                        <th>Paid</th>
+                        <th>Need to paid</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="historyId">@item.historyId</td>
+                            <td>@item.patientId</td>
+                            <td>@item.patientName</td>
+                            <td>@item.amount</td>
+                            <td>@item.alreadyPay</td>
+                            <td>
+                                @{
+                                    var a = item.amount;
+                                    var b = item.alreadyPay;
+                                    var c = a - b;
+                                }
+                                <p class="needPaid">@c</p>
+                            </td>
+                            <td>@item.dateHistory.ToString("dd/MM/yyy")</td>
+                            <td>
+                                @if (item.alreadyPay >= item.amount)
+                                {
+                                    <p style="color:green">paid off</p>
+                                }
+                                else if (item.alreadyPay == 0)
+                                {
+                                    <p style="color:red">not paid</p>
+                                }
+                                else
+                                {
+                                    <p style="color:yellow">not fully paid </p>
+                                }
+                            </td>
+                            <td>
+                                <button type="button" class="btn paidBtn btn-info" data-toggle="modal" data-target="#payModal"><i class="fa fa-money"></i> Pay</button>
+                                <button type="button" class="btn btn-warning" onclick="printExternal(@item.historyId)"><i class="fa fa-sticky-note-o"></i> Print Nota</button>
+                            </td>
+                        </tr>
+                                    }
+                </tbody>
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index",
     new { page, currentFilter = ViewBag.CurrentFilter }))
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

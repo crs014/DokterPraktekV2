@@ -19,7 +19,7 @@ namespace DokterPraktekV2.Controllers
 
         #region Get List Booking
         // GET: Schedules
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, superuser")]
         public ActionResult Index(string searchString , string currentFilter , int? page)
         {
             var book = BookListService.BookingList();
@@ -44,7 +44,7 @@ namespace DokterPraktekV2.Controllers
         #endregion
 
         #region Get Today Booking List
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, superuser")]
         public ActionResult TodayBook(string searchString, string currentFilter, int? page)
         {
             var book = BookListService.TodayBookingList();

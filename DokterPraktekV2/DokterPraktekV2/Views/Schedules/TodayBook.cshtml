@@ -3,86 +3,99 @@
 @{
     ViewBag.Title = "Today Booking List";
 }
-    <h4>
-        <span class="btn btn-primary">
-            Today's Patient Booking List <span class="badge">@ViewBag.TotalBook</span>
-        </span>
-    </h4>
-<div class="clearfix"></div>
-@using (Html.BeginForm("TodayBook", "schedules", FormMethod.Get))
-{
-    <p>
-        Find by patient name: <input id="searchString" name="searchString" type="text">
-        <button type="submit" class="btn btn-primary btn-sm">
-            <span class="glyphicon glyphicon-search"></span> Search
-        </button>
-    </p>
-}
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>
-                Doctor Name
-            </th>
-            <th>
-                No Booking
-            </th>
-            <th>
-                Patient Name
-            </th>
-            <th>
-                Patient ID
-            </th>
-            <th>
-                Appointment Date
-            </th>
-            <th>
-                Booking Status
-            </th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DoctorName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NoBooking)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.id)
-            </td>   
-            <td>
-                @item.BookDate.ToString("dd-MMM-yy")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingStatus)
-            </td>
-            <td>
-                @if (item.BookingStatus == "Booking")
+
+<section class="content-header">
+    <h1>Today Booking List</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+            <h4>
+                <span class="btn btn-primary">
+                    Today's Patient Booking List <span class="badge">@ViewBag.TotalBook</span>
+                </span>
+            </h4>
+        </div>
+        <div class="box-body">
+           @using (Html.BeginForm("TodayBook", "schedules", FormMethod.Get))
+           {
+            <p>
+                Find by patient name: <input id="searchString" name="searchString" type="text">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <span class="glyphicon glyphicon-search"></span> Search
+                </button>
+            </p>
+           }
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Doctor Name
+                    </th>
+                    <th>
+                        No Booking
+                    </th>
+                    <th>
+                        Patient Name
+                    </th>
+                    <th>
+                        Patient ID
+                    </th>
+                    <th>
+                        Appointment Date
+                    </th>
+                    <th>
+                        Booking Status
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DoctorName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NoBooking)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.id)
+                    </td>
+                    <td>
+                        @item.BookDate.ToString("dd-MMM-yy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookingStatus)
+                    </td>
+                    <td>
+                        @if (item.BookingStatus == "Booking")
                 {
-                    @*@Html.ActionLink("Complete", "CheckToday", new { id = item.id}) <text> | </text>*@
-                    @Html.ActionLink("Cancel", "CancelToday", new { id = item.id})
-                }
-                else if (item.BookingStatus == "Completed")
-                {
+                            @*@Html.ActionLink("Complete", "CheckToday", new { id = item.id}) <text> | </text>*@
+                            @Html.ActionLink("Cancel", "CancelToday", new { id = item.id })
+                        }
+                        else if (item.BookingStatus == "Completed")
+                        {
 
-                }
-                else
-                {
+                        }
+                        else
+                        {
 
-                }
-            </td>
-        </tr>
-    }
+                        }
+                    </td>
+                </tr>
+            }
 
-</table>
-<br />
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </table>
+        <br />
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))
+        </div>
+    </div>
+</section>

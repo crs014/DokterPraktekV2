@@ -57,19 +57,19 @@
                     }
                     else if (User.IsInRole("admin"))
                     {
-                        <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
-                        <li>@Html.ActionLink("Payment", "Index", "Transaction")</li>
-                        <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
-                        <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
+                        <li><a href="/schedules/TodayBook"><i class="fa fa-calendar"></i> <span>Today's Booking List</span></a></li>
+                        <li><a href="/Transaction/Index"><i class="fa fa-credit-card"></i> <span>Payment</span></a></li>
+                        <li><a href="/patients/allPatient"><i class="fa fa-user"></i> <span>List patients</span></a></li>
+                        <li><a href="/schedules/Index"><i class="fa fa-book"></i> <span>All Booking</span></a></li>
                     }
                     else if (User.IsInRole("superuser"))
                     {
-                        <li>@Html.ActionLink("List doctors", "Doctor", "SuperUser")</li>
-                        <li>@Html.ActionLink("List admins", "Admin", "SuperUser")</li>
-                        <li>@Html.ActionLink("List patients", "allPatient", "patients")</li>
-                        <li>@Html.ActionLink("Today's Booking List", "TodayBook", "schedules")</li>
-                        <li>@Html.ActionLink("All Booking", "Index", "schedules")</li>
-
+                        <li><a href="/schedules/TodayBook"><i class="fa fa-calendar"></i> <span>Today's Booking List</span></a></li>
+                        <li><a href="/SuperUser/Doctor"><i class="fa fa-user-md"></i> <span>List doctors</span></a></li>
+                        <li><a href="/SuperUser/Admin"><i class="fa fa-address-book-o"></i> <span>List Admins</span></a></li>
+                        <li><a href="/patients/allPatient"><i class="fa fa-user"></i> <span>List patients</span></a></li>
+                        <li><a href="/schedules/Index"><i class="fa fa-book"></i> <span>All Booking</span></a></li>
+                        <li><a href="/Account/Register"><i class="fa fa-plus-circle"></i> <span>Create User</span></a></li>
                     }
                     else
                     {

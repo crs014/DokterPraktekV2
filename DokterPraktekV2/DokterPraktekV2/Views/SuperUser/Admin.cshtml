@@ -4,52 +4,65 @@
     ViewBag.Title = "Doctor";
 }
 
-<h2>List Admin</h2>
-<form action="/SuperUser/Doctor" method="get">
-    <p>
-        Find by name: <input id="SearchString" name="SearchString" type="text">
-        <input type="submit" value="Search">
-    </p>
-</form>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                name
-            </th>
-            <th>
-                address
-            </th>
-            <th>
-                phone
-            </th>
-            <th>
-                gender
-            </th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @item.name
-            </td>
-            <td>
-                @item.address
-            </td>
-            <td>
-                @item.phone
-            </td>
-            <td>
-                @if (item.gender == false)
+<section class="content-header">
+    <h1>List Admin</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <form action="/SuperUser/Doctor" method="get">
+                <p>
+                    Find by name: <input id="SearchString" name="SearchString" type="text">
+                    <input type="submit" value="Search">
+                </p>
+            </form>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            name
+                        </th>
+                        <th>
+                            address
+                        </th>
+                        <th>
+                            phone
+                        </th>
+                        <th>
+                            gender
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.name
+                        </td>
+                        <td>
+                            @item.address
+                        </td>
+                        <td>
+                            @item.phone
+                        </td>
+                        <td>
+                            @if (item.gender == false)
                 {<p>wanita</p>}
                 else
                 {<p>pria</p>}
-            </td>
-        </tr>
-    }
-</table>
-<br />
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Admin",
+                        </td>
+                    </tr>
+                }
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Admin",
     new { page, currentFilter = ViewBag.CurrentFilter }))
+        </div>
+    </div>
+</section>
+
