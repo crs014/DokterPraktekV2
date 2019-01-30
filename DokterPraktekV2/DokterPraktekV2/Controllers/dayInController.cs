@@ -11,7 +11,7 @@ namespace DokterPraktekV2.Controllers
 {
     public class dayInController : Controller
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private dayInServices serv = new dayInServices();
 
         [Authorize(Roles = "doctor")]
@@ -19,11 +19,11 @@ namespace DokterPraktekV2.Controllers
         public ActionResult Create()
         {
             var auth_id = User.Identity.GetUserId();
-            var id = db.doctors.Where(s => s.userId == auth_id).Select(s => s.id).FirstOrDefault();
+            var id = db.doctors.Where(s => s.userId == auth_id).Select(s => s.userId).FirstOrDefault();
             VM_dayIn work = new VM_dayIn();
             work.dayIn = serv.DoctorDayIn(id);
             work.docInfo = serv.DoctorNames(id);
-            work.docId = id;
+            //work.docId = Convert.ToInt32(id);
             return View(work);
         }
 
@@ -33,15 +33,15 @@ namespace DokterPraktekV2.Controllers
         {
             foreach (var item in data.dayIn)
             {
-                var docInfo = db.workDays.First(s => s.id == item.dayId);
+                var docInfo = db.WorkSchedules.First(s => s.ID == item.dayId);
                 if(item.IsSelected == true)
                 {
-                    docInfo.working = true;
+                    docInfo.IsAvailable = true;
                     db.SaveChanges();
                 }
                 else
                 {
-                    docInfo.working = false;
+                    docInfo.IsAvailable = false;
                     db.SaveChanges();
                 }
             }

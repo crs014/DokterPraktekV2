@@ -13,18 +13,18 @@ namespace DokterPraktekV2.Controllers
     [Authorize(Roles = "admin")]
     public class TransactionController : Controller
     {
-        DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        DokterPraktekEntities db = new DokterPraktekEntities();
 
         public ActionResult Index(string currentFilter, string searchString, int? page)
         {
-            var data = db.histories.DistinctBy(z => z.id).Select(e => new VM_transaction
+            var data = db.MedicalHistories.DistinctBy(z => z.ID).Select(e => new VM_transaction
             {
-                alreadyPay = e.payments.Sum(a => a.amount),
-                patientId = e.patientId,
-                patientName = e.patient.name,
-                amount = e.checkupPrice + e.patientMedicines.Sum(b => b.medicine.price * b.quantity),
-                dateHistory = e.checkupDate,
-                historyId = e.id
+                alreadyPay = e.Payments.Sum(a => a.Amount),
+                patientId = e.PatientID,
+                patientName = e.Patient.Name,
+                amount = e.CheckUpPrice + e.PatientMedicines.Sum(b => b.Medicine.Price * b.Quantity),
+                dateHistory = e.CheckUpDate,
+                historyId = e.ID
             }).OrderByDescending(e => e.dateHistory).ToList();
 
             if (searchString != null) { page = 1; }
@@ -52,16 +52,16 @@ namespace DokterPraktekV2.Controllers
 
         public ActionResult Nota(int id)
         {
-            VM_transaction data = db.histories.DistinctBy(z => z.id).Select(e => new VM_transaction
+            VM_transaction data = db.MedicalHistories.DistinctBy(z => z.ID).Select(e => new VM_transaction
             {
-                alreadyPay = e.payments.Sum(a => a.amount),
-                patientId = e.patientId,
-                patientName = e.patient.name,
-                amount = e.checkupPrice + e.patientMedicines.Sum(b => b.medicine.price * b.quantity),
-                dateHistory = e.checkupDate,
-                historyId = e.id
+                alreadyPay = e.Payments.Sum(a => a.Amount),
+                patientId = e.PatientID,
+                patientName = e.Patient.Name,
+                amount = e.CheckUpPrice + e.PatientMedicines.Sum(b => b.Medicine.Price * b.Quantity),
+                dateHistory = e.CheckUpDate,
+                historyId = e.ID
             }).FirstOrDefault(a => a.historyId == id);
-            ViewBag.dataMedicine = db.histories.FirstOrDefault(e => e.id == id).patientMedicines.ToList();
+            ViewBag.dataMedicine = db.MedicalHistories.FirstOrDefault(e => e.ID == id).PatientMedicines.ToList();
             ViewBag.data = data;
             return View();
 
@@ -72,17 +72,17 @@ namespace DokterPraktekV2.Controllers
         public Nullable<decimal> totalAll(int id)
         {
 
-            Nullable<decimal> totalPay = db.payments.Where(e => e.historyId == id).Select(a => new VM_totalTrans
+            Nullable<decimal> totalPay = db.Payments.Where(e => e.MedicalHistoryID == id).Select(a => new VM_totalTrans
             {
-                alreadyPay = a.amount
+                alreadyPay = a.Amount
             }).Sum(a => a.alreadyPay);
 
-            Nullable<decimal> totalMed = db.patientMedicines.Where(e => e.historyId == id).Select(a => new VM_totalTrans
+            Nullable<decimal> totalMed = db.PatientMedicines.Where(e => e.MedicalHistoryID == id).Select(a => new VM_totalTrans
             {
-                alreadyPay = a.medicine.price * a.quantity
+                alreadyPay = a.Medicine.Price * a.Quantity
             }).Sum(e => e.alreadyPay);
 
-            decimal priceChk = db.histories.FirstOrDefault(e => e.id == id).checkupPrice;
+            decimal priceChk = db.MedicalHistories.FirstOrDefault(e => e.ID == id).CheckUpPrice;
             if (totalPay == null)
             {
                 totalPay = 0;
@@ -104,10 +104,10 @@ namespace DokterPraktekV2.Controllers
             if (grandTotalPaid >= inputz.amount)
             {
 
-                payment pay = new payment();
-                pay.historyId = id;
-                pay.amount = inputz.amount;
-                db.payments.Add(pay);
+                Payment pay = new Payment();
+                pay.MedicalHistoryID = id;
+                pay.Amount = inputz.amount;
+                db.Payments.Add(pay);
                 db.SaveChanges();
             }
             return RedirectToAction("Index");

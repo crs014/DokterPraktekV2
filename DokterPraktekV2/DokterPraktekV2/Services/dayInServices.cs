@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,12 +7,12 @@ namespace DokterPraktekV2.Services
 {
     public class dayInServices
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         
-        public docInfo DoctorNames(int id)
+        public docInfo DoctorNames(string id)
         {
             var docNames = (from doc in db.doctors
-                            where doc.id == id
+                            where doc.id.ToString() == id
                             select new docInfo()
                             {
                                 doctorId = doc.id,
@@ -22,15 +22,15 @@ namespace DokterPraktekV2.Services
             return docNames;
         }
 
-        public List<dayIn> DoctorDayIn(int id)
+        public List<dayIn> DoctorDayIn(string id)
         {
-            var docDays = (from doc in db.workDays
-                            where doc.doctorId == id
+            var docDays = (from doc in db.WorkSchedules
+                            where doc.DoctorID == id.ToString()
                             select new dayIn()
                             {
-                                dayId = doc.id,
-                                day = doc.dayIn,
-                                IsSelected = doc.working,
+                                dayId = doc.ID,
+                                day = doc.Day,
+                                IsSelected = doc.IsAvailable,
                             }).ToList();
 
             return docDays;
@@ -42,19 +42,19 @@ namespace DokterPraktekV2.Services
             var doctors = (from doc in db.doctors
                            select new VM_doctorList()
                            {
-                               doctorId = doc.id,
+                               doctorId = doc.userId,
                                name = doc.name,
-                               dayIn = (from work in db.workDays
-                                        where work.doctorId == doc.id && work.working == true
+                               dayIn = (from work in db.WorkSchedules
+                                        where work.DoctorID == doc.userId && work.IsAvailable == true
                                         select new workDays()
                                         {
-                                            day = work.dayIn
+                                            day = work.Day
                                         }).ToList(),
-                               doctorSpecialties = (from s in db.specialists
-                                                    where s.doctorSpecialists.Any(x=>x.doctorId == doc.id)
+                               doctorSpecialties = (from s in db.Specialists
+                                                    where s.DoctorSpecialists.Any(x=>x.DoctorID == doc.userId.ToString())
                                                     select new docSpecialist
                                                     {
-                                                        specialty = s.specialty
+                                                        specialty = s.SpecialistName
                                                     }).ToList()
                            }).ToList();
             return doctors;

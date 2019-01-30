@@ -65,7 +65,7 @@
         $("#doctorTable").on("click", ".selectDoctor", function () {
             var par = $(this).parent();
             var idDoctor = par.find(".doctorId").val();
-            $("#newPatient").attr("href", "/schedules/Create/" + idDoctor);
+            $("#newPatient").attr("href", "/schedules/Create/" + idDoctor); //idDoctor
             $("#registeredPatient").attr("href", "/schedules/SignIn/" + idDoctor);
         });
     </script>

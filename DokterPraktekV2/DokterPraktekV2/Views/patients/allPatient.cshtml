@@ -1,4 +1,4 @@
-﻿@model  PagedList.IPagedList<DokterPraktekV2.patient>
+﻿@model  PagedList.IPagedList<DokterPraktekV2.Patient>
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "allPatient";
@@ -41,19 +41,23 @@
                 {
                     <tr>
                         <td>
-                            @item.name
+                            @item.Name
                         </td>
                         <td>
-                            @item.homeAddress
+                            @item.Address
                         </td>
                         <td>
-                            @item.phone
+                            @item.PhoneNumber
                         </td>
                         <td>
-                            @if (item.gender == false)
-                {<p>wanita</p>}
-                else
-                {<p>pria</p>}
+                            @if (item.Gender == false)
+                            {
+                                <p>Wanita</p>
+                            }
+                            else
+                            {
+                                <p>Pria</p>
+                            }
                         </td>
                     </tr>
                 }

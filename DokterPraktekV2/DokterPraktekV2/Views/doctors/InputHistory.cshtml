@@ -36,7 +36,7 @@
     </div>
 </div>
 <section class="content-header">
-    <h1>Input History @ViewBag.dataPatient.patient.name</h1>
+    <h1>Input History @ViewBag.dataPatient.Patient.Name</h1>
 </section>
 <!-- Main content -->
 <section class="content">
@@ -45,10 +45,10 @@
         <div class="box-header">
         </div>
         <div class="box-body">
-            <p>Doctor : @ViewBag.dataPatient.doctor.name</p>
+            <p>Doctor : @ViewBag.DoctorName</p>
             <br />
             <img src="data:@ViewBag.tipeImage;base64,@ViewBag.stringUrl" style="width: 150px; height: 150px;" />
-            <form action="/doctors/InputHistory/@ViewBag.dataPatient.id" method="post">
+            <form action="/doctors/InputHistory?doctorId=@ViewBag.dataPatient.DoctorID&patientId=@ViewBag.dataPatient.PatientID" method="post">
                 <div class="row">
                     <div class="col-sm-8">
                         <div class="form-group">

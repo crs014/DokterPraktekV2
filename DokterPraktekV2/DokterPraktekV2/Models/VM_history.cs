@@ -8,7 +8,7 @@ namespace DokterPraktekV2.Models
     public class VM_history
     {
         public int id { get; set; }
-        public int doctorId { get; set; }
+        public string doctorId { get; set; }
         public string doctorName { get; set; }
         public int patientId { get; set; }
         public string patientName { get; set; }

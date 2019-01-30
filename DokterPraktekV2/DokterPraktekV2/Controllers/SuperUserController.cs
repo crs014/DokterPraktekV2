@@ -11,7 +11,7 @@ namespace DokterPraktekV2.Controllers
     [Authorize(Roles = "superuser")]
     public class SuperUserController : Controller
     {
-        DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        DokterPraktekEntities db = new DokterPraktekEntities();
         // GET: SuperUser
         public ActionResult Index()
         {
@@ -38,11 +38,20 @@ namespace DokterPraktekV2.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult DoctorDetail(int id)
+        public ActionResult DoctorDetail(string id)
         {
-            doctor data = db.doctors.FirstOrDefault(e => e.id == id);
-            List<workDay> work = db.workDays.Where(d => d.working == true && d.doctorId == id).ToList(); 
+            doctor data = db.doctors.FirstOrDefault(e => e.userId == id);
+            List<WorkSchedule> work = db.WorkSchedules.Where(d => d.IsAvailable == true && d.DoctorID == id.ToString()).ToList();
+            List<DoctorSpecialist> speciality = db.DoctorSpecialists.Where(e => e.DoctorID == id).ToList();
+            List<Specialist> specialistDoc = new List<Specialist>();
+            foreach (var item in speciality)
+            {
+                var abc = db.Specialists.Where(e => e.ID == item.SpecialtyID).FirstOrDefault();
+                specialistDoc.Add(abc);
+            }
+            ViewBag.SpecialistDoc = specialistDoc;
             ViewBag.work = work;
+            ViewBag.SpecialityDetail = db.Specialists;
             return View(data);
         }
 

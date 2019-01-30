@@ -7,25 +7,25 @@ namespace DokterPraktekV2.Services
 {
     public class SpecialtyService
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         public List<SpecialtyData> GetAllSpecialty()
         {
-            var ListSpecialties = (from s in db.specialists
+            var ListSpecialties = (from s in db.Specialists
                                    select new SpecialtyData()
                                    {
-                                       id = s.id,
-                                       specialty = s.specialty
+                                       id = s.ID,
+                                       specialty = s.SpecialistName
                                    }).ToList();
             return ListSpecialties;
         }
-        public List<doctorSpecialties> GetAllSpecialtyByDocId(int id)
+        public List<doctorSpecialties> GetAllSpecialtyByDocId(string id)
         {
-            var ListDoctorSpecialties = (from s in db.specialists
-                                         where s.doctorSpecialists.Any(x => x.doctorId == id)
+            var ListDoctorSpecialties = (from s in db.Specialists
+                                         where s.DoctorSpecialists.Any(x => x.DoctorID == id.ToString())
                                          select new doctorSpecialties
                                          {
-                                             id = s.id,
-                                             specialty = s.specialty
+                                             id = s.ID,
+                                             specialty = s.SpecialistName
                                          }).ToList();
             return ListDoctorSpecialties;
         }

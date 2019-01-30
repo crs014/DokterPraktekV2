@@ -17,7 +17,7 @@ namespace DokterPraktekV2.Controllers
     public class doctorsController : Controller
     {
         private dayInServices dys = new dayInServices();
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private DoctorService doctorService = new DoctorService();
         private PatientServices patientService = new PatientServices();
         private PhotoService photoService = new PhotoService();
@@ -33,7 +33,7 @@ namespace DokterPraktekV2.Controllers
 
             ViewBag.Doctor = doctorService.DoctorAuth(authId);
             /*call all data from service*/
-            var data = doctorService.TodaySchedule(dataDoctor.id);
+            var data = doctorService.TodaySchedule(dataDoctor.userId);
             /*search data from name patient*/
             if (searchString != null) { page = 1; }
             else { searchString = currentFilter; }
@@ -44,20 +44,22 @@ namespace DokterPraktekV2.Controllers
         }
         
         [Authorize(Roles = "doctor")]
-        public ActionResult InputHistory(int id, string currentFilter, int? page)
+        public ActionResult InputHistory(string patientId ,string currentFilter, int? page)
         {
             //get patient data and picture patient
-            var data = doctorService.scheduleDetail(id);
+            var id = User.Identity.GetUserId();
+            var data = doctorService.scheduleDetail(id,Convert.ToInt32(patientId));
             string mime;
-            string convertedImage = photoService.LoadImage(data.patientId, out mime);
+            string convertedImage = photoService.LoadImage(data.PatientID, out mime);
             ViewBag.tipeImage = mime;
             ViewBag.stringUrl = convertedImage;
             ViewBag.dataPatient = data;
+            ViewBag.DoctorName = db.doctors.Where(e => e.userId == data.DoctorID).FirstOrDefault().name;
 
             //list data patient history by patient id
             var userID = User.Identity.GetUserId();
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
-            var dataList = patientService.allPatientHistory(data.patientId, dataDoctor.id).OrderByDescending(e => e.date);
+            var dataList = patientService.allPatientHistory(data.PatientID, dataDoctor.userId).OrderByDescending(e => e.date);
             int pageNumber = (page ?? 1);
             int pageSize = 7;
 
@@ -79,7 +81,7 @@ namespace DokterPraktekV2.Controllers
             string sortDirection = Request["order[0][dir]"];
 
             //ambil data awal
-            List<medicine> medicines = new List<medicine>();
+            List<Medicine> medicines = new List<Medicine>();
             medicines = doctorService.getDoctorMedicine(dataDoctor.id);
             int total = medicines.Count();
 
@@ -87,8 +89,8 @@ namespace DokterPraktekV2.Controllers
             if (!string.IsNullOrWhiteSpace(searchValue))
             {
                 medicines = medicines.Where(x =>
-                    x.name.ToLower().Contains(searchValue)
-                ).ToList<medicine>();
+                    x.Name.ToLower().Contains(searchValue)
+                ).ToList<Medicine>();
             }
             int totalFilter = medicines.Count();
 
@@ -96,7 +98,7 @@ namespace DokterPraktekV2.Controllers
             //customers = customers.OrderBy(e => sortColumnName).ToList<Customer>();
 
             //paging 
-            medicines = medicines.Skip(start).Take(length).ToList<medicine>();
+            medicines = medicines.Skip(start).Take(length).ToList<Medicine>();
 
             return Json(new
             {
@@ -110,49 +112,50 @@ namespace DokterPraktekV2.Controllers
 
 
         [ActionName("InputHistory"), HttpPost, Authorize(Roles = "doctor")]
-        public ActionResult PostInputHistory(int id, VM_inputHistory history)
+        public ActionResult PostInputHistory(string doctorId,int patientId, VM_inputHistory history)
         {
             int id_history;
-            var data = doctorService.scheduleDetail(id);
+            var data = doctorService.scheduleDetail(doctorId,patientId);
 
 
-            var historys = new history();
-            historys.sickness = history.sick;
-            historys.doctorId = data.doctorId;
-            historys.patientId = data.patientId;
-            historys.descriptionInfo = history.descriptionSick;
-            historys.checkupPrice = history.price;
-            historys.checkupDate = DateTime.Now.Date;
-            db.histories.Add(historys);
-            db.schedules.Find(id).bookingStatus = "Completed";
+            var historys = new MedicalHistory();
+            historys.Sickness = history.sick;
+            historys.DoctorID = data.DoctorID;
+            historys.PatientID = data.PatientID;
+            historys.DescriptionInfo = history.descriptionSick;
+            historys.CheckUpPrice = history.price;
+            historys.CheckUpDate = DateTime.Now.Date;
+            db.MedicalHistories.Add(historys);
+            var getId = db.Schedules.Where(e => e.DoctorID == doctorId && e.BookingStatus == "Booking" && e.PatientID == data.PatientID).FirstOrDefault().ID;
+            db.Schedules.Find(getId).BookingStatus = "Completed";
             db.SaveChanges();
-            id_history = historys.id;
+            id_history = historys.ID;
 
             try
             {
                 int leng = history.medicineId.Count();
                 for (var i = 0; i < leng; i++)
                 {
-                    var patientMedic = new patientMedicine();
+                    var patientMedic = new PatientMedicine();
                     decimal price = history.medicineId[i];
 
-                    patientMedic.historyId = id_history;
-                    patientMedic.medicineId = history.medicineId[i];
-                    patientMedic.quantity = history.quantity[i];
-                    patientMedic.describe = history.describeMedic[i];
-                    patientMedic.medicinePrice = db.medicines.Where(e => e.id == price).First().price;
-                    db.patientMedicines.Add(patientMedic);
+                    patientMedic.MedicalHistoryID = id_history;
+                    patientMedic.MedicineID = history.medicineId[i];
+                    patientMedic.Quantity = history.quantity[i];
+                    patientMedic.Description = history.describeMedic[i];
+                    patientMedic.MedicalPrice = db.Medicines.Where(e => e.ID == price).First().Price;
+                    db.PatientMedicines.Add(patientMedic);
                     db.SaveChanges();
                 }
 
                 for (var j = 0; j < leng; j++)
                 {
-                    var medicTrans = new medicineTransaction();
-                    medicTrans.medicineId = history.medicineId[j];
-                    medicTrans.doctorId = data.doctorId;
-                    medicTrans.statusTransaction = false;
-                    medicTrans.quantity = history.quantity[j];
-                    db.medicineTransactions.Add(medicTrans);
+                    var medicTrans = new MedicineTransaction();
+                    medicTrans.MedicineID = history.medicineId[j];
+                    medicTrans.DoctorID = data.DoctorID;
+                    medicTrans.TransactionStatus = false;
+                    medicTrans.Quantity = history.quantity[j];
+                    db.MedicineTransactions.Add(medicTrans);
                     db.SaveChanges();
                 }
             }
@@ -167,13 +170,13 @@ namespace DokterPraktekV2.Controllers
         public ActionResult JsonMedicinePatient(int id)
         {
             var authId = User.Identity.GetUserId();
-            var medicineList = db.patientMedicines.Where(e => e.historyId == id).Select(a => new VM_patientMedicine {
-                id = a.medicineId,
-                medicineName = a.medicine.name,
-                description = a.describe,
-                historyId = a.id,
-                price = a.medicinePrice,
-                quantity = a.quantity
+            var medicineList = db.PatientMedicines.Where(e => e.MedicalHistoryID == id).Select(a => new VM_patientMedicine {
+                id = a.MedicineID,
+                medicineName = a.Medicine.Name,
+                description = a.Description,
+                historyId = a.ID,
+                price = a.MedicalPrice,
+                quantity = a.Quantity
             }).ToList<VM_patientMedicine>();
             return Json(new { medicine = medicineList},JsonRequestBehavior.AllowGet);
         }

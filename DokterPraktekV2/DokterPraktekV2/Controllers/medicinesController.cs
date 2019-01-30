@@ -16,28 +16,28 @@ namespace DokterPraktekV2.Controllers
 {
     public class medicinesController : Controller
     { 
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         
         // GET: medicines
         public ActionResult Index(int? page,string search,string option)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
-            var medicine = db.medicines.Include(m => m.doctor);
+            var op = db.Medicines.Where(a => a.DoctorID == ids.userId).ToList();
+            var medicine = db.Medicines.Include(m => m.DoctorID);
 
-            var data = db.medicines.Select(e => new VM_Stock
+            var data = db.Medicines.Select(e => new VM_Stock
             {
-                id = e.id,
-                doctorId = e.doctorId,
-                nameMedicine = e.name,
-                price = e.price,
-                dateIn = e.dateIn,
-                expired = e.expired,
-                inStock = e.quantity,
-                outStock = e.patientMedicines.Sum(a => a.quantity),
-                remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
-            }).ToList().Where(a=>a.doctorId == ids.id);
+                id = e.ID,
+                doctorId = e.DoctorID,
+                nameMedicine = e.Name,
+                price = e.Price,
+                dateIn = e.DateIn,
+                expired = e.ExpireDate,
+                inStock = e.Quantity,
+                outStock = e.PatientMedicines.Sum(a => a.Quantity),
+                remainStock = e.Quantity - e.PatientMedicines.Sum(a => a.Quantity)
+            }).ToList().Where(a=>a.doctorId == ids.userId);
             
 
 
@@ -52,23 +52,24 @@ namespace DokterPraktekV2.Controllers
             IPagedList<VM_Stock> listTrans = null;
             
 
-            DateTime estimatedDate;
-            estimatedDate = DateTime.Now.Date.AddDays(30);
+            DateTime estimatedDate = DateTime.Now.Date.AddDays(30);
+
             List<string> listWarna = new List<string>();
             List<string> listStatus = new List<string>();
             foreach (var item in data)
             {
-                if (estimatedDate >= item.expired)
+                //if (estimatedDate >= item.expired || item.expired <= DateTime.Now.Date)
+                if(estimatedDate <= item.expired)
                 {
-                    var warna = "red";
-                    var status = "EXPIRED";
+                    var warna = "green";
+                    var status = "Secure";
                     listWarna.Add(warna);
                     listStatus.Add(status);
                 }
                 else
                 {
-                    var warna = "green";
-                    var status = "Secure";
+                    var warna = "red";
+                    var status = "EXPIRED";
                     listWarna.Add(warna);
                     listStatus.Add(status);
                 }
@@ -87,7 +88,7 @@ namespace DokterPraktekV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            medicine medicine = db.medicines.Find(id);
+            Medicine medicine = db.Medicines.Find(id);
             if (medicine == null)
             {
                 return HttpNotFound();
@@ -106,24 +107,24 @@ namespace DokterPraktekV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "name,price,quantity,dateIn,expired")] medicine medicine,[Bind(Include ="id,medicineId,statusTransaction,quantity")] medicineTransaction medtrans)
+        public ActionResult Create([Bind(Include = "name,price,quantity,dateIn,ExpireDate")] Medicine medicine,[Bind(Include ="id,medicineId,statusTransaction,quantity")] MedicineTransaction medtrans)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            medicine.dateIn = DateTime.Today;
-            ViewBag.getData = db.medicineTransactions;
+            medicine.DateIn = DateTime.Today;
+            ViewBag.getData = db.MedicineTransactions;
             if (ModelState.IsValid)
             {
-                medtrans.doctorId = ids.id;
-                medtrans.statusTransaction = true;
-                db.medicineTransactions.Add(medtrans);
-                medicine.doctorId = ids.id;
-                db.medicines.Add(medicine);
+                medtrans.DoctorID = ids.userId; //ids.id.ToString();
+                medtrans.TransactionStatus = true;
+                db.MedicineTransactions.Add(medtrans);
+                medicine.DoctorID = ids.userId; //ids.id.ToString();
+                db.Medicines.Add(medicine);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.doctorId);
+            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.DoctorID);
             return View(medicine);
         }
 
@@ -136,14 +137,14 @@ namespace DokterPraktekV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            medicine medicine = db.medicines.Find(id);
-            var getID = db.medicines.Find(id).doctorId;
+            Medicine medicine = db.Medicines.Find(id);
+            var getID = db.Medicines.Find(id).DoctorID;
             ViewBag.getID = getID;
             if (medicine == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.doctorId);
+            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.DoctorID);
             return View(medicine);
         }
 
@@ -152,22 +153,22 @@ namespace DokterPraktekV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,price,quantity,dateIn,expired")] medicine medicine)
+        public ActionResult Edit([Bind(Include = "id,name,price,quantity,dateIn,ExpireDate")] Medicine medicine)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            var dateIn = db.medicines.Where(m => m.dateIn == m.dateIn).First();
+            var dateIn = db.Medicines.Where(m => m.DateIn == m.DateIn).First();
 
             if (ModelState.IsValid)
             {
-                medicine.doctorId = ids.id;
-                medicine.dateIn = dateIn.dateIn;
-                db.medicines.Add(medicine);
+                medicine.DoctorID = ids.userId;
+                medicine.DateIn = dateIn.DateIn;
+                db.Medicines.Add(medicine);
                 db.Entry(medicine).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.doctorId);
+            ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.DoctorID);
             return View(medicine);
         }
 
@@ -178,7 +179,7 @@ namespace DokterPraktekV2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            medicine medicine = db.medicines.Find(id);
+            Medicine medicine = db.Medicines.Find(id);
             if (medicine == null)
             {
                 return HttpNotFound();
@@ -191,8 +192,8 @@ namespace DokterPraktekV2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            medicine medicine = db.medicines.Find(id);
-            db.medicines.Remove(medicine);
+            Medicine medicine = db.Medicines.Find(id);
+            db.Medicines.Remove(medicine);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -201,19 +202,19 @@ namespace DokterPraktekV2.Controllers
            
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            var op = db.medicines.Where(a => a.doctorId == ids.id).ToList();
+            var op = db.Medicines.Where(a => Convert.ToInt32(a.DoctorID) == ids.id).ToList();
 
-            var data = db.medicines.Select(e => new VM_Stock
+            var data = db.Medicines.Select(e => new VM_Stock
             {
-                id = e.id,
-                doctorId = e.doctorId,
-                nameMedicine = e.name,
-                price = e.price,
-                dateIn = e.dateIn,
-                expired = e.expired,
-                inStock = e.quantity,
-                outStock = e.patientMedicines.Sum(a => a.quantity),
-                remainStock = e.quantity - e.patientMedicines.Sum(a=>a.quantity)
+                id = e.ID,
+                doctorId = e.DoctorID,
+                nameMedicine = e.Name,
+                price = e.Price,
+                dateIn = e.DateIn,
+                expired = e.ExpireDate,
+                inStock = e.Quantity,
+                outStock = e.PatientMedicines.Sum(a => a.Quantity),
+                remainStock = e.Quantity - e.PatientMedicines.Sum(a=>a.Quantity)
             }).ToList();
             ViewBag.Data = data;
             
@@ -231,23 +232,23 @@ namespace DokterPraktekV2.Controllers
             string searchValue = Request["search[value]"];
             string sortColumnName = Request["columns[" + Request["order[0][column]"] + "][name]"];
             string sortDirection = Request["order[0][dir]"];
-
+            
             //ambil data awal
             List<VM_Stock> medicines = new List<VM_Stock>();
             DateTime estimatedDate = DateTime.Now.Date.AddDays(30);
-            medicines = db.medicines
-                .Where(e => e.doctorId == dataDoctor.id && estimatedDate <= e.expired)
+            medicines = db.Medicines
+                .Where(e => e.DoctorID == dataDoctor.userId && estimatedDate <= e.ExpireDate)//estimatedDate <= item.expired || item.expired <= DateTime.Now.Date
                 .Select(e => new VM_Stock
                 {
-                    id = e.id,
-                    doctorId = e.doctorId,
-                    nameMedicine = e.name,
-                    price = e.price,
-                    dateIn = e.dateIn,
-                    expired = e.expired,
-                    inStock = e.quantity,
-                    outStock = e.patientMedicines.Sum(a => a.quantity),
-                    remainStock = e.quantity - e.patientMedicines.Sum(a => a.quantity)
+                    id = e.ID,
+                    doctorId = e.DoctorID,
+                    nameMedicine = e.Name,
+                    price = e.Price,
+                    dateIn = e.DateIn,
+                    expired = e.ExpireDate,
+                    inStock = e.Quantity,
+                    outStock = e.PatientMedicines.Sum(a => a.Quantity),
+                    remainStock = e.Quantity - e.PatientMedicines.Sum(a => a.Quantity)
                 }).Where(a => a.remainStock > 0 || a.remainStock == null).ToList();
             int total = medicines.Count();
 
@@ -255,7 +256,7 @@ namespace DokterPraktekV2.Controllers
             if (!string.IsNullOrWhiteSpace(searchValue))
             {
                 medicines = medicines
-                    .Where(x => x.nameMedicine.ToLower().Contains(searchValue) && x.doctorId == dataDoctor.id)
+                    .Where(x => x.nameMedicine.ToLower().Contains(searchValue) && x.doctorId == dataDoctor.userId)
                     .ToList();
             }
             int totalFilter = medicines.Count();

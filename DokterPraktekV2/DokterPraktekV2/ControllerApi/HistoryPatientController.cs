@@ -13,22 +13,22 @@ namespace DokterPraktekV2.ControllerApi
     public class HistoryPatientController : ApiController
     {
 
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
 
-        public IEnumerable<VM_history> Get(int ? id,int doctorID)
+        public IEnumerable<VM_history> Get(int ? id,string doctorID)
         {
-            var data = db.histories.Where(a => a.patientId == id && a.doctorId == doctorID).Select(e => new VM_history
+            var data = db.MedicalHistories.Where(a => a.PatientID == id && a.DoctorID == doctorID.ToString()).Select(e => new VM_history
             {
-                id = e.id,
-                doctorId = e.doctorId,
-                doctorName = e.doctor.name,
-                sickness = e.sickness,
-                description = e.descriptionInfo,
-                date = e.checkupDate,
-                checkupPrice = e.checkupPrice,
-                patientId = e.patientId,
-                patientName = e.patient.name,
-                gender = e.patient.gender
+                id = e.ID,
+                doctorId = e.DoctorID,
+                doctorName = db.doctors.Where(o=>o.userId == e.DoctorID).FirstOrDefault().name,
+                sickness = e.Sickness,
+                description = e.DescriptionInfo,
+                date = e.CheckUpDate,
+                checkupPrice = e.CheckUpPrice,
+                patientId = e.PatientID,
+                patientName = e.Patient.Name,
+                gender = e.Patient.Gender
             }).ToList();
 
             return data;

@@ -11,7 +11,7 @@ namespace DokterPraktekV2.Models
         [DisplayName("Patient Number")]
         [DataType(DataType.Text)]
         public int PatientNumber { get; set; }
-        public int doctorId { get; set; }
+        public string doctorId { get; set; }
         [DisplayName("Booking Date")]
         public DateTime dateSchedule { get; set; }
     }

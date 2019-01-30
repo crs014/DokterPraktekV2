@@ -18,12 +18,12 @@ namespace DokterPraktekV2.Services
 {
     public class PatientServices
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private string baseUrl = "http://localhost:7188/";
 
 
         /*get all patient from doctorId*/
-        public List<VM_patient> allDoctorPatient(int id)
+        public List<VM_patient> allDoctorPatient(string id)
         {
             List<VM_patient> dataPatient = new List<VM_patient>();
             var client = new HttpClient();
@@ -42,18 +42,18 @@ namespace DokterPraktekV2.Services
         /*seacrh patient from name and doctor Id*/
         public List<VM_patient> searchPatientFromNameAndIdDoctor(string name, int doctorId)
         {
-            var data = db.histories.DistinctBy(a => a.patientId)
-                .Where(z => z.doctorId == doctorId && z.patient.name.Contains(name) 
-                || z.doctorId == doctorId && z.patient.name == name)
+            var data = db.MedicalHistories.DistinctBy(a => a.PatientID)
+                .Where(z => z.DoctorID == doctorId.ToString() && z.Patient.Name.Contains(name) 
+                || z.DoctorID == doctorId.ToString() && z.Patient.Name == name)
                 .Select(e => new VM_patient
             {
-                id = e.id,
-                name = e.patient.name,
-                address = e.patient.homeAddress,
-                phone = e.patient.phone,
-                gender = e.patient.gender,
-                photo = e.patient.photo,
-                dateTime = e.patient.registerDatetime
+                id = e.ID,
+                name = e.Patient.Name,
+                address = e.Patient.Address,
+                phone = e.Patient.PhoneNumber,
+                gender = e.Patient.Gender,
+                photo = e.Patient.Photo,
+                dateTime = e.Patient.CreatedDate
             }).ToList();
             return data;
         }
@@ -93,7 +93,7 @@ namespace DokterPraktekV2.Services
         }
 
         /* get all patient history from patient id */
-        public List<VM_history> allPatientHistory(int ? id, int ? doctorID)
+        public List<VM_history> allPatientHistory(int ? id, string doctorID)
         {
             List<VM_history> dataHistory = new List<VM_history>();
             var client = new HttpClient();
@@ -111,7 +111,7 @@ namespace DokterPraktekV2.Services
 
 
         /*get detail history from history id*/
-        public VM_history detailHistory(int ? id, int ? doctorID)
+        public VM_history detailHistory(int ? id, string doctorID)
         {
             VM_history dataHistory = new VM_history();
             var client = new HttpClient();
@@ -148,15 +148,15 @@ namespace DokterPraktekV2.Services
         /*get doctor patient*/
         public List<VM_patient> searchPatientFromName(string name)
         {
-            var data = db.patients.Select(e => new VM_patient
+            var data = db.Patients.Select(e => new VM_patient
             {
-                id = e.id,
-                name = e.name,
-                address = e.homeAddress,
-                phone = e.phone,
-                gender = e.gender,
-                photo = e.photo,
-                dateTime = e.registerDatetime
+                id = e.ID,
+                name = e.Name,
+                address = e.Address,
+                phone = e.PhoneNumber,
+                gender = e.Gender,
+                photo = e.Photo,
+                dateTime = e.CreatedDate
             }).Where(s => s.name.Contains(name)).ToList();
 
             return data;        
@@ -165,7 +165,7 @@ namespace DokterPraktekV2.Services
         /*find medicine price patient from history id*/
         public decimal totalMedicinePatient(int ? id)
         {
-            var data = db.patientMedicines.Where(a => a.historyId == id);
+            var data = db.PatientMedicines.Where(a => a.MedicalHistoryID == id);
             var leng = data.Count();
             if(leng == 0)
             {
@@ -173,21 +173,21 @@ namespace DokterPraktekV2.Services
             }
             else
             {
-                return data.Sum(e => e.medicinePrice * e.quantity);
+                return data.Sum(e => e.MedicalPrice * e.Quantity);
             }
         }
 
-        public patient CreatePatient(VM_schedules data)
+        public Patient CreatePatient(VM_schedules data)
         {
-            var dataPatient = new patient()
+            var dataPatient = new Patient()
             {
-                name = data.name,
-                homeAddress = data.homeAddress,
-                phone = data.phone,
-                gender = data.gender
+                Name = data.name,
+                Address = data.homeAddress,
+                PhoneNumber = data.phone,
+                Gender = data.gender
             };
 
-            db.patients.Add(dataPatient);
+            db.Patients.Add(dataPatient);
             db.SaveChanges();
             return dataPatient;
         }

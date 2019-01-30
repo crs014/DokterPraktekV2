@@ -1,4 +1,4 @@
-﻿@model  PagedList.IPagedList<DokterPraktekV2.schedule>
+﻿@model  PagedList.IPagedList<DokterPraktekV2.Schedule>
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "TodayPatient";
@@ -37,22 +37,23 @@
                 {
                     <tr>
                         <td>
-                            @item.bookingNumber
+                            @item.BookingNumber
                         </td>
                         <td>
-                            @item.patient.name
+                            @item.Patient.Name
                         </td>
                         <td>
-                            @item.bookingStatus
+                            @item.BookingStatus
                         </td>
                         <td>
-                            @if (item.patient.gender == false)
+                            @if (item.Patient.Gender == false)
                 {<p>wanita</p>}
                 else
                 {<p>pria</p>}
                         </td>
                         <td>
-                            <a href="/Doctors/InputHistory/@item.id"><button class="btn btn-primary">Input history</button></a>
+                            @*public ActionResult InputHistory(string patientId, string currentFilter, int? page)*@
+                            <a href="/Doctors/InputHistory?patientId=@item.PatientID"><button class="btn btn-primary">Input History</button></a>
                         </td>
                     </tr>
                 }

@@ -8,7 +8,7 @@ namespace DokterPraktekV2.Models
     public class VM_Stock
     {
         public int id { get; set; }
-        public int doctorId { get; set; }
+        public string doctorId { get; set; }
         public string nameMedicine { get; set; }
         public decimal price { get; set; }
         public DateTime dateIn { get; set; }

@@ -12,18 +12,18 @@ namespace DokterPraktekV2.ControllerApi
 {
     public class PatientController : ApiController
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         public IEnumerable<VM_patient> Get()
         {
-            var data = db.patients.Select(e => new VM_patient
+            var data = db.Patients.Select(e => new VM_patient
             {
-                id = e.id,
-                name = e.name,
-                address = e.homeAddress,
-                phone = e.phone,
-                gender = e.gender,
-                photo = e.photo,
-                dateTime = e.registerDatetime
+                id = e.ID,
+                name = e.Name,
+                address = e.Address,
+                phone = e.PhoneNumber,
+                gender = e.Gender,
+                photo = e.Photo,
+                dateTime = e.CreatedDate
             }).ToList();
             return data;
         }
@@ -32,15 +32,15 @@ namespace DokterPraktekV2.ControllerApi
         // GET api/values/5
         public IHttpActionResult Get(int id)
         {
-            var data = db.patients.FirstOrDefault(b => b.id == id);
+            var data = db.Patients.FirstOrDefault(b => b.ID == id);
             VM_patient patient = new VM_patient();
-            patient.id = data.id;
-            patient.name = data.name; 
-            patient.address = data.homeAddress;
-            patient.phone = data.phone;
-            patient.gender = data.gender;
-            patient.photo = data.photo;
-            patient.dateTime = data.registerDatetime;
+            patient.id = data.ID;
+            patient.name = data.Name; 
+            patient.address = data.Address;
+            patient.phone = data.PhoneNumber;
+            patient.gender = data.Gender;
+            patient.photo = data.Photo;
+            patient.dateTime = data.CreatedDate;
             return Ok(patient);
         }
 

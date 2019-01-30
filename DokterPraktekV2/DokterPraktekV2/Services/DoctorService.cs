@@ -7,7 +7,7 @@ namespace DokterPraktekV2.Services
 {
     public class DoctorService
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
 
         /* get doctor data from userID*/
         public doctor DoctorAuth(string userId)
@@ -17,19 +17,19 @@ namespace DokterPraktekV2.Services
         }
 
         /* check today schedule from column doctorId*/
-        public List<schedule> TodaySchedule(int id)
+        public List<Schedule> TodaySchedule(string id)
         {
-            var data = db.schedules.Where(
-                e => e.doctorId == id && e.dateSchedule == DateTime.Today.Date && e.bookingStatus != "Completed"
+            var data = db.Schedules.Where(
+                e => e.DoctorID == id.ToString() && e.DateSchedule == DateTime.Today.Date && e.BookingStatus != "Completed"
                 ).ToList();
             return data;
         }
         
 
         /* get medicine from column doctorId*/
-        public List<medicine> getDoctorMedicine(int id)
+        public List<Medicine> getDoctorMedicine(int id)
         {
-            var data = db.medicines.Where(e => e.doctorId == id).ToList();
+            var data = db.Medicines.Where(e => e.DoctorID == id.ToString()).ToList();
             return data;
         }
         
@@ -42,9 +42,14 @@ namespace DokterPraktekV2.Services
         }
         
         /* get detail schedule from column id*/
-        public schedule scheduleDetail(int id)
+        public Schedule scheduleDetail(string id,int patientId)
         {
-            var data = db.schedules.FirstOrDefault(e => e.id == id);
+            var data = db.Schedules.FirstOrDefault(e => e.DoctorID == id && e.PatientID == patientId);
+            return data;
+        }
+        public Schedule scheduleDetail(string id)
+        {
+            var data = db.Schedules.FirstOrDefault(e => e.DoctorID == id );
             return data;
         }
 
@@ -54,13 +59,13 @@ namespace DokterPraktekV2.Services
             List<string> days = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
             foreach (var item in days)
             {
-                var dayIn = new workDay()
+                var dayIn = new WorkSchedule()
                 {
-                    dayIn = item,
-                    doctorId = id,
-                    working = false
+                    Day = item,
+                    DoctorID = id.ToString(),
+                    IsAvailable = false
                 };
-                db.workDays.Add(dayIn);
+                db.WorkSchedules.Add(dayIn);
                 db.SaveChanges();
             }
 

@@ -10,17 +10,17 @@ namespace DokterPraktekV2.ControllerApi
 {
     public class PatientMedicineController : ApiController
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         public IEnumerable<VM_patientMedicine> Get(int id)
         {
-            var data = db.patientMedicines.Where(a => a.historyId == id).Select(e => new VM_patientMedicine
+            var data = db.PatientMedicines.Where(a => a.MedicalHistoryID == id).Select(e => new VM_patientMedicine
             {
-                id = e.id,
-                historyId = e.historyId,
-                medicineName = e.medicine.name,
-                price = e.medicinePrice,
-                description = e.describe,
-                quantity = e.quantity
+                id = e.ID,
+                historyId = e.MedicalHistoryID,
+                medicineName = e.Medicine.Name,
+                price = e.MedicalPrice,
+                description = e.Description,
+                quantity = e.Quantity
             }).ToList();
             return data;
         }

@@ -31,7 +31,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @i.dayIn
+                                        @i.Day
                                     </td>
                                 </tr>
                             }
@@ -47,11 +47,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var i in Model.doctorSpecialists)
+                            @foreach (var i in @ViewBag.SpecialistDoc)
                             {
                                 <tr>
                                     <td>
-                                        @i.specialist.specialty
+                                        @i.SpecialistName
                                     </td>
                                 </tr>
                             }

@@ -10,21 +10,21 @@ namespace DokterPraktekV2.ControllerApi
 {
     public class HistoryController : ApiController
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
       
 
-        public IHttpActionResult Get(int id, int doctorID)
+        public IHttpActionResult Get(int id, string doctorID)
         {            
-            var data = db.histories.FirstOrDefault(b => b.id == id && b.doctorId == doctorID);
+            var data = db.MedicalHistories.FirstOrDefault(b => b.ID == id && b.DoctorID == doctorID.ToString());
             VM_history history = new VM_history();
-            history.doctorId = data.doctorId;
-            history.doctorName = data.doctor.name;
-            history.sickness = data.sickness;
-            history.checkupPrice = data.checkupPrice;
-            history.description = data.descriptionInfo;
-            history.date = data.checkupDate;
-            history.patientId = data.patientId;
-            history.patientName = data.patient.name; 
+            history.doctorId = data.DoctorID;
+            history.doctorName = db.doctors.Where(o => o.userId == data.DoctorID).FirstOrDefault().name;
+            history.sickness = data.Sickness;
+            history.checkupPrice = data.CheckUpPrice;
+            history.description = data.DescriptionInfo;
+            history.date = data.CheckUpDate;
+            history.patientId = data.PatientID;
+            history.patientName = data.Patient.Name; 
             return Ok(history);
         }
     }

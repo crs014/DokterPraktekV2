@@ -12,7 +12,7 @@ namespace DokterPraktekV2.Controllers
     public class schedulesController : Controller
     {
         private dayInServices DoctorWorkDay = new dayInServices();
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private bookingListServices BookListService = new bookingListServices();
         private PatientServices patientService = new PatientServices();
         private PhotoService photoService = new PhotoService();
@@ -78,13 +78,13 @@ namespace DokterPraktekV2.Controllers
         #endregion
 
         #region HttpGet Create Booking
-        public ActionResult Create(int id)
+        public ActionResult Create(string id)
         {
             VM_schedules schedule = new VM_schedules();
             ViewBag.photo = schedule.photo;
             schedule.doctors = new List<VM_doctorList>()
             {
-                new VM_doctorList { doctorId = id }
+                new VM_doctorList { doctorId = id.ToString() }
             };
             var blockDate = DateTime.Now.ToString("yyyy-MM-dd");
             ViewBag.doctorId = id;
@@ -103,7 +103,7 @@ namespace DokterPraktekV2.Controllers
             {
                 return View(data);
             }
-            int docId = data.doctors[0].doctorId; // Choosen doctor id
+            string docId = data.doctors[0].doctorId; // Choosen doctor id
             var checkSchedule = BookListService.CheckSchedule(data.dateSchedule , docId); // Check schedule service
             if (checkSchedule > 0)
             {
@@ -127,7 +127,7 @@ namespace DokterPraktekV2.Controllers
                         byte[] chartData = Convert.FromBase64String(base64);
                         data.photo = data.name.ToString() + ".png";
                         type = "image/png";
-                        photoService.UploadPatientPicture(chartData, type, dataPatient.id);
+                        photoService.UploadPatientPicture(chartData, type, dataPatient.ID);
 
                         //type = data.photo.ContentType; // Check image type ryan logic
                         //photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
@@ -136,10 +136,10 @@ namespace DokterPraktekV2.Controllers
                     else if (data.photo == null)
                     {
                         type = data.photos.ContentType; // Check image type ryan logic
-                        photoService.UploadPatientPictureFILE(data.photos.InputStream, type, dataPatient.id); // Upload patient pictures to database
+                        photoService.UploadPatientPictureFILE(data.photos.InputStream, type, dataPatient.ID); // Upload patient pictures to database
 
                     }
-                    var dataBooking = BookListService.CreateBooking(dataPatient.id, docId, data.dateSchedule);  // Create booking service
+                    var dataBooking = BookListService.CreateBooking(dataPatient.ID, docId, data.dateSchedule);  // Create booking service
                     TempData["id"] = dataBooking;
                     return RedirectToAction("formResult");
                 }
@@ -162,8 +162,8 @@ namespace DokterPraktekV2.Controllers
         #region Cancel Today Status Booking
         public ActionResult CancelToday(int id)
         {
-            var bookingInfo = db.schedules.First(s => s.id == id);
-            bookingInfo.bookingStatus = "Cancelled";
+            var bookingInfo = db.Schedules.First(s => s.ID == id);
+            bookingInfo.BookingStatus = "Cancelled";
             db.SaveChanges();
             return RedirectToAction("TodayBook");
         }
@@ -173,8 +173,8 @@ namespace DokterPraktekV2.Controllers
         #region Cancel Status Booking
         public ActionResult CancelIndex(int id)
         {
-            var bookingInfo = db.schedules.First(s => s.id == id);
-            bookingInfo.bookingStatus = "Cancelled";
+            var bookingInfo = db.Schedules.First(s => s.ID == id);
+            bookingInfo.BookingStatus = "Cancelled";
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -189,7 +189,7 @@ namespace DokterPraktekV2.Controllers
 
       
         #region Sign get
-        public ActionResult Sign(int id)
+        public ActionResult Sign(string id)
         {
             var model = id;
             return View(model);
@@ -200,7 +200,7 @@ namespace DokterPraktekV2.Controllers
 
         #region SignIn HttpGet
 
-        public ActionResult SignIn(int id)
+        public ActionResult SignIn(string id)
         {
             VM_SignIn sign = new VM_SignIn();
             sign.doctorId = id;
@@ -219,13 +219,13 @@ namespace DokterPraktekV2.Controllers
             {
                 return View(sign);
             }
-            var checkSchedule = BookListService.CheckSchedule(sign.dateSchedule, sign.doctorId); // Check schedule service
+            var checkSchedule = BookListService.CheckSchedule(sign.dateSchedule, sign.doctorId.ToString()); // Check schedule service
             if(checkSchedule > 0)
             {
                 var checkPatient = BookListService.CheckPatientById(sign.PatientNumber); // check patient service
                 if (checkPatient != null)
                 {
-                    var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId, sign.dateSchedule); // Create booking service
+                    var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId.ToString(), sign.dateSchedule); // Create booking service
                     TempData["id"] = dataBooking;
                     TempData.Keep();
                     return RedirectToAction("formResult");

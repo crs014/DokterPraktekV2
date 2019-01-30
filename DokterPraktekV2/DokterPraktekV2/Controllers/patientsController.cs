@@ -17,7 +17,7 @@ namespace DokterPraktekV2.Controllers
     {
 
         private PatientServices patientService = new PatientServices();
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private PhotoService photoService = new PhotoService();
         [Authorize(Roles = "doctor")]
         public  ActionResult Index(string currentFilter, string searchString, int? page)
@@ -26,7 +26,7 @@ namespace DokterPraktekV2.Controllers
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
 
             /*call all data from service*/
-            var data = patientService.allDoctorPatient(dataDoctor.id);
+            var data = patientService.allDoctorPatient(dataDoctor.userId);
             /*search data from name patient*/
             if (searchString != null){page = 1;}
             else{searchString = currentFilter;}
@@ -45,14 +45,14 @@ namespace DokterPraktekV2.Controllers
         public ActionResult allPatient(string currentFilter, string searchString, int? page)
         {
             /*call all data from service*/
-            var data = db.patients.ToList();
+            var data = db.Patients.ToList();
             /*search data from name patient*/
             if (searchString != null) { page = 1; }
             else { searchString = currentFilter; }
             ViewBag.CurrentFilter = searchString;
             if (!String.IsNullOrEmpty(searchString))
             {
-                data = db.patients.Where(e => e.name.Contains(searchString)).ToList();
+                data = db.Patients.Where(e => e.Name.Contains(searchString)).ToList();
             }
             int pageNumber = (page ?? 1);
             int pageSize = 10;
@@ -66,7 +66,7 @@ namespace DokterPraktekV2.Controllers
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
             string mime;
             string convertedImage = photoService.LoadImage(id, out mime);
-            var data = patientService.allPatientHistory(id, dataDoctor.id);
+            var data = patientService.allPatientHistory(id, dataDoctor.userId);
             int pageNumber = (page ?? 1);
             int pageSize = 7;
 
@@ -90,7 +90,7 @@ namespace DokterPraktekV2.Controllers
             var userID = User.Identity.GetUserId();
             doctor dataDoctor = db.doctors.FirstOrDefault(e => e.userId == userID);
 
-            var data = patientService.detailHistory(id, dataDoctor.id);
+            var data = patientService.detailHistory(id, dataDoctor.userId);
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

@@ -1,6 +1,6 @@
 ﻿@*@model IEnumerable<DokterPraktekV2.medicineTransaction>*@
 @using PagedList.Mvc
-@model  PagedList.IPagedList<DokterPraktekV2.medicineTransaction>
+@model  PagedList.IPagedList<DokterPraktekV2.MedicineTransaction>
 
 @{
     ViewBag.Title = "Index";
@@ -35,7 +35,7 @@
                     <tr>
 
                         <td>
-                            @if (item.statusTransaction == true)
+                            @if (item.TransactionStatus == true)
                             {
                                 <font color="green"><p>IN</p></font>
                             }
@@ -45,10 +45,10 @@
                             }
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.quantity)
+                            @Html.DisplayFor(modelItem => item.Quantity)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.medicine.name)
+                            @Html.DisplayFor(modelItem => item.Medicine.Name)
                         </td>
                     </tr>
                 }

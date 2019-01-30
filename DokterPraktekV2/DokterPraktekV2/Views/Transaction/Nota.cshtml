@@ -29,13 +29,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var i in ViewBag.dataMedicine)
+                @foreach (var i in @ViewBag.dataMedicine)
                 {
                 <tr>
-                    <td>@i.medicine.name</td>
-                    <td>@i.medicine.quantity</td>
-                    <td>@i.medicine.expired</td>
-                    <td>@i.describe</td>
+                    <td>@i.Medicine.Name</td>
+                    <td>@i.Medicine.Quantity</td>
+                    <td>@i.Medicine.ExpireDate</td>
+                    <td>@i.Description</td>
                 </tr>
                 }
             </tbody>

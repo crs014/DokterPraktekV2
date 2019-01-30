@@ -9,20 +9,18 @@ namespace DokterPraktekV2.Services
 {
     public class PhotoService
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         public bool UploadPatientPicture(byte[] name, string type, int patientId)
         {
             bool handled = false;
-            //byte[] documentBytes = new byte[fileStream.Length];
-            //fileStream.Read(documentBytes, 0, documentBytes.Length);
-            patientPicture pic = new patientPicture
+            PatientPicture pic = new PatientPicture
             {
-                imageContent = name,
+                ImageContent = name,
                 //images = name,
-                imageType = type,
-                patientId = patientId
+                ImageType = type,
+                PatientID = patientId
             };
-            db.patientPictures.Add(pic);
+            db.PatientPictures.Add(pic);
             handled = (db.SaveChanges() > 0);
             return handled;
         }
@@ -32,14 +30,14 @@ namespace DokterPraktekV2.Services
             bool handled = false;
             byte[] documentBytes = new byte[fileStream.Length];
             fileStream.Read(documentBytes, 0, documentBytes.Length);
-            patientPicture pic = new patientPicture
+            PatientPicture pic = new PatientPicture
             {
-                imageContent = documentBytes,
+                ImageContent = documentBytes,
                 //images = name,
-                imageType = type,
-                patientId = patientId
+                ImageType = type,
+                PatientID = patientId
             };
-            db.patientPictures.Add(pic);
+            db.PatientPictures.Add(pic);
             handled = (db.SaveChanges() > 0);
             return handled;
         }
@@ -49,11 +47,11 @@ namespace DokterPraktekV2.Services
             byte[] fileBytes = null;
             string fileType = null;
             string convertedImage = "";
-            var dbDoc = db.patientPictures.FirstOrDefault(s => s.patientId == id);
+            var dbDoc = db.PatientPictures.FirstOrDefault(s => s.PatientID == id);
             if(dbDoc != null)
             {
-                fileBytes = dbDoc.imageContent;
-                fileType = dbDoc.imageType;
+                fileBytes = dbDoc.ImageContent;
+                fileType = dbDoc.ImageType;
                 type = fileType;
                 convertedImage = Convert.ToBase64String(fileBytes);
             }

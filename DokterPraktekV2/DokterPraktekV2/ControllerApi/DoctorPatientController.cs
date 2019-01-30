@@ -12,18 +12,18 @@ namespace DokterPraktekV2.ControllerApi
 {
     public class DoctorPatientController : ApiController
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
-        public IEnumerable<VM_patient> Get(int doctorId)
+        private DokterPraktekEntities db = new DokterPraktekEntities();
+        public IEnumerable<VM_patient> Get(string doctorId)
         {
-            var data = db.histories.Where(a => a.doctorId == doctorId).DistinctBy(a => a.patientId).Select(e => new VM_patient
+            var data = db.MedicalHistories.Where(a => a.DoctorID == doctorId.ToString()).DistinctBy(a => a.PatientID).Select(e => new VM_patient
             {
-                id = e.patientId,
-                name = e.patient.name,
-                address = e.patient.homeAddress,
-                phone = e.patient.phone,
-                gender = e.patient.gender,
-                photo = e.patient.photo,
-                dateTime = e.patient.registerDatetime
+                id = e.PatientID,
+                name = e.Patient.Name,
+                address = e.Patient.Address,
+                phone = e.Patient.PhoneNumber,
+                gender = e.Patient.Gender,
+                photo = e.Patient.Photo,
+                dateTime = e.Patient.CreatedDate
             }).ToList();
             return data;
         }

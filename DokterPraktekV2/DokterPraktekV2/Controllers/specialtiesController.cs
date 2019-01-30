@@ -10,7 +10,7 @@ namespace DokterPraktekV2.Controllers
 {
     public class specialtiesController : Controller
     {
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
         private SpecialtyService SpecialtyService = new SpecialtyService();
 
         #region Add Specialties
@@ -20,7 +20,7 @@ namespace DokterPraktekV2.Controllers
         {
             VM_Specialties special = new VM_Specialties();
             var auth_id = User.Identity.GetUserId();
-            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.id).FirstOrDefault();
+            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.userId).FirstOrDefault();
             special.ListSpecialties = SpecialtyService.GetAllSpecialty();
             special.ListDoctorSpecialties = SpecialtyService.GetAllSpecialtyByDocId(docId);
             return View(special);
@@ -32,10 +32,10 @@ namespace DokterPraktekV2.Controllers
         public ActionResult Add(VM_Specialties special)
         {
             var auth_id = User.Identity.GetUserId();
-            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.id).FirstOrDefault();
-            var CheckExist = (from s in db.doctorSpecialists
-                              where s.doctorId == docId && s.specialtyId == special.SelectedId
-                              select s.id).Count();
+            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.userId).FirstOrDefault();
+            var CheckExist = (from s in db.DoctorSpecialists
+                              where s.DoctorID == docId.ToString() && s.SpecialtyID == special.SelectedId
+                              select s.ID).Count();
             if(CheckExist > 0)
             {
                 special.ListSpecialties = SpecialtyService.GetAllSpecialty();
@@ -45,12 +45,13 @@ namespace DokterPraktekV2.Controllers
             }
             else
             {
-                var AddSpecialty = new doctorSpecialist()
+                var AddSpecialty = new DoctorSpecialist()
                 {
-                    doctorId = docId,
-                    specialtyId = special.SelectedId
+                    AspNetUser = db.AspNetUsers.FirstOrDefault(e => e.Id == auth_id),
+                    DoctorID = docId.ToString(),
+                    SpecialtyID = special.SelectedId
                 };
-                db.doctorSpecialists.Add(AddSpecialty);
+                db.DoctorSpecialists.Add(AddSpecialty);
                 db.SaveChanges();
             }
             special.ListSpecialties = SpecialtyService.GetAllSpecialty();
@@ -63,9 +64,9 @@ namespace DokterPraktekV2.Controllers
         [HttpPost]
         public ActionResult CreateNew(SpecialtyData data)
         {
-            var CheckExist = (from item in db.specialists
-                              where item.specialty == data.specialty
-                              select item.id).Count();
+            var CheckExist = (from item in db.Specialists
+                              where item.SpecialistName == data.specialty
+                              select item.ID).Count();
             if (CheckExist > 0)
             {
                 ModelState.AddModelError("specialty", "Specialty is already exist");
@@ -73,11 +74,11 @@ namespace DokterPraktekV2.Controllers
             }
             else
             {
-                var NewSpecialty = new specialist()
+                var NewSpecialty = new Specialist()
                 {
-                    specialty = data.specialty
+                    SpecialistName = data.specialty
                 };
-                db.specialists.Add(NewSpecialty);
+                db.Specialists.Add(NewSpecialty);
                 db.SaveChanges();
             }
             return RedirectToAction("Add");
@@ -91,14 +92,14 @@ namespace DokterPraktekV2.Controllers
         {
             VM_Specialties special = new VM_Specialties();
             var auth_id = User.Identity.GetUserId();
-            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.id).FirstOrDefault();
-            doctorSpecialist ds = (from item in db.doctorSpecialists
-                                   where item.doctorId == docId && item.specialtyId == id
+            var docId = db.doctors.Where(s => s.userId == auth_id).Select(s => s.userId).FirstOrDefault();
+            DoctorSpecialist ds = (from item in db.DoctorSpecialists
+                                   where item.DoctorID == docId.ToString() && item.SpecialtyID == id
                                    select item).FirstOrDefault();
             //var DataSpecialty = (from data in db.doctorSpecialists
             //                     where data.doctorId == docId && data.specialtyId == id
             //                     select data).FirstOrDefault();
-            db.doctorSpecialists.Remove(ds);
+            db.DoctorSpecialists.Remove(ds);
             db.SaveChanges();
             return RedirectToAction("Add");
         }

@@ -8,7 +8,7 @@ namespace DokterPraktekV2.Models
 {
     public class VM_doctorList
     {
-            public int doctorId { get; set; }
+            public string doctorId { get; set; }
             public string name { get; set; }
             public List<workDays> dayIn { get; set; }
             public List<docSpecialist> doctorSpecialties { get; set; }

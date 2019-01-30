@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DokterPraktekV2.Models;
 using DokterPraktekV2;
+using System.Collections.Generic;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -19,7 +20,7 @@ namespace DokterPraktekV2.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         ApplicationDbContext context;
-        private DokterPraktekEntities1 db = new DokterPraktekEntities1();
+        private DokterPraktekEntities db = new DokterPraktekEntities();
 
         public AccountController()
         {
@@ -172,11 +173,33 @@ namespace DokterPraktekV2.Controllers
                     if(model.UserRoles == "doctor")
                     {
                         doctor doctors = new doctor();
+                        
                         doctors.name = model.Name;
                         doctors.homeAddress = model.Address;
                         doctors.userId = user.Id;
                         doctors.phone = model.Phone;
                         doctors.gender = model.Gender;
+
+                        List<WorkSchedule> workSch = new List<WorkSchedule>();
+                        var WorkSch1 = (new WorkSchedule { Day = "Monday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch2 = (new WorkSchedule { Day = "Tuesday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch3 = (new WorkSchedule { Day = "Wednesday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch4 = (new WorkSchedule { Day = "Thursday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch5 = (new WorkSchedule { Day = "Friday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch6 = (new WorkSchedule { Day = "Saturday", DoctorID = doctors.userId, IsAvailable = true });
+                        var WorkSch7 = (new WorkSchedule { Day = "Sunday", DoctorID = doctors.userId, IsAvailable = true });
+
+                        workSch.Add(WorkSch1);
+                        workSch.Add(WorkSch2);
+                        workSch.Add(WorkSch3);
+                        workSch.Add(WorkSch4);
+                        workSch.Add(WorkSch5);
+                        workSch.Add(WorkSch6);
+                        workSch.Add(WorkSch7);
+                        foreach (var item in workSch)
+                        {
+                            db.WorkSchedules.Add(item);
+                        }
                         db.doctors.Add(doctors);
                         db.SaveChanges();
                         
