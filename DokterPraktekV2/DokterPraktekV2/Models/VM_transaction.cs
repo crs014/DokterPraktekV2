@@ -9,6 +9,7 @@ namespace DokterPraktekV2.Models
     {
         public int historyId { get; set; }
         public decimal amount { get; set; }
+        public string DoctorName { get; set; }
         public Nullable<decimal> alreadyPay { get; set; }
         public DateTime dateHistory { get; set; }
         public int patientId { get; set; }

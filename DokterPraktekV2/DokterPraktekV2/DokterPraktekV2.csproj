@@ -214,6 +214,9 @@
     <Compile Include="admin.cs">
       <DependentUpon>DokterPraktek.tt</DependentUpon>
     </Compile>
+    <Compile Include="AdminMedicineController.cs">
+      <DependentUpon>DokterPraktek.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -282,6 +285,9 @@
     <Compile Include="Medicine.cs">
       <DependentUpon>DokterPraktek.tt</DependentUpon>
     </Compile>
+    <Compile Include="MedicineAttribute.cs">
+      <DependentUpon>DokterPraktek.tt</DependentUpon>
+    </Compile>
     <Compile Include="MedicineTransaction.cs">
       <DependentUpon>DokterPraktek.tt</DependentUpon>
     </Compile>
@@ -322,6 +328,7 @@
     <Compile Include="Services\BookingListServices.cs" />
     <Compile Include="Services\dayInServices.cs" />
     <Compile Include="Services\DoctorService.cs" />
+    <Compile Include="Services\MedicineAttributeServices.cs" />
     <Compile Include="Services\PatientServices.cs" />
     <Compile Include="Services\PhotoService.cs" />
     <Compile Include="Services\SpecialtyService.cs" />
@@ -7547,6 +7554,8 @@
     <Content Include="Views\Transaction\Create.cshtml" />
     <Content Include="Views\Transaction\Index.cshtml" />
     <Content Include="Views\Transaction\Nota.cshtml" />
+    <Content Include="Views\medicines\MedicineAdminController.cshtml" />
+    <Content Include="Views\medicines\MedicineConfigurationView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -153,6 +153,7 @@ namespace DokterPraktekV2.Controllers
                     var medicTrans = new MedicineTransaction();
                     medicTrans.MedicineID = history.medicineId[j];
                     medicTrans.DoctorID = data.DoctorID;
+                    medicTrans.TransactionDate = DateTime.Now;
                     medicTrans.TransactionStatus = false;
                     medicTrans.Quantity = history.quantity[j];
                     db.MedicineTransactions.Add(medicTrans);

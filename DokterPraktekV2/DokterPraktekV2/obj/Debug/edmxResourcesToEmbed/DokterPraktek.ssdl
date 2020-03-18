@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="DokterPraktek.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="__MigrationHistory">
     <Key>
       <PropertyRef Name="MigrationId" />
@@ -20,6 +20,15 @@
     <Property Name="gender" Type="bit" />
     <Property Name="phone" Type="nchar" MaxLength="256" />
     <Property Name="userId" Type="nchar" MaxLength="128" />
+  </EntityType>
+  <EntityType Name="AdminMedicineController">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StatusSecureText" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="StatusExpiredText" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="ExpiredDateRange" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="AspNetRoles">
     <Key>
@@ -115,6 +124,19 @@
     <Property Name="Quantity" Type="int" Nullable="false" />
     <Property Name="DateIn" Type="date" Nullable="false" />
     <Property Name="ExpireDate" Type="date" Nullable="false" />
+    <Property Name="UnitOfMedicine" Type="varchar" MaxLength="255" />
+    <Property Name="BenefitMedicine" Type="varchar" MaxLength="255" />
+    <Property Name="MerkOfMedicine" Type="varchar" MaxLength="255" />
+    <Property Name="QuantityOfMedicine" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="MedicineAttribute">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AttributeName" Type="varchar" MaxLength="255" />
+    <Property Name="AttributeCondition" Type="varchar" MaxLength="255" />
+    <Property Name="AttributeValue" Type="varchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="MedicineTransaction">
     <Key>
@@ -125,6 +147,7 @@
     <Property Name="DoctorID" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="TransactionStatus" Type="bit" Nullable="false" />
     <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="TransactionDate" Type="datetime" />
   </EntityType>
   <EntityType Name="Patient">
     <Key>
@@ -417,9 +440,10 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="DokterPraktekStoreContainer">
+  <EntityContainer Name="ModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="admin" EntityType="Self.admin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AdminMedicineController" EntityType="Self.AdminMedicineController" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -429,6 +453,7 @@
     <EntitySet Name="DoctorSpecialist" EntityType="Self.DoctorSpecialist" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MedicalHistory" EntityType="Self.MedicalHistory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Medicine" EntityType="Self.Medicine" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MedicineAttribute" EntityType="Self.MedicineAttribute" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MedicineTransaction" EntityType="Self.MedicineTransaction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PatientMedicine" EntityType="Self.PatientMedicine" Schema="dbo" store:Type="Tables" />

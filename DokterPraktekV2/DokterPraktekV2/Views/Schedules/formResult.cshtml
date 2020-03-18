@@ -1,66 +1,86 @@
 ﻿@model DokterPraktekV2.Models.VM_bookList
 
 
-<section class="content-header">
-</section>
+<section class="content-header"></section>
 <!-- Main content -->
-<section class="content">
-    <!-- /.row -->
-    <div class="box box-danger">
-        <div class="box-header">
-        </div>
-        <div class="box-body">
-                <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-success">Booking Success </span></h4>
-                <dl class="dl-horizontal">
 
-                    <dt>
-                        <label>Booking Number</label>
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.NoBooking)
-                    </dd>
-
-                    <dt>
-                        <label>Patient ID</label>
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.id) &nbsp; <strong class="alert-danger">Use this Patient ID for your next booking</strong>
-                    </dd>
-                    <dt>
-                        <label>Patient Name</label>
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.PatientName)
-                    </dd>
-
-                    <dt>
-                        <label>Doctor Name</label>
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.DoctorName)
-                    </dd>
-
-                    <dt>
-                        <label>Appointment Date</label>
-                    </dt>
-
-                    <dd>
-                        @Model.BookDate.ToString("dddd, dd/MM/yyyy")
-                    </dd>
-
-                    <dt>
-                        <label>Booking Status</label>
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.BookingStatus)
-                    </dd>
-
-                </dl>
+@if (ViewBag.Error == "true")
+{
+    <section class="content">
+        <!-- /.row -->
+        <div class="box box-danger">
+            <div class="box-header">
             </div>
+            <div class="box-body">
+                <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger">Booking Failed </span></h4>
+                <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger">You Already Booking for That Day! Pick Another Day for Booking </span></h4>
+                @*<div>
+                    @Html.ActionLink("Back to List", "Create")
+                </div>*@
+                </div>
+            </div>
+        </section>
+                }
+                else
+                {
+                <section class="content">
+                    <!-- /.row -->
+                    <div class="box box-danger">
+                        <div class="box-header">
+                        </div>
+                        <div class="box-body">
+                            <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-success">Booking Success </span></h4>
+                            <dl class="dl-horizontal">
 
-        </div>
-</section>
+                                <dt>
+                                    <label>Booking Number</label>
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.NoBooking)
+                                </dd>
+
+                                <dt>
+                                    <label>Patient ID</label>
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.id) &nbsp; <strong class="alert-danger">Use this Patient ID for your next booking</strong>
+                                </dd>
+                                <dt>
+                                    <label>Patient Name</label>
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.PatientName)
+                                </dd>
+
+                                <dt>
+                                    <label>Doctor Name</label>
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.DoctorName)
+                                </dd>
+
+                                <dt>
+                                    <label>Appointment Date</label>
+                                </dt>
+
+                                <dd>
+                                    @Model.BookDate.ToString("dddd, dd/MM/yyyy")
+                                </dd>
+
+                                <dt>
+                                    <label>Booking Status</label>
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.BookingStatus)
+                                </dd>
+
+                            </dl>
+                        </div>
+
+                    </div>
+                </section>
+                }

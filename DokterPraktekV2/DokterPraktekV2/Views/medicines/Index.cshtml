@@ -6,8 +6,15 @@
 }
 
 <section class="content-header">
-    <h1>Data Obat Dokter</h1>
+    <h1>Doctor's Medicine</h1>
 </section>
+@if (ViewBag.MessageDisplay == true)
+{
+    <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>@ViewBag.MessageSuccess</strong>
+    </div>
+}
 <section class="content">
     <div class="box box-danger">
         <div class="box-header">     
@@ -23,25 +30,37 @@
                 <thead>
                     <tr>
                         <th>
-                            Nama Obat
+                            ID
                         </th>
                         <th>
-                            Harga
+                            Name
                         </th>
                         <th>
-                            Stock Masuk
+                            Brand
                         </th>
                         <th>
-                            Tanggal Masuk
+                            Unit
                         </th>
                         <th>
-                            Tanggal Kadaluarsa
+                            Benefit
+                        </th>
+                        <th>
+                            Price
+                        </th>
+                        <th>
+                            Stock In
+                        </th>
+                        <th>
+                            Date In
+                        </th>
+                        <th>
+                            Expired Date
                         </th>
                         <th>
                             Status
                         </th>
                         <th>
-                            Stock Sisa
+                            Remaining Stock
                         </th>
                         <th>
                             Action
@@ -54,9 +73,20 @@
                     foreach (var item in Model)
                     {
                         <tr>
-
+                            <td>
+                                @item.id
+                            </td>
                             <td>
                                 <font color="@ViewBag.warna[i]">@item.nameMedicine</font>
+                            </td>
+                            <td>
+                                @item.MerkMedicine
+                            </td>
+                            <td>
+                                @item.UnitOfMedicine
+                            </td>
+                            <td>
+                                @item.BenefitMedicine
                             </td>
                             <td>
                                 @item.price

@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using DokterPraktekV2.Models;
 using DokterPraktekV2;
 using System.Collections.Generic;
+using DokterPraktekV2.Services;
 
 namespace DokterPraktekV2.Controllers
 {
@@ -21,6 +22,7 @@ namespace DokterPraktekV2.Controllers
         private ApplicationUserManager _userManager;
         ApplicationDbContext context;
         private DokterPraktekEntities db = new DokterPraktekEntities();
+        private PhotoService photoService = new PhotoService();
 
         public AccountController()
         {
@@ -158,7 +160,7 @@ namespace DokterPraktekV2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name , Email = model.Email, PhoneNumber = model.Phone };
+                var user = new ApplicationUser { UserName = model.Email , Email = model.Email, PhoneNumber = model.Phone };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -179,6 +181,9 @@ namespace DokterPraktekV2.Controllers
                         doctors.userId = user.Id;
                         doctors.phone = model.Phone;
                         doctors.gender = model.Gender;
+
+                        //var type = model.photos.ContentType; // Check image type ryan logic
+                        //photoService.UploadDoctorPictureFILE(model.photos.InputStream, type); // Upload patient pictures to database
 
                         List<WorkSchedule> workSch = new List<WorkSchedule>();
                         var WorkSch1 = (new WorkSchedule { Day = "Monday", DoctorID = doctors.userId, IsAvailable = true });

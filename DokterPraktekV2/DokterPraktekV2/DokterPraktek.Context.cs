@@ -27,6 +27,7 @@ namespace DokterPraktekV2
     
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<admin> admins { get; set; }
+        public virtual DbSet<AdminMedicineController> AdminMedicineControllers { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
@@ -35,6 +36,7 @@ namespace DokterPraktekV2
         public virtual DbSet<DoctorSpecialist> DoctorSpecialists { get; set; }
         public virtual DbSet<MedicalHistory> MedicalHistories { get; set; }
         public virtual DbSet<Medicine> Medicines { get; set; }
+        public virtual DbSet<MedicineAttribute> MedicineAttributes { get; set; }
         public virtual DbSet<MedicineTransaction> MedicineTransactions { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<PatientMedicine> PatientMedicines { get; set; }

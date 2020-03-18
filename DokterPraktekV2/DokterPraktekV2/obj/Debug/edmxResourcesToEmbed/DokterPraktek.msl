@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="DokterPraktekStoreContainer" CdmEntityContainer="Entities">
+  <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Entities">
     <EntitySetMapping Name="C__MigrationHistory">
-      <EntityTypeMapping TypeName="DokterPraktek.C__MigrationHistory">
+      <EntityTypeMapping TypeName="Model.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
           <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
           <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
@@ -12,7 +12,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="admins">
-      <EntityTypeMapping TypeName="DokterPraktek.admin">
+      <EntityTypeMapping TypeName="Model.admin">
         <MappingFragment StoreEntitySet="admin">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="name" ColumnName="name" />
@@ -23,8 +23,18 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="AdminMedicineControllers">
+      <EntityTypeMapping TypeName="Model.AdminMedicineController">
+        <MappingFragment StoreEntitySet="AdminMedicineController">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="StatusSecureText" ColumnName="StatusSecureText" />
+          <ScalarProperty Name="StatusExpiredText" ColumnName="StatusExpiredText" />
+          <ScalarProperty Name="ExpiredDateRange" ColumnName="ExpiredDateRange" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="AspNetRoles">
-      <EntityTypeMapping TypeName="DokterPraktek.AspNetRole">
+      <EntityTypeMapping TypeName="Model.AspNetRole">
         <MappingFragment StoreEntitySet="AspNetRoles">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
@@ -32,7 +42,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetUserClaims">
-      <EntityTypeMapping TypeName="DokterPraktek.AspNetUserClaim">
+      <EntityTypeMapping TypeName="Model.AspNetUserClaim">
         <MappingFragment StoreEntitySet="AspNetUserClaims">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -42,7 +52,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetUserLogins">
-      <EntityTypeMapping TypeName="DokterPraktek.AspNetUserLogin">
+      <EntityTypeMapping TypeName="Model.AspNetUserLogin">
         <MappingFragment StoreEntitySet="AspNetUserLogins">
           <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
           <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
@@ -51,7 +61,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetUsers">
-      <EntityTypeMapping TypeName="DokterPraktek.AspNetUser">
+      <EntityTypeMapping TypeName="Model.AspNetUser">
         <MappingFragment StoreEntitySet="AspNetUsers">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Email" ColumnName="Email" />
@@ -69,7 +79,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="doctors">
-      <EntityTypeMapping TypeName="DokterPraktek.doctor">
+      <EntityTypeMapping TypeName="Model.doctor">
         <MappingFragment StoreEntitySet="doctor">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
@@ -82,7 +92,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="DoctorSpecialists">
-      <EntityTypeMapping TypeName="DokterPraktek.DoctorSpecialist">
+      <EntityTypeMapping TypeName="Model.DoctorSpecialist">
         <MappingFragment StoreEntitySet="DoctorSpecialist">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="SpecialtyID" ColumnName="SpecialtyID" />
@@ -91,7 +101,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="MedicalHistories">
-      <EntityTypeMapping TypeName="DokterPraktek.MedicalHistory">
+      <EntityTypeMapping TypeName="Model.MedicalHistory">
         <MappingFragment StoreEntitySet="MedicalHistory">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
@@ -104,8 +114,9 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Medicines">
-      <EntityTypeMapping TypeName="DokterPraktek.Medicine">
+      <EntityTypeMapping TypeName="Model.Medicine">
         <MappingFragment StoreEntitySet="Medicine">
+          <ScalarProperty Name="QuantityOfMedicine" ColumnName="QuantityOfMedicine" />
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
@@ -113,22 +124,36 @@
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="DateIn" ColumnName="DateIn" />
           <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
+          <ScalarProperty Name="UnitOfMedicine" ColumnName="UnitOfMedicine" />
+          <ScalarProperty Name="BenefitMedicine" ColumnName="BenefitMedicine" />
+          <ScalarProperty Name="MerkOfMedicine" ColumnName="MerkOfMedicine" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MedicineAttributes">
+      <EntityTypeMapping TypeName="Model.MedicineAttribute">
+        <MappingFragment StoreEntitySet="MedicineAttribute">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="AttributeName" ColumnName="AttributeName" />
+          <ScalarProperty Name="AttributeCondition" ColumnName="AttributeCondition" />
+          <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="MedicineTransactions">
-      <EntityTypeMapping TypeName="DokterPraktek.MedicineTransaction">
+      <EntityTypeMapping TypeName="Model.MedicineTransaction">
         <MappingFragment StoreEntitySet="MedicineTransaction">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="MedicineID" ColumnName="MedicineID" />
           <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
           <ScalarProperty Name="TransactionStatus" ColumnName="TransactionStatus" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Patients">
-      <EntityTypeMapping TypeName="DokterPraktek.Patient">
+      <EntityTypeMapping TypeName="Model.Patient">
         <MappingFragment StoreEntitySet="Patient">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
@@ -141,7 +166,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="PatientMedicines">
-      <EntityTypeMapping TypeName="DokterPraktek.PatientMedicine">
+      <EntityTypeMapping TypeName="Model.PatientMedicine">
         <MappingFragment StoreEntitySet="PatientMedicine">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="MedicalHistoryID" ColumnName="MedicalHistoryID" />
@@ -153,7 +178,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="PatientPictures">
-      <EntityTypeMapping TypeName="DokterPraktek.PatientPicture">
+      <EntityTypeMapping TypeName="Model.PatientPicture">
         <MappingFragment StoreEntitySet="PatientPicture">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="PatientID" ColumnName="PatientID" />
@@ -163,7 +188,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Payments">
-      <EntityTypeMapping TypeName="DokterPraktek.Payment">
+      <EntityTypeMapping TypeName="Model.Payment">
         <MappingFragment StoreEntitySet="Payment">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="MedicalHistoryID" ColumnName="MedicalHistoryID" />
@@ -172,7 +197,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Schedules">
-      <EntityTypeMapping TypeName="DokterPraktek.Schedule">
+      <EntityTypeMapping TypeName="Model.Schedule">
         <MappingFragment StoreEntitySet="Schedule">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
@@ -184,7 +209,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Specialists">
-      <EntityTypeMapping TypeName="DokterPraktek.Specialist">
+      <EntityTypeMapping TypeName="Model.Specialist">
         <MappingFragment StoreEntitySet="Specialist">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="SpecialistName" ColumnName="SpecialistName" />
@@ -192,7 +217,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="WorkSchedules">
-      <EntityTypeMapping TypeName="DokterPraktek.WorkSchedule">
+      <EntityTypeMapping TypeName="Model.WorkSchedule">
         <MappingFragment StoreEntitySet="WorkSchedule">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Day" ColumnName="Day" />
@@ -201,7 +226,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="AspNetUserRoles" TypeName="DokterPraktek.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+    <AssociationSetMapping Name="AspNetUserRoles" TypeName="Model.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
       <EndProperty Name="AspNetRoles">
         <ScalarProperty Name="Id" ColumnName="RoleId" />
       </EndProperty>

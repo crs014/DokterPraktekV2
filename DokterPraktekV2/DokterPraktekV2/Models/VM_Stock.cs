@@ -11,6 +11,9 @@ namespace DokterPraktekV2.Models
         public string doctorId { get; set; }
         public string nameMedicine { get; set; }
         public decimal price { get; set; }
+        public string BenefitMedicine { get; set; }
+        public string UnitOfMedicine { get; set; }
+        public string MerkMedicine { get; set; }
         public DateTime dateIn { get; set; }
         public DateTime expired { get; set; }
         public string nameDocter { get; set; }

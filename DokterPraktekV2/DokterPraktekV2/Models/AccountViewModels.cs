@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace DokterPraktekV2.Models
 {
@@ -64,6 +65,8 @@ namespace DokterPraktekV2.Models
 
     public class RegisterViewModel
     {
+        public HttpPostedFileBase photos { get; set; }
+
         [Required]
         [Display(Name = "UserRoles")]
         public string UserRoles { get; set; }

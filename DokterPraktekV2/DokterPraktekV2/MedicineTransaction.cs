@@ -19,6 +19,7 @@ namespace DokterPraktekV2
         public string DoctorID { get; set; }
         public bool TransactionStatus { get; set; }
         public int Quantity { get; set; }
+        public Nullable<System.DateTime> TransactionDate { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Medicine Medicine { get; set; }

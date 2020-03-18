@@ -28,6 +28,10 @@ namespace DokterPraktekV2
         public int Quantity { get; set; }
         public System.DateTime DateIn { get; set; }
         public System.DateTime ExpireDate { get; set; }
+        public string UnitOfMedicine { get; set; }
+        public string BenefitMedicine { get; set; }
+        public string MerkOfMedicine { get; set; }
+        public string QuantityOfMedicine { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

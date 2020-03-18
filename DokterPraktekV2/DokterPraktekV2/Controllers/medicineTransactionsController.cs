@@ -31,14 +31,16 @@ namespace DokterPraktekV2.Controllers
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IPagedList<MedicineTransaction> listTrans = null;
             
-            var query = from s in op
-                        orderby s.TransactionStatus == true
-                        select op;
-            ViewBag.query = query.ToList();
+            //var query = from s in op
+            //            orderby s.TransactionStatus == true
+            //            select op;
+            //ViewBag.query = query.ToList();
 
-            var getMed = db.Medicines.Include(a => a.MedicineTransactions).Include(a => a.MedicineTransactions);
-            var medicineTransaction = db.MedicineTransactions.Include(m => m.Medicine).Include(m => m.Medicine);
-            listTrans = op.ToPagedList(pageIndex, pageSize); //goto pagedlist and return it
+            //var getMed = db.Medicines.Include(a => a.MedicineTransactions).Include(a => a.MedicineTransactions);
+            //var medicineTransaction = db.MedicineTransactions.Include(m => m.Medicine).Include(m => m.Medicine).Where(e=>e.DoctorID == idLog && e.TransactionDate != null);
+            var GetData = db.MedicineTransactions.Where(e => e.DoctorID == idLog && e.TransactionDate != null).ToList();
+            ViewBag.medicineTransaction = GetData;
+            listTrans = GetData.ToPagedList(pageIndex, pageSize); //goto pagedlist and return it
 
             return View(listTrans);
         }

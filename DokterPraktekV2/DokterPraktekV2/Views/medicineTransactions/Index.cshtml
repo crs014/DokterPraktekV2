@@ -7,7 +7,7 @@
 }
 
 <section class="content-header">
-    <h1>Data IN/OUT - Transaksi</h1>
+    <h1>Data IN/OUT - Transaction</h1>
 </section>
 <!-- Main content -->
 <section class="content">
@@ -20,13 +20,16 @@
                 <thead>
                     <tr>
                         <th>
-                            Status Transaksi
+                            Transaction Status
+                        </th>
+                        <th>
+                            Transaction Date
                         </th>
                         <th>
                             QTY
                         </th>
                         <th>
-                            Nama Obat
+                            Nama of Medicine
                         </th>
                     </tr>
                 </thead>
@@ -43,6 +46,9 @@
                             {
                                 <font color="red"><p>OUT</p></font>
                             }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionDate)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Quantity)

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="DokterPraktek" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+<Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityType Name="C__MigrationHistory">
     <Key>
       <PropertyRef Name="MigrationId" />
@@ -20,6 +20,15 @@
     <Property Name="gender" Type="Boolean" />
     <Property Name="phone" Type="String" MaxLength="256" FixedLength="true" Unicode="true" />
     <Property Name="userId" Type="String" MaxLength="128" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AdminMedicineController">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StatusSecureText" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="StatusExpiredText" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ExpiredDateRange" Type="Int32" Nullable="false" />
   </EntityType>
   <EntityType Name="AspNetRole">
     <Key>
@@ -125,9 +134,22 @@
     <Property Name="Quantity" Type="Int32" Nullable="false" />
     <Property Name="DateIn" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="ExpireDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="UnitOfMedicine" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="BenefitMedicine" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="MerkOfMedicine" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="AspNetUser" Relationship="Self.FK__Medicine__Doctor__49C3F6B7" FromRole="Medicine" ToRole="AspNetUsers" />
     <NavigationProperty Name="MedicineTransactions" Relationship="Self.FK__MedicineT__Medic__4BAC3F29" FromRole="Medicine" ToRole="MedicineTransaction" />
     <NavigationProperty Name="PatientMedicines" Relationship="Self.FK__PatientMe__Medic__4D94879B" FromRole="Medicine" ToRole="PatientMedicine" />
+    <Property Name="QuantityOfMedicine" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="MedicineAttribute">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AttributeName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="AttributeCondition" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="AttributeValue" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="MedicineTransaction">
     <Key>
@@ -138,6 +160,7 @@
     <Property Name="DoctorID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="TransactionStatus" Type="Boolean" Nullable="false" />
     <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <Property Name="TransactionDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="AspNetUser" Relationship="Self.FK__MedicineT__Docto__4AB81AF0" FromRole="MedicineTransaction" ToRole="AspNetUsers" />
     <NavigationProperty Name="Medicine" Relationship="Self.FK__MedicineT__Medic__4BAC3F29" FromRole="MedicineTransaction" ToRole="Medicine" />
   </EntityType>
@@ -422,6 +445,7 @@
   <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
     <EntitySet Name="admins" EntityType="Self.admin" />
+    <EntitySet Name="AdminMedicineControllers" EntityType="Self.AdminMedicineController" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
@@ -430,6 +454,7 @@
     <EntitySet Name="DoctorSpecialists" EntityType="Self.DoctorSpecialist" />
     <EntitySet Name="MedicalHistories" EntityType="Self.MedicalHistory" />
     <EntitySet Name="Medicines" EntityType="Self.Medicine" />
+    <EntitySet Name="MedicineAttributes" EntityType="Self.MedicineAttribute" />
     <EntitySet Name="MedicineTransactions" EntityType="Self.MedicineTransaction" />
     <EntitySet Name="Patients" EntityType="Self.Patient" />
     <EntitySet Name="PatientMedicines" EntityType="Self.PatientMedicine" />

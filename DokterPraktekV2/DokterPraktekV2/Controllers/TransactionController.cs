@@ -17,9 +17,16 @@ namespace DokterPraktekV2.Controllers
 
         public ActionResult Index(string currentFilter, string searchString, int? page)
         {
+            var DataDoctor = db.doctors;
+            List<doctor> doc = new List<doctor>();
+            foreach (var item in DataDoctor)
+            {
+                doc.Add(item);
+            }
             var data = db.MedicalHistories.DistinctBy(z => z.ID).Select(e => new VM_transaction
             {
                 alreadyPay = e.Payments.Sum(a => a.Amount),
+                DoctorName = doc.FirstOrDefault(asd=>asd.userId == e.DoctorID).name,
                 patientId = e.PatientID,
                 patientName = e.Patient.Name,
                 amount = e.CheckUpPrice + e.PatientMedicines.Sum(b => b.Medicine.Price * b.Quantity),
@@ -52,9 +59,11 @@ namespace DokterPraktekV2.Controllers
 
         public ActionResult Nota(int id)
         {
+            var DataDoctor = db.doctors;
             VM_transaction data = db.MedicalHistories.DistinctBy(z => z.ID).Select(e => new VM_transaction
             {
                 alreadyPay = e.Payments.Sum(a => a.Amount),
+                DoctorName = DataDoctor.FirstOrDefault(d=>d.userId == e.DoctorID).name,
                 patientId = e.PatientID,
                 patientName = e.Patient.Name,
                 amount = e.CheckUpPrice + e.PatientMedicines.Sum(b => b.Medicine.Price * b.Quantity),

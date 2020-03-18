@@ -1,0 +1,117 @@
+﻿@model DokterPraktekV2.MedicineAttribute
+
+@{
+    ViewBag.Title = "Medicine Configuration";
+}
+
+<section class="content-header">
+    <h1>Adding Unit For Medicine</h1>
+</section>
+
+@if (ViewBag.MessageDisplay == true)
+{
+    <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>@ViewBag.MessageSuccess</strong>
+    </div>
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+
+        @*<h4>Medicine Configuration</h4>*@
+        @Html.HiddenFor(model => model.ID, "")
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.AttributeCondition, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttributeCondition, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AttributeCondition, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(e => e.QuantityOfMedicine, new SelectList(GetDataQtyMedByAttributeName, "AttributeValue", "AttributeValue"), "", new { @class = "form-control" })
+            </div>
+        </div>*@
+        
+        <div class="form-group">
+            @Html.Label("Group Of Unit Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttributeName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AttributeName, "", new { @class = "text-danger" })
+                @*@Html.DropDownListFor(e => e.AttributeName, new SelectList(ViewBag.QtyData, "AttributeName", "AttributeName"), "", new { @class = "form-control" })*@
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.AttributeCondition, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttributeCondition, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AttributeCondition, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.Label("Unit Value of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttributeValue, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AttributeValue, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@*------------------------------------------------------------------------------------------------------------------------------------------------------*@
+<section class="content">
+    <!-- /.row -->
+    <div class="box box-danger">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Unit Group
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var item in ViewBag.AllAttribute)
+                {
+                    <tr>
+
+                        <td>
+                            @item.AttributeName
+                        </td>
+                        <td>
+                            @item.AttributeValue
+                        </td>
+                        <td>
+                            @Html.ActionLink("Remove", "DeleteMedConf", new { id = item.ID })
+                        </td>
+                    </tr>
+                }
+            </table>
+            @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+            of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))*@
+        </div>
+    </div>
+</section>
+
+@*<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>*@

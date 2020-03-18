@@ -5,23 +5,34 @@
 }
 
 <section class="content-header">
-    <h1>Masukin Obat</h1>
+    <h1>Input Data for Medicine</h1>
 </section>
 <!-- Main content -->
 <section class="content">
     <!-- /.row -->
     <div class="box box-danger">
         <div class="box-header">
+        
         </div>
         <div class="box-body">
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-
                 <div class="form-horizontal">
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.Label("Select Status of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 form-inline ">
+                            @Html.DropDownList("NewProd", new SelectList(ViewBag.ChekingProduct, "AttributeValue", "AttributeValue", "Existing Product"), "", new { @class = "form-control", @id = "cmb" })
+                            @Html.EditorFor(model => model.ID, new { htmlAttributes = new { @class = "form-control txtbox" }})
+                            @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.Label("Name Of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -29,7 +40,30 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.Label("Brand Of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.MerkOfMedicine, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MerkOfMedicine, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Unit Of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(e => e.UnitOfMedicine, new SelectList(ViewBag.GetDataQtyMedByUnit, "AttributeValue", "AttributeValue"), "", new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Benefit Of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.BenefitMedicine, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BenefitMedicine, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Price Of Medicine", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
@@ -37,25 +71,19 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.Label("Qty / Unit", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 form-inline">
                             @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+
+                            @Html.DropDownListFor(e=>e.QuantityOfMedicine, new SelectList(ViewBag.QuantityMed, "AttributeValue", "AttributeValue"), "", new { @class = "form-control" })
                         </div>
                     </div>
 
-                    @*<div class="form-group">
-                    @Html.LabelFor(model => model.dateIn, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.dateIn, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.dateIn, "", new { @class = "text-danger" })
-                    </div>
-                </div>*@
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ExpireDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.Label("Expired Date", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            @*@Html.EditorFor(model => model.ExpireDate, new { htmlAttributes = new { @class = "form-control" } })*@
                             <input type="date" name="ExpireDate" class="form-control" />
                             @Html.ValidationMessageFor(model => model.ExpireDate, "", new { @class = "text-danger" })
                         </div>
@@ -76,6 +104,20 @@
         </div>
     </div>
 </section>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(document).ready(function () {
+        $("#cmb").on("change", function () {
+            if (this.value == "Existing Product") {
+                $(".txtbox").show();
+            }
+            else {
+                $(".txtbox").hide();
+                $(".txtbox").val(0);
+            }
+        });
+    });
+</script>
 }

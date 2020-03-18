@@ -73,6 +73,7 @@ namespace DokterPraktekV2.Controllers
         {
             VM_schedules schedule = new VM_schedules();
             schedule.doctors = DoctorWorkDay.ListWorkDays(); // panggil service hari kerja dokter
+            //schedule = schedule.doctors.Where(e => e.dayIn.Count > 0 && e.doctorSpecialties.Count > 0);
             return View(schedule);
         }
         #endregion
@@ -110,9 +111,19 @@ namespace DokterPraktekV2.Controllers
                 var checkPatient = BookListService.CheckPatient(data.name , data.phone); // check patient service
                 if (checkPatient != null) 
                 {
-                    var dataBooking = BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
-                    TempData["id"] = dataBooking;
-                    return RedirectToAction("formResult");
+                    var getScheduleByToday = db.Schedules.Where(e => e.PatientID == checkPatient.id).ToList();
+                    if (CheckPatientScheduleByToday(getScheduleByToday, data.dateSchedule))
+                    {
+                        TempData["Error"] = "Error";
+                        return RedirectToAction("formResult");
+                    }
+                    else
+                    {
+                        var dataBooking = BookListService.CreateBooking(checkPatient.id, docId, data.dateSchedule); // Create booking service
+                        TempData["id"] = dataBooking;
+                        TempData["Error"] = "";
+                        return RedirectToAction("formResult");
+                    }
                 }
                 else
                 {
@@ -128,7 +139,7 @@ namespace DokterPraktekV2.Controllers
                         data.photo = data.name.ToString() + ".png";
                         type = "image/png";
                         photoService.UploadPatientPicture(chartData, type, dataPatient.ID);
-
+                        
                         //type = data.photo.ContentType; // Check image type ryan logic
                         //photoService.UploadPatientPicture(data.photo.InputStream, type, dataPatient.id); // Upload patient pictures to database
 
@@ -141,6 +152,7 @@ namespace DokterPraktekV2.Controllers
                     }
                     var dataBooking = BookListService.CreateBooking(dataPatient.ID, docId, data.dateSchedule);  // Create booking service
                     TempData["id"] = dataBooking;
+                    TempData["Error"] = "";
                     return RedirectToAction("formResult");
                 }
             }
@@ -225,10 +237,19 @@ namespace DokterPraktekV2.Controllers
                 var checkPatient = BookListService.CheckPatientById(sign.PatientNumber); // check patient service
                 if (checkPatient != null)
                 {
-                    var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId.ToString(), sign.dateSchedule); // Create booking service
-                    TempData["id"] = dataBooking;
-                    TempData.Keep();
-                    return RedirectToAction("formResult");
+                    var getScheduleByToday = db.Schedules.Where(e => e.PatientID == checkPatient.id).ToList();
+                    if (CheckPatientScheduleByToday(getScheduleByToday,sign.dateSchedule))
+                    {
+                        ModelState.AddModelError("PatientNumber", "Limit Booking, You Already Booking for That Day!");
+                        return View(sign);
+                    }
+                    else
+                    {
+                        var dataBooking = BookListService.CreateBooking(sign.PatientNumber, sign.doctorId.ToString(), sign.dateSchedule); // Create booking service
+                        TempData["id"] = dataBooking;
+                        TempData.Keep();
+                        return RedirectToAction("formResult");
+                    }
                 }
                 else
                 {
@@ -251,12 +272,44 @@ namespace DokterPraktekV2.Controllers
 
         public ActionResult formResult()
         {
-            int id = (int)TempData["id"];
-            TempData.Keep();
-            var bookingResult = BookListService.BookingListById(id);
-            return View(bookingResult); 
+            var Error = "";
+            if (TempData.ContainsKey("Error"))
+                Error = TempData["Error"].ToString();
+
+            var Status = "";
+            if (Error == "Error")
+            {
+                VM_bookList NewVM = new VM_bookList();
+                //NewVM.BookingStatus = "CANCELED";
+                //return View(NewVM);
+                ViewBag.Error = "true";
+                return View(NewVM);
+            }
+            else
+            {
+                int id = (int)TempData["id"];
+                TempData.Keep();
+                var bookingResult = BookListService.BookingListById(id);
+                ViewBag.Error = "";
+                return View(bookingResult);
+            }
         }
 
         #endregion
+
+        private bool CheckPatientScheduleByToday(List<Schedule> GetData,DateTime GetDateByUserInput)
+        {
+            bool result = false;
+
+            foreach (var item in GetData)
+            {
+                if(item.DateSchedule == GetDateByUserInput)
+                {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
     }
 }

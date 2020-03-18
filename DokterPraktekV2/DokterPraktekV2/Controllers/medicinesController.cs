@@ -11,12 +11,14 @@ using System.Web.Security;
 using DokterPraktekV2.Models;
 using Microsoft.AspNet.Identity;
 using PagedList;
+using DokterPraktekV2.Services;
 
 namespace DokterPraktekV2.Controllers
 {
     public class medicinesController : Controller
     { 
         private DokterPraktekEntities db = new DokterPraktekEntities();
+        private MedicineAttributeServices MedAttrService = new MedicineAttributeServices();
         
         // GET: medicines
         public ActionResult Index(int? page,string search,string option)
@@ -25,19 +27,45 @@ namespace DokterPraktekV2.Controllers
             var ids = db.doctors.Where(m => m.userId == idLog).First();
             var op = db.Medicines.Where(a => a.DoctorID == ids.userId).ToList();
             var medicine = db.Medicines.Include(m => m.DoctorID);
+            var GetDataFromMedicineController = db.AdminMedicineControllers.FirstOrDefault();
+
+            var IsFromCreate = "";
+            if (TempData.ContainsKey("IsFromCreate"))
+                IsFromCreate = TempData["IsFromCreate"].ToString();
+            if(IsFromCreate == "true")
+            {
+                ViewBag.MessageSuccess = "Input Data Success";
+                ViewBag.MessageDisplay = true;
+                TempData["IsFromCreate"] = "false";
+            }
+            else if(IsFromCreate == "failed")
+            {
+                ViewBag.MessageSuccess = "Cannot Find Existing ID,Please Check Your Input";
+                ViewBag.MessageDisplay = true;
+                TempData["IsFromCreate"] = "false";
+            }
+            else
+            {
+                ViewBag.MessageSuccess = "";
+                ViewBag.MessageDisplay = false;
+                ViewBag.MsgFrom = false;
+            }
 
             var data = db.Medicines.Select(e => new VM_Stock
             {
                 id = e.ID,
                 doctorId = e.DoctorID,
                 nameMedicine = e.Name,
+                BenefitMedicine = e.BenefitMedicine,
+                UnitOfMedicine = e.UnitOfMedicine,
+                MerkMedicine = e.MerkOfMedicine,
                 price = e.Price,
                 dateIn = e.DateIn,
                 expired = e.ExpireDate,
                 inStock = e.Quantity,
                 outStock = e.PatientMedicines.Sum(a => a.Quantity),
                 remainStock = e.Quantity - e.PatientMedicines.Sum(a => a.Quantity)
-            }).ToList().Where(a=>a.doctorId == ids.userId);
+            }).ToList().Where(a=>a.doctorId == ids.userId && !string.IsNullOrEmpty(a.MerkMedicine));
             
 
 
@@ -51,25 +79,24 @@ namespace DokterPraktekV2.Controllers
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IPagedList<VM_Stock> listTrans = null;
             
-
-            DateTime estimatedDate = DateTime.Now.Date.AddDays(30);
+            //make the default of expired date range by 30days
+            DateTime estimatedDate = DateTime.Now.Date.AddDays(GetDataFromMedicineController.ExpiredDateRange == 0 ? GetDataFromMedicineController.ExpiredDateRange : 30);
 
             List<string> listWarna = new List<string>();
             List<string> listStatus = new List<string>();
             foreach (var item in data)
             {
-                //if (estimatedDate >= item.expired || item.expired <= DateTime.Now.Date)
                 if(estimatedDate <= item.expired)
                 {
                     var warna = "green";
-                    var status = "Secure";
+                    var status = !string.IsNullOrEmpty(GetDataFromMedicineController.StatusSecureText) ? GetDataFromMedicineController.StatusSecureText : "SECURE";
                     listWarna.Add(warna);
                     listStatus.Add(status);
                 }
                 else
                 {
                     var warna = "red";
-                    var status = "EXPIRED";
+                    var status = !string.IsNullOrEmpty(GetDataFromMedicineController.StatusExpiredText) ? GetDataFromMedicineController.StatusExpiredText : "EXPIRED";
                     listWarna.Add(warna);
                     listStatus.Add(status);
                 }
@@ -99,31 +126,195 @@ namespace DokterPraktekV2.Controllers
         // GET: medicines/Create
         public ActionResult Create()
         {
+            var GetDataQtyMed = MedAttrService.GetListOfAttribute("Quantity");
+            var GetDataQtyMedByUnit = MedAttrService.GetListOfAttribute("Unit");
+            List<MedicineAttribute> CheckingID = new List<MedicineAttribute>();
+
+            CheckingID.Add(new MedicineAttribute { AttributeValue = "Existing Product", AttributeName = "CheckID" });
+            CheckingID.Add(new MedicineAttribute { AttributeValue = "New Product",AttributeName = "CheckID" });
+
+            ViewBag.QuantityMed = GetDataQtyMed;
+            ViewBag.GetDataQtyMedByUnit = GetDataQtyMedByUnit;
+            ViewBag.ChekingProduct = CheckingID;
             return View();
         }
+        public ActionResult MedicineAdminController()
+        {
+            var GetData = db.AdminMedicineControllers.FirstOrDefault();
+            return View(GetData);
+        }
+        public ActionResult MedicineConfigurationView()
+        {
+            ViewBag.MessageSuccess = "";
+            ViewBag.MessageDisplay = false;
+            ViewBag.AllAttribute = db.MedicineAttributes;
+
+            var IsFromCreate = "";
+            if (TempData.ContainsKey("IsInsertDataFromMedConfig"))
+                IsFromCreate = TempData["IsInsertDataFromMedConfig"].ToString();
+            if (IsFromCreate == "true")
+            {
+                ViewBag.MessageSuccess = "Input Data Success";
+                ViewBag.MessageDisplay = true;
+                TempData["IsInsertDataFromMedConfig"] = "false";
+            }
+            else
+            {
+                ViewBag.MessageSuccess = "";
+                ViewBag.MessageDisplay = false;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MedicineAdminController(AdminMedicineController adminViewMedicine)
+        {
+            try
+            {
+                var GetData = db.AdminMedicineControllers.FirstOrDefault();
+                if (GetData == null)
+                {
+                    db.AdminMedicineControllers.Add(adminViewMedicine);
+                }
+                else
+                {
+                    GetData = db.AdminMedicineControllers.FirstOrDefault(e => e.ID == adminViewMedicine.ID);
+                    GetData.StatusExpiredText = adminViewMedicine.StatusExpiredText;
+                    GetData.StatusSecureText = adminViewMedicine.StatusSecureText;
+                    GetData.ExpiredDateRange = adminViewMedicine.ExpiredDateRange;
+                }
+                ViewBag.MessageSuccess = "Input Data Success";
+                ViewBag.MessageDisplay = true;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MedicineConfigurationView(MedicineAttribute medAttr)
+        {
+            db.MedicineAttributes.Add(medAttr);
+            db.SaveChanges();
+            TempData["IsInsertDataFromMedConfig"] = "true";
+            return RedirectToAction("MedicineConfigurationView");
+            //return View();
+        }
+
+        public ActionResult DeleteMedConf(int id)
+        {
+            var GetData = (from item in db.MedicineAttributes
+                       where item.ID == id
+                       select item
+                       ).FirstOrDefault();
+
+            db.MedicineAttributes.Remove(GetData);
+            db.SaveChanges();
+            return RedirectToAction("MedicineConfigurationView");
+        }
+
 
         // POST: medicines/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        //public ActionResult AdminViewMedicine(AdminViewMedicine adminViewMedicine)
+        //{
+        //    return View();
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "name,price,quantity,dateIn,ExpireDate")] Medicine medicine,[Bind(Include ="id,medicineId,statusTransaction,quantity")] MedicineTransaction medtrans)
+        public ActionResult Create([Bind(Include = "ID,name,price,quantity,dateIn,ExpireDate,UnitOfMedicine,BenefitMedicine,MerkOfMedicine,QuantityOfMedicine")] Medicine medicine,[Bind(Include ="id,medicineId,statusTransaction,quantity")] MedicineTransaction medtrans,string NewProd)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
             medicine.DateIn = DateTime.Today;
             ViewBag.getData = db.MedicineTransactions;
+
+            var DataDB = db.Medicines.Where(e => e.DoctorID == ids.userId);
+            bool result = false;
+            var GetID = 0;
+            if (NewProd.Contains("New"))
+            {
+                result = false;
+            }
+            else
+            {
+                foreach (var item in DataDB)
+                {
+                    if (item.ID == medicine.ID)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            
+
             if (ModelState.IsValid)
             {
-                medtrans.DoctorID = ids.userId; //ids.id.ToString();
-                medtrans.TransactionStatus = true;
-                db.MedicineTransactions.Add(medtrans);
-                medicine.DoctorID = ids.userId; //ids.id.ToString();
-                db.Medicines.Add(medicine);
-                db.SaveChanges();
+                if (result)
+                {
+
+                    //medtrans.DoctorID = ids.userId;
+                    //medtrans.TransactionStatus = true;
+                    //medtrans.TransactionDate = DateTime.Now;
+                    //db.MedicineTransactions.Add(medtrans);
+                    
+
+                    var dateIn = db.Medicines.Where(m => m.ID == medicine.ID).First();
+                    var getMedTrans = db.MedicineTransactions.Where(e => e.MedicineID == medicine.ID).First();
+
+                    dateIn.DoctorID = ids.userId;
+                    dateIn.Name = medicine.Name;
+                    dateIn.Price = medicine.Price;
+                    dateIn.MerkOfMedicine = medicine.MerkOfMedicine;
+                    dateIn.UnitOfMedicine = medicine.UnitOfMedicine;
+                    dateIn.BenefitMedicine = medicine.BenefitMedicine;
+                    dateIn.Quantity = medicine.Quantity + dateIn.Quantity;
+                    dateIn.QuantityOfMedicine = medicine.QuantityOfMedicine;
+                    dateIn.ExpireDate = medicine.ExpireDate;
+
+
+                    getMedTrans.Quantity = dateIn.Quantity;
+                    db.Entry(getMedTrans).State = EntityState.Modified;
+
+                    db.Entry(dateIn).State = EntityState.Modified;
+
+                    db.SaveChanges();
+
+                    
+                    //db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                else if (!result && medicine.ID != 0)
+                {
+                    TempData["IsFromCreate"] = "failed";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    medtrans.DoctorID = ids.userId;
+                    medtrans.TransactionStatus = true;
+                    medtrans.TransactionDate = DateTime.Now;
+                    db.MedicineTransactions.Add(medtrans);
+                    medicine.DoctorID = ids.userId;
+                    db.Medicines.Add(medicine);
+                    db.SaveChanges();
+                    TempData["IsFromCreate"] = "true";
+                    return RedirectToAction("Index");
+                }
+                
+                TempData["IsFromCreate"] = "true";
                 return RedirectToAction("Index");
             }
-
             ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.DoctorID);
             return View(medicine);
         }
@@ -145,6 +336,12 @@ namespace DokterPraktekV2.Controllers
                 return HttpNotFound();
             }
             ViewBag.doctorId = new SelectList(db.doctors, "id", "name", medicine.DoctorID);
+
+            var GetDataQtyMed = MedAttrService.GetListOfAttribute("Quantity");
+            var GetDataQtyMedByUnit = MedAttrService.GetListOfAttribute("Unit");
+            ViewBag.QuantityMed = GetDataQtyMed;
+            ViewBag.GetDataQtyMedByUnit = GetDataQtyMedByUnit;
+
             return View(medicine);
         }
 
@@ -153,18 +350,24 @@ namespace DokterPraktekV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,price,quantity,dateIn,ExpireDate")] Medicine medicine)
+        public ActionResult Edit(Medicine medicine)
         {
             var idLog = User.Identity.GetUserId();
             var ids = db.doctors.Where(m => m.userId == idLog).First();
-            var dateIn = db.Medicines.Where(m => m.DateIn == m.DateIn).First();
+            var dateIn = db.Medicines.Where(m => m.ID == medicine.ID).First();
 
             if (ModelState.IsValid)
             {
-                medicine.DoctorID = ids.userId;
-                medicine.DateIn = dateIn.DateIn;
-                db.Medicines.Add(medicine);
-                db.Entry(medicine).State = EntityState.Modified;
+                dateIn.DoctorID = ids.userId;
+                dateIn.Name = medicine.Name;
+                dateIn.Price = medicine.Price;
+                dateIn.MerkOfMedicine = medicine.MerkOfMedicine;
+                dateIn.UnitOfMedicine = medicine.UnitOfMedicine;
+                dateIn.BenefitMedicine = medicine.BenefitMedicine;
+                dateIn.Quantity = medicine.Quantity;
+                dateIn.QuantityOfMedicine = medicine.QuantityOfMedicine;
+                dateIn.ExpireDate = medicine.ExpireDate;
+                db.Entry(dateIn).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

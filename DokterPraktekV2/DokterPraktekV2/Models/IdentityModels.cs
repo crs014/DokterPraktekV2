@@ -29,5 +29,7 @@ namespace DokterPraktekV2.Models
         {
             return new ApplicationDbContext();
         }
+
+        //public System.Data.Entity.DbSet<DokterPraktekV2.AdminMedicineController> AdminMedicineControllers { get; set; }
     }
 }
